@@ -1,0 +1,59 @@
+{
+  "name": "openapi-react-chat",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@heroicons/react": "^2.0.17",
+    "@headlessui/react": "^1.7.14",
+    "autoprefixer": "^10.4.14",
+    "highlight.js": "^11.7.0",
+    "postcss": "^8.4.22",
+    "postcss-cli": "^10.1.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-markdown": "^8.0.7",
+    "react-scripts": "5.0.1",
+    "react-scroll-to-bottom": "^4.2.0",
+    "react-syntax-highlighter": "^15.5.0",
+    "remark-gfm": "^3.0.1",
+    "tailwindcss": "^3.3.1",
+    "typescript": "^4.9.5",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "build:css": "postcss src/index.css -o src/tailwind.css",
+    "start": "npm run build:css && react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^27.5.2",
+    "@types/node": "^16.18.23",
+    "@types/react": "^18.0.35",
+    "@types/react-dom": "^18.0.11",
+    "@types/react-scroll-to-bottom": "^4.2.0",
+    "@types/react-syntax-highlighter": "^15.5.6"
+  }
+}
