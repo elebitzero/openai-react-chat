@@ -171,7 +171,7 @@ const App = () => {
                         </div>
                     </div>
                 </main>
-                {!sticky && <button onClick={scrollToBottom}>Click me to scroll to bottom</button>}
+                {/*{!sticky && <button onClick={scrollToBottom}>Click me to scroll to bottom</button>}*/}
             </ScrollToBottom>
         </div>
     );

@@ -1,25 +1,25 @@
 import React from 'react';
 import Select from 'react-select';
-import { OpenAIModel } from './models/model';
+import { OpenAIModel } from '../models/model';
 
-interface ModelToggleProps {
+interface ModelSelectProps {
     models: OpenAIModel[];
     selectedModel: OpenAIModel | null;
     onModelSelect: (model: OpenAIModel) => void;
 }
 
-const ModelToggle: React.FC<ModelToggleProps> = ({
+const ModelSelect: React.FC<ModelSelectProps> = ({
                                                      models,
                                                      selectedModel,
                                                      onModelSelect,
                                                  }) => {
     const options = models.map((model) => ({
         value: model.id,
-        label: model.name,
+        label: model.id,
     }));
 
     const selectedOption = selectedModel
-        ? { value: selectedModel.id, label: selectedModel.name }
+        ? { value: selectedModel.id, label: selectedModel.id }
         : null;
 
     const handleModelChange = (selectedOption: any) => {
@@ -45,4 +45,4 @@ const ModelToggle: React.FC<ModelToggleProps> = ({
     );
 };
 
-export default ModelToggle;
+export default ModelSelect;
