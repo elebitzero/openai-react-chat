@@ -40,6 +40,13 @@ export class ChatService {
 
         if (response.ok) {
             const data = await response.json();
+            /* DEBUG - remove vvvvvvvvvvvvvvvv */
+            const reducedData = data.data
+                .map(({ id }: { id: string }) => ({ id }))
+                .sort((a: { id: string }, b: { id: string }) => a.id.localeCompare(b.id));
+
+            console.log(reducedData);
+            /* DEBUG - remove ^^^^^^^^^^^^^^^^^ */
             return data.data;
         } else {
             console.error('Error fetching models:', response.status, response.statusText);

@@ -13,7 +13,14 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
                                                      selectedModel,
                                                      onModelSelect,
                                                  }) => {
-    const options = models.map((model) => ({
+
+    const sortedModels = [...models].sort((a, b) => a.id.localeCompare(b.id));
+
+    if (!selectedModel){
+        selectedModel = sortedModels[0];
+    }
+
+    const options = sortedModels.map((model) => ({
         value: model.id,
         label: model.id,
     }));
@@ -24,7 +31,9 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
 
     const handleModelChange = (selectedOption: any) => {
         const modelId = selectedOption.value;
-        const selectedModel = models.find((model) => model.id === modelId);
+        const selectedModel = !models
+            ? undefined :
+            models.find((model) => model.id === modelId);
         if (selectedModel) {
             onModelSelect(selectedModel);
         }
@@ -32,13 +41,12 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
 
     return (
         <div className="model-toggle">
-            <label className="model-toggle-label">Select Model:</label>
             <Select
                 className="model-toggle-select"
                 options={options}
                 value={selectedOption}
                 onChange={handleModelChange}
-                isSearchable={false}
+                isSearchable={true}
                 placeholder="Select a model"
             />
         </div>
