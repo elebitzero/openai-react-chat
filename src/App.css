@@ -47,7 +47,7 @@ textarea:focus-visible {
 
 .chat-pg-instructions {
   display: flex;
-  flex: 1 1;
+  flex: 0 0;
 }
 
 .text-input-with-header .subheading {
