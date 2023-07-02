@@ -46,7 +46,7 @@ const App = () => {
     }, []);
 
     useEffect(() => {
-        setSelectedModel(models[0]);
+        setSelectedModel(selectedModel);
     }, [models]);
 
     const checkForEnterKey = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -86,7 +86,7 @@ const App = () => {
             systemPromptFinal = 'You are a helpful assistant.';
         }
         let messages = [{role: 'system', content: systemPromptFinal}, ...updatedMessages];
-        ChatService.sendMessage(messages)
+        ChatService.sendMessage(messages, selectedModel)
             .then((response: ChatCompletion) => {
                 let message = response.choices[0].message;
                 setLoading(false);

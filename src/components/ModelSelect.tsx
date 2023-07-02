@@ -6,12 +6,14 @@ interface ModelSelectProps {
     models: OpenAIModel[];
     selectedModel: OpenAIModel | null;
     onModelSelect: (model: OpenAIModel) => void;
+    className?: string;
 }
 
 const ModelSelect: React.FC<ModelSelectProps> = ({
                                                      models,
                                                      selectedModel,
                                                      onModelSelect,
+                                                     className
                                                  }) => {
 
     const sortedModels = [...models].sort((a, b) => a.id.localeCompare(b.id));

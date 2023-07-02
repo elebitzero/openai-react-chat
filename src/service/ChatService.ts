@@ -4,7 +4,7 @@ import {ChatCompletion, ChatMessage} from "../models/ChatCompletion";
 export class ChatService {
 
 
-    static async sendMessage(messages: ChatMessage[]): Promise<ChatCompletion> {
+    static async sendMessage(messages: ChatMessage[], selectedModel: OpenAIModel | null): Promise<ChatCompletion> {
 
         let endpoint = "https://api.openai.com/v1/chat/completions";
         let headers = {
@@ -13,7 +13,7 @@ export class ChatService {
         };
 
         const requestBody = {
-            model: "gpt-3.5-turbo",
+            model: selectedModel ? selectedModel.id : "gpt-3.5-turbo",
             messages: messages,
             temperature: 0.7
         };

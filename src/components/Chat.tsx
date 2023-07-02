@@ -32,14 +32,16 @@ const Chat: React.FC<Props> = ({ chatBlocks, models }) => {
     <div className="flex-1 overflow-hidden">
       <div className="flex flex-col items-center text-sm dark:bg-gray-800">
         <div className="flex w-full items-center justify-center gap-1 border-b border-black/10 bg-gray-50 p-3 text-gray-500 dark:border-gray-900/50 dark:bg-gray-700 dark:text-gray-300">
-            Model: {isNewConversation ? '' : (selectedModel ? selectedModel.id : 'None selected')}
-            {isNewConversation && (
-                <ModelSelect
-                    models={models}
-                    onModelSelect={(model) => setSelectedModel(model)}
-                    selectedModel={selectedModel}
-              />
-          )}
+            <div className="flex items-center flex-row gap-1" style={{ width: '50ch'}}>
+                <span>Model: {isNewConversation ? '' : (selectedModel ? selectedModel.id : 'gpt-3.5-turbo')}</span>
+                <span className="flex-grow">{isNewConversation && (
+                    <ModelSelect
+                        models={models}
+                        onModelSelect={(model) => setSelectedModel(model)}
+                        selectedModel={selectedModel}
+                    />
+                )}</span>
+            </div>
         </div>
         {chatBlocks.map((block) => (
           <ChatBlock key={`chat-block-${block.id}`} block={block} />
