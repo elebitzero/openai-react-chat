@@ -3,7 +3,7 @@ import {ChatCompletion, ChatMessage} from "../models/ChatCompletion";
 import {REACT_APP_OPENAI_API_KEY} from "../config";
 
 export class ChatService {
-
+    private static models: Promise<OpenAIModel[]> | null = null;
     static selectedModelId: string = '';
 
     static setSelectedModelId(modelId: string) {
@@ -41,30 +41,33 @@ export class ChatService {
         return await response.json();
     }
 
-    static fetchModels = async (): Promise<OpenAIModel[]> => {
-        console.log('fetch models called');
-        const response = await fetch('https://api.openai.com/v1/models', {
+    static fetchModels = (): Promise<OpenAIModel[]> => {
+        if (this.models !== null) {
+            return this.models;
+        }
+        this.models = fetch('https://api.openai.com/v1/models', {
             headers: {
                 'Authorization': `Bearer ${REACT_APP_OPENAI_API_KEY}`,
             },
-        });
+        })
+            .then(response => {
+                if (!response.ok) {
+                    console.error('Error fetching models:', response.status, response.statusText);
+                    return [];
+                }
+                return response.json();
+            })
+            .then(data => {
+                const models: OpenAIModel[] = data.data;
 
-        if (response.ok) {
-            const data = await response.json();
+                // Ref: https://platform.openai.com/docs/models/model-endpoint-compatibility
+                let filteredModels: OpenAIModel[] = models.filter(model => model.id.startsWith("gpt-"));
 
-            const models: OpenAIModel[] = data.data;
-            const OWNED_BY_FILTER: string[] = [
-                'openai'
-            ];
+                const sortedModels = [...filteredModels].sort((a, b) => a.id.localeCompare(b.id));
+                return sortedModels;
+            });
 
-            let filteredModels: OpenAIModel[] = models.filter(model => OWNED_BY_FILTER.includes(model.owned_by));
-
-            const sortedModels = [...filteredModels].sort((a, b) => a.id.localeCompare(b.id));
-            return sortedModels;
-        } else {
-            console.error('Error fetching models:', response.status, response.statusText);
-            return [];
-        }
+        return this.models;
     };
 }
 
