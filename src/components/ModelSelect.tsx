@@ -1,43 +1,95 @@
-import React from 'react';
-import Select from 'react-select';
+import React, {useEffect, useState} from 'react';
+import Select, {SingleValue} from 'react-select';
 import { OpenAIModel } from '../models/model';
+import {REACT_APP_OPENAI_DEFAULT_MODEL, REACT_APP_OPENAI_MODEL_LIST} from "../config";
+import {ChatService} from "../service/ChatService";
 
 interface ModelSelectProps {
-    models: OpenAIModel[];
-    selectedModel: OpenAIModel | null;
-    onModelSelect: (model: OpenAIModel) => void;
+    onModelSelect?: (modelId: string) => void;
     className?: string;
 }
 
+type SelectOption = { label: string; value: string; }
+
 const ModelSelect: React.FC<ModelSelectProps> = ({
-                                                     models,
-                                                     selectedModel,
                                                      onModelSelect,
                                                      className
                                                  }) => {
+    const [models, setModels] = useState<OpenAIModel[]>([]);
+    const [options, setOptions] = useState<SelectOption[]>([]);
+    const [selectedOption, setSelectedOption] = useState<SelectOption>({value: '', label: 'model-not-set'});
 
-    const sortedModels = [...models].sort((a, b) => a.id.localeCompare(b.id));
+    useEffect(() => {
+        console.log('Component mounted');
+        return () => console.log('Component unmounted');
+    }, []);
 
-    if (!selectedModel){
-        selectedModel = sortedModels[0];
-    }
+    useEffect(() => {
+        if (REACT_APP_OPENAI_MODEL_LIST && REACT_APP_OPENAI_MODEL_LIST.length > 0) {
+            const models: OpenAIModel[] = REACT_APP_OPENAI_MODEL_LIST.map(id => {
+                return {
+                    id: id,
+                    object: 'model',
+                    owned_by: '',
+                    permission: [],
+                };
+            });
+            setModels(models);
+        } else {
+            const getModels = async () => {
+                const fetchedModels = await ChatService.fetchModels();
+                setModels(fetchedModels);
+            };
 
-    const options = sortedModels.map((model) => ({
-        value: model.id,
-        label: model.id,
-    }));
+            getModels().catch((error) => {
+                console.error('Error fetching models:', error);
+            });
+        }
+    }, []);  // <- Empty dependency array means this effect runs once on mount
 
-    const selectedOption = selectedModel
-        ? { value: selectedModel.id, label: selectedModel.id }
-        : null;
+    useEffect(() => {
+        console.log('dependency models changed...');
+        setOptions(models.map((model) => ({
+            value: model.id,
+            label: model.id,
+        })));
 
-    const handleModelChange = (selectedOption: any) => {
-        const modelId = selectedOption.value;
-        const selectedModel = !models
-            ? undefined :
-            models.find((model) => model.id === modelId);
-        if (selectedModel) {
-            onModelSelect(selectedModel);
+        if (models && models.length > 0) {
+            const firstModel = models[0];
+            setSelectedOption({value: firstModel.id, label: firstModel.id});
+        }
+    }, [models]);
+
+    /*    useEffect(() => {
+        if (REACT_APP_OPENAI_DEFAULT_MODEL && REACT_APP_OPENAI_DEFAULT_MODEL.length > 0) {
+            let found = false;
+            for (const model of models) {
+                if (model.id === REACT_APP_OPENAI_DEFAULT_MODEL) {
+                    setSelectedModel(model);
+                    break;
+                }
+            }
+            if (found) {
+                return;
+            } else {
+                console.log('Model '+REACT_APP_OPENAI_DEFAULT_MODEL+' not in the list of models');
+            }
+        }
+        setSelectedModel(models[0]);
+    }, [models]);*/
+
+    const handleModelChange = (option: SingleValue<SelectOption>) => {
+        debugger;
+        if (option) {
+            const modelId = option.value;
+            setSelectedOption({
+                value: option.value,
+                label: option.label,
+            })
+            if (onModelSelect) {
+                onModelSelect(modelId);
+            }
+            ChatService.setSelectedModelId(modelId);
         }
     };
 

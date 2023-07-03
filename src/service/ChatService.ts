@@ -1,19 +1,29 @@
 import {OpenAIModel} from "../models/model";
 import {ChatCompletion, ChatMessage} from "../models/ChatCompletion";
+import {REACT_APP_OPENAI_API_KEY} from "../config";
 
 export class ChatService {
 
+    static selectedModelId: string = '';
 
-    static async sendMessage(messages: ChatMessage[], selectedModel: OpenAIModel | null): Promise<ChatCompletion> {
+    static setSelectedModelId(modelId: string) {
+        this.selectedModelId = modelId;
+    }
+
+    static getSelectedModelId(): string {
+        return this.selectedModelId;
+    }
+
+    static async sendMessage(messages: ChatMessage[], modelId: string): Promise<ChatCompletion> {
 
         let endpoint = "https://api.openai.com/v1/chat/completions";
         let headers = {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`
+            "Authorization": `Bearer ${REACT_APP_OPENAI_API_KEY}`
         };
 
         const requestBody = {
-            model: selectedModel ? selectedModel.id : "gpt-3.5-turbo",
+            model: modelId,
             messages: messages,
             temperature: 0.7
         };
@@ -32,9 +42,10 @@ export class ChatService {
     }
 
     static fetchModels = async (): Promise<OpenAIModel[]> => {
+        console.log('fetch models called');
         const response = await fetch('https://api.openai.com/v1/models', {
             headers: {
-                'Authorization': `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`,
+                'Authorization': `Bearer ${REACT_APP_OPENAI_API_KEY}`,
             },
         });
 
@@ -46,7 +57,10 @@ export class ChatService {
                 'openai'
             ];
 
-            return models.filter(model => OWNED_BY_FILTER.includes(model.owned_by));
+            let filteredModels: OpenAIModel[] = models.filter(model => OWNED_BY_FILTER.includes(model.owned_by));
+
+            const sortedModels = [...filteredModels].sort((a, b) => a.id.localeCompare(b.id));
+            return sortedModels;
         } else {
             console.error('Error fetching models:', response.status, response.statusText);
             return [];

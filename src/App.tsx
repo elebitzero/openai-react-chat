@@ -8,6 +8,7 @@ import Chat from "./components/Chat";
 import {ChatCompletion, ChatMessage} from "./models/ChatCompletion";
 import {ArrowPathIcon} from "@heroicons/react/24/outline";
 import {SubmitButton} from "./components/SubmitButton";
+import {REACT_APP_OPENAI_DEFAULT_MODEL, REACT_APP_OPENAI_MODEL_LIST} from "./config";
 
 interface ChatMessageBlock extends ChatMessage {
     id: number;
@@ -16,8 +17,7 @@ interface ChatMessageBlock extends ChatMessage {
 
 const App = () => {
     const [loading, setLoading] = useState(false);
-    const [models, setModels] = useState<OpenAIModel[]>([]);
-    const [selectedModel, setSelectedModel] = useState(models[0]);
+
     const [systemPrompt, setSystemPrompt] = useState('');
     const [text, setText] = useState('');
     const isButtonDisabled = text === '' || loading;
@@ -34,20 +34,7 @@ const App = () => {
         setSystemPrompt(event.target.value);
     };
 
-    useEffect(() => {
-        const getModels = async () => {
-            const fetchedModels = await ChatService.fetchModels();
-            setModels(fetchedModels);
-        };
 
-        getModels().catch((error) => {
-            console.error('Error fetching models:', error);
-        });
-    }, []);
-
-    useEffect(() => {
-        setSelectedModel(selectedModel);
-    }, [models]);
 
     const checkForEnterKey = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if (e.key === 'Enter') {
@@ -86,7 +73,7 @@ const App = () => {
             systemPromptFinal = 'You are a helpful assistant.';
         }
         let messages = [{role: 'system', content: systemPromptFinal}, ...updatedMessages];
-        ChatService.sendMessage(messages, selectedModel)
+        ChatService.sendMessage(messages, ChatService.getSelectedModelId())
             .then((response: ChatCompletion) => {
                 let message = response.choices[0].message;
                 setLoading(false);
@@ -125,7 +112,7 @@ const App = () => {
                          ></textarea>
                     </div>
                 </div>
-                <Chat chatBlocks={messageBlocks} models={models}/>
+                <Chat chatBlocks={messageBlocks}/>
                 <div
                     className="absolute bottom-0 left-0 w-full border-t md:border-t-0 dark:border-white/20 md:border-transparent md:dark:border-transparent md:bg-vert-light-gradient bg-white dark:bg-gray-800 md:!bg-transparent dark:md:bg-vert-dark-gradient pt-2">
                     <form onSubmit={handleSubmit}
