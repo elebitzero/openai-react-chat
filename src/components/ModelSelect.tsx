@@ -79,7 +79,6 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
     }, [models]);*/
 
     const handleModelChange = (option: SingleValue<SelectOption>) => {
-        debugger;
         if (option) {
             const modelId = option.value;
             setSelectedOption({
