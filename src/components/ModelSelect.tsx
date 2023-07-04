@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import Select, {SingleValue} from 'react-select';
 import {OpenAIModel} from '../models/model';
 import {ChatService} from '../service/ChatService';
-import {REACT_APP_OPENAI_DEFAULT_MODEL} from "../config";
+import {OPENAI_DEFAULT_MODEL} from "../config";
 
 interface ModelSelectProps {
     onModelSelect?: (modelId: string) => void;
@@ -37,10 +37,10 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
                 { value: "more", label: SHOW_MORE_MODELS }
             ]);
 
-            if (REACT_APP_OPENAI_DEFAULT_MODEL && REACT_APP_OPENAI_DEFAULT_MODEL.length > 0) {
+            if (OPENAI_DEFAULT_MODEL && OPENAI_DEFAULT_MODEL.length > 0) {
                 let found = false;
                 for (const model of models) {
-                    if (model.id === REACT_APP_OPENAI_DEFAULT_MODEL) {
+                    if (model.id === OPENAI_DEFAULT_MODEL) {
                         setSelectedOption({ value: model.id, label: model.id });
                         found = true;
                         break;
@@ -50,7 +50,7 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
                     setLoading(false);
                     return;
                 } else {
-                    console.log('Model ' + REACT_APP_OPENAI_DEFAULT_MODEL + ' not in the list of models');
+                    console.log('Model ' + OPENAI_DEFAULT_MODEL + ' not in the list of models');
                 }
             }
 

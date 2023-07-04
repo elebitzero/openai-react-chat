@@ -1,14 +1,9 @@
-import React, {ChangeEvent, useContext, useEffect, useState} from 'react';
+import React, {ChangeEvent, useState} from 'react';
 import './App.css';
-import {iconProps, SubmitChatIcon,} from "./svg";
-import {OpenAIModel} from "./models/model";
-import {ThemeContext} from "./ThemeContext";
 import {ChatService} from "./service/ChatService";
 import Chat from "./components/Chat";
 import {ChatCompletion, ChatMessage} from "./models/ChatCompletion";
-import {ArrowPathIcon} from "@heroicons/react/24/outline";
 import {SubmitButton} from "./components/SubmitButton";
-import {REACT_APP_OPENAI_DEFAULT_MODEL, REACT_APP_OPENAI_MODEL_LIST} from "./config";
 
 interface ChatMessageBlock extends ChatMessage {
     id: number;
@@ -21,8 +16,6 @@ const App = () => {
     const [systemPrompt, setSystemPrompt] = useState('');
     const [text, setText] = useState('');
     const isButtonDisabled = text === '' || loading;
-    const {darkTheme, toggleTheme} = useContext(ThemeContext);
-    const themeClass = darkTheme ? 'dark' : '';
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const [messageBlocks, setMessageBlocks] = useState<ChatMessageBlock[]>([]);
 
@@ -94,12 +87,12 @@ const App = () => {
         <div className="flex h-full max-w-full flex-1 flex-col">
             <main
                 className="relative h-full w-full transition-width flex flex-col overflow-hidden items-stretch flex-1">
-                <div className="text-input-with-header chat-pg-instructions flex items-center justify-center">
-                    <div className="text-input-header-subheading subheading">System</div>
+                <div className="text-input-with-header chat-pg-instructions flex items-center justify-center m-5">
+                    <div className="text-input-header-subheading subheading">System:</div>
                     <div
                         className="text-input-header-wrapper overflow-wrapper text-input flex items-center justify-center w-3/5">
                          <textarea aria-label="Input"
-                                   style={{maxHeight: "200px", overflowY: "hidden"}}
+                                   style={{maxHeight: "200px", overflowY: "auto"}}
                                    className="focus:ring-0 focus-visible:ring-0 outline-none shadow-none text-input text-input-lg text-input-full text-input-header-buffer"
                                    placeholder="You are a helpful assistant."
                                    value={systemPrompt}
@@ -118,13 +111,13 @@ const App = () => {
                     <form onSubmit={handleSubmit}
                           className="stretch mx-2 flex flex-row gap-3 last:mb-2 md:mx-4 md:last:mb-6 lg:mx-auto lg:max-w-2xl xl:max-w-3xl">
                         <div className="relative flex h-full flex-1 md:flex-col">
-                            <div className="flex ml-1 md:w-full md:m-auto md:mb-2 gap-0 md:gap-2 justify-center">
+                     {/*       <div className="flex ml-1 md:w-full md:m-auto md:mb-2 gap-0 md:gap-2 justify-center">
                                 <button className="btn relative btn-neutral border-0 md:border">
                                     <div className="flex w-full items-center justify-center gap-2">
                                         <ArrowPathIcon {...iconProps}/>Regenerate response
                                     </div>
                                 </button>
-                            </div>
+                            </div>*/}
                             <div
                                 className="flex flex-col w-full py-2 flex-grow md:py-3 md:pl-4 relative border border-black/10 bg-white dark:border-gray-900/50 dark:text-white dark:bg-gray-700 rounded-md">
                                    <textarea
@@ -147,14 +140,6 @@ const App = () => {
                             </div>
                         </div>
                     </form>
-                    <div
-                        className="px-3 pt-2 pb-3 text-center text-xs text-black/50 dark:text-white/50 md:px-4 md:pt-3 md:pb-6">
-                        <span>
-                          <a href="https://help.openai.com/en/articles/6825453-chatgpt-release-notes" target="_blank"
-                             rel="noreferrer"
-                             className="underline">ChatGPT Mar 23 Version</a>.
-                        </span>
-                    </div>
                 </div>
             </main>
         </div>

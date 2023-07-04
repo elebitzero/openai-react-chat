@@ -1,6 +1,6 @@
 import {OpenAIModel} from "../models/model";
 import {ChatCompletion, ChatMessage} from "../models/ChatCompletion";
-import {REACT_APP_OPENAI_API_KEY} from "../config";
+import {OPENAI_API_KEY} from "../config";
 
 export class ChatService {
     private static models: Promise<OpenAIModel[]> | null = null;
@@ -19,7 +19,7 @@ export class ChatService {
         let endpoint = "https://api.openai.com/v1/chat/completions";
         let headers = {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${REACT_APP_OPENAI_API_KEY}`
+            "Authorization": `Bearer ${OPENAI_API_KEY}`
         };
 
         const requestBody = {
@@ -47,7 +47,7 @@ export class ChatService {
         }
         this.models = fetch('https://api.openai.com/v1/models', {
             headers: {
-                'Authorization': `Bearer ${REACT_APP_OPENAI_API_KEY}`,
+                'Authorization': `Bearer ${OPENAI_API_KEY}`,
             },
         })
             .then(response => {
