@@ -4,6 +4,7 @@ import './tailwind.css';
 import './globalStyles.css';
 import App from './App';
 import {ThemeProvider} from "./ThemeContext";
+import 'react-toastify/dist/ReactToastify.css';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

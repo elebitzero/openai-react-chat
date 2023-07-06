@@ -23,14 +23,12 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
         label: ''
     });
     const [loading, setLoading] = useState<boolean>(true);
-    const [isMore, setIsMore] = useState<boolean>(false);
     const SHOW_MORE_MODELS = "Show more models";
     const SHOW_FEWER_MODELS = "Show fewer models";
 
     useEffect(() => {
         if (models && models.length > 0) {
-            const defaultOptions = models.filter(model => !/\-\d{4}$/.test(model.id));
-            const moreOptions = models.filter(model => /\-\d{4}$/.test(model.id));
+            const defaultOptions = models.filter(model => !/-\d{4}$/.test(model.id));
 
             setOptions([
                 ...defaultOptions.map((model) => ({ value: model.id, label: model.id })),
@@ -74,14 +72,12 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
                     ...models.map((model) => ({value: model.id, label: model.id})),
                     {value: "less", label: SHOW_FEWER_MODELS}
                 ]);
-                setIsMore(true);
             } else if (option.value === "less") {
-                const defaultOptions = models.filter(model => !/\-\d{4}$/.test(model.id));
+                const defaultOptions = models.filter(model => !/-\d{4}$/.test(model.id));
                 setOptions([
                     ...defaultOptions.map((model) => ({value: model.id, label: model.id})),
                     {value: "more", label: SHOW_MORE_MODELS}
                 ]);
-                setIsMore(false);
             } else {
                 const modelId = option.value;
                 setSelectedOption({

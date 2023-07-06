@@ -35,7 +35,8 @@ export class ChatService {
         });
 
         if (!response.ok) {
-            throw new Error("Failed to send message");
+            const err = await response.json();
+            throw new Error(err.error.message);
         }
 
         return await response.json();
@@ -43,7 +44,7 @@ export class ChatService {
 
     static fetchModels = (): Promise<OpenAIModel[]> => {
         if (this.models !== null) {
-            return this.models;
+            return Promise.resolve(this.models);
         }
         this.models = fetch('https://api.openai.com/v1/models', {
             headers: {
@@ -52,22 +53,25 @@ export class ChatService {
         })
             .then(response => {
                 if (!response.ok) {
-                    console.error('Error fetching models:', response.status, response.statusText);
-                    return [];
+                    return response.json().then(err => {
+                        throw new Error(err.error.message);
+                    });
                 }
                 return response.json();
             })
+            .catch(err => {
+                throw new Error(err.message || err);
+            })
             .then(data => {
                 const models: OpenAIModel[] = data.data;
-
-                // Ref: https://platform.openai.com/docs/models/model-endpoint-compatibility
                 let filteredModels: OpenAIModel[] = models.filter(model => model.id.startsWith("gpt-"));
-
                 const sortedModels = [...filteredModels].sort((a, b) => a.id.localeCompare(b.id));
                 return sortedModels;
             });
 
         return this.models;
     };
+
+
 }
 

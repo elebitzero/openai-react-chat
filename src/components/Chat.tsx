@@ -3,6 +3,8 @@ import ChatBlock from "./ChatBlock";
 import ModelSelect from "./ModelSelect";
 import {OpenAIModel} from "../models/model";
 import {ChatService} from "../service/ChatService";
+import {OPENAI_MODEL_LIST} from "../config";
+import {toast} from "react-toastify";
 
 interface ChatBlockModel {
     id: number;
@@ -17,29 +19,54 @@ interface Props {
 const Chat: React.FC<Props> = ({chatBlocks}) => {
     const [isNewConversation, setIsNewConversation] = useState<boolean>(false);
     const [models, setModels] = useState<OpenAIModel[]>([]);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         setIsNewConversation(chatBlocks.length === 0);
     }, [chatBlocks]);
 
     useEffect(() => {
-        ChatService.fetchModels()
-            .then(fetchedModels => {
-                setModels(fetchedModels);
-            })
-            .catch(error => {
-                // Handle the error here
-                console.error('Error fetching models:', error);
-            });
+
+        if (OPENAI_MODEL_LIST && OPENAI_MODEL_LIST.length > 0) {
+            setModels(OPENAI_MODEL_LIST.map(id => {
+                    return {
+                        id: id,
+                        object: 'model',
+                        owned_by: 'not-set',
+                        permission: []
+                    } as OpenAIModel;
+                })
+            );
+        } else {
+            ChatService.fetchModels()
+                .then(fetchedModels => {
+                    setModels(fetchedModels);
+                })
+                .catch(err => {
+                    if (err && err.message) {
+                        setError(err.message);
+                    } else {
+                        setError('Error fetching model list');
+                    }
+                });
+        }
     }, []);
 
-    const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-        if (event.key === 'Enter' && isNewConversation) {
-            event.preventDefault();
-        }
-    };
+    useEffect( () => {
+        toast.error(error, {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+        });
+    }, [error])
 
     return (
+
         <div className="flex-1 overflow-auto">
             <div className="flex flex-col items-center text-sm dark:bg-gray-800">
                 <div

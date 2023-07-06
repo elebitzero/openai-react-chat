@@ -4,6 +4,7 @@ import {ChatService} from "./service/ChatService";
 import Chat from "./components/Chat";
 import {ChatCompletion, ChatMessage} from "./models/ChatCompletion";
 import {SubmitButton} from "./components/SubmitButton";
+import {toast, ToastContainer} from "react-toastify";
 
 interface ChatMessageBlock extends ChatMessage {
     id: number;
@@ -73,8 +74,17 @@ const App = () => {
                 addMessage(message.role, message.content);
             })
             .catch(error => {
-                // Handle the error here
-                console.error('Error sending message:', error);
+                console.log('calling toast with '+error);
+                toast.error(error.message, {
+                    position: "top-center",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
             });
     }
 
@@ -85,6 +95,7 @@ const App = () => {
 
     return (
         <div className="flex h-full max-w-full flex-1 flex-col">
+            <ToastContainer/>
             <main
                 className="relative h-full w-full transition-width flex flex-col overflow-hidden items-stretch flex-1">
                 <div className="text-input-with-header chat-pg-instructions flex items-center justify-center m-5">
