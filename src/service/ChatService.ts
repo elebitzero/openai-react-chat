@@ -1,6 +1,6 @@
 import {OpenAIModel} from "../models/model";
 import {ChatCompletion, ChatMessage} from "../models/ChatCompletion";
-import {OPENAI_API_KEY} from "../config";
+import {CHAT_PARAMETERS, OPENAI_API_KEY} from "../config";
 
 export class ChatService {
     private static models: Promise<OpenAIModel[]> | null = null;
@@ -25,7 +25,7 @@ export class ChatService {
         const requestBody = {
             model: modelId,
             messages: messages,
-            temperature: 0.7
+            temperature: CHAT_PARAMETERS.temperature
         };
 
         const response = await fetch(endpoint, {
