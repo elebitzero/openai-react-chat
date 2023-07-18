@@ -50,6 +50,11 @@ textarea:focus-visible {
   flex: 0 0;
 }
 
+.shadow-xs {
+  --tw-shadow: 0 0 15px rgba(0,0,0,.1);
+  box-shadow: var(--tw-shadow);
+}
+
 .text-input-with-header .subheading {
   padding: 22px 16px 12px 0px;
 }

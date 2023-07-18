@@ -130,7 +130,7 @@ const App = () => {
                                 </button>
                             </div>*/}
                             <div
-                                className="flex flex-col w-full py-2 flex-grow md:py-3 md:pl-4 relative border border-black/10 bg-white dark:border-gray-900/50 dark:text-white dark:bg-gray-700 rounded-md">
+                                className="flex flex-col w-full py-2 flex-grow md:py-3 md:pl-4 relative border border-black/10 bg-white dark:border-gray-900/50 dark:text-white dark:bg-gray-700 rounded-md shadow-xs">
                                    <textarea
                                        tabIndex={0}
                                        data-id="request-:r4:-1"
