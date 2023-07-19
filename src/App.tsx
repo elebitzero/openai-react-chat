@@ -4,6 +4,7 @@ import {ChatService} from "./service/ChatService";
 import Chat from "./components/Chat";
 import {ChatCompletion, ChatMessage} from "./models/ChatCompletion";
 import {SubmitButton} from "./components/SubmitButton";
+import {OPENAI_DEFAULT_SYSTEM_PROMPT} from "./config";
 import {toast, ToastContainer} from "react-toastify";
 
 interface ChatMessageBlock extends ChatMessage {
@@ -70,7 +71,7 @@ const App = () => {
         setText('');
         let systemPromptFinal = systemPrompt;
         if (!systemPromptFinal || systemPromptFinal === '') {
-            systemPromptFinal = 'You are a helpful assistant.';
+            systemPromptFinal = OPENAI_DEFAULT_SYSTEM_PROMPT;
         }
         let messages = [{role: 'system', content: systemPromptFinal}, ...updatedMessages];
         ChatService.sendMessage(messages, ChatService.getSelectedModelId())
@@ -124,7 +125,7 @@ const App = () => {
                          <textarea aria-label="Input"
                                    style={{maxHeight: "200px", overflowY: "auto"}}
                                    className="focus:ring-0 focus-visible:ring-0 outline-none shadow-none text-input text-input-lg text-input-full text-input-header-buffer"
-                                   placeholder="You are a helpful assistant."
+                                   placeholder={OPENAI_DEFAULT_SYSTEM_PROMPT}
                                    value={systemPrompt}
                                    onChange={handleSystemPromptChange}
                                    onInput={(e) => {
