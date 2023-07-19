@@ -1,4 +1,4 @@
-import React, {ChangeEvent, useState} from 'react';
+import React, {ChangeEvent, useEffect, useState} from 'react';
 import './App.css';
 import {ChatService} from "./service/ChatService";
 import Chat from "./components/Chat";
@@ -13,12 +13,18 @@ interface ChatMessageBlock extends ChatMessage {
 
 const App = () => {
     const [loading, setLoading] = useState(false);
-
     const [systemPrompt, setSystemPrompt] = useState('');
     const [text, setText] = useState('');
     const isButtonDisabled = text === '' || loading;
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const [messageBlocks, setMessageBlocks] = useState<ChatMessageBlock[]>([]);
+    const [tokenCount, setTokenCount] = useState(0);
+
+    useEffect(() => {
+        // Calculate the initial token count
+        const initialTokens = calculateTokens([...messages]);
+        setTokenCount(initialTokens);
+    }, []);
 
     const handleTextChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
         setText(event.target.value);
@@ -72,6 +78,8 @@ const App = () => {
                 let message = response.choices[0].message;
                 setLoading(false);
                 addMessage(message.role, message.content);
+                const totalTokens = calculateTokens([...messages, message]);
+                setTokenCount(totalTokens);
             })
             .catch(error => {
                 console.log('calling toast with '+error);
@@ -87,6 +95,17 @@ const App = () => {
                 });
             });
     }
+
+    const calculateTokens = (messages: ChatMessage[]): number => {
+        let tokens = 0;
+        console.log(messages);
+        for (let i = 1; i < messages.length; i++) {
+            const message = messages[i];
+            const messageTokens = message.content.match(/\b\w+\b|\S/g);
+            tokens += messageTokens?.length ?? 0;
+        }
+        return tokens;
+    };
 
     function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
@@ -122,13 +141,16 @@ const App = () => {
                     <form onSubmit={handleSubmit}
                           className="stretch mx-2 flex flex-row gap-3 last:mb-2 md:mx-4 md:last:mb-6 lg:mx-auto lg:max-w-2xl xl:max-w-3xl">
                         <div className="relative flex h-full flex-1 md:flex-col">
-                     {/*       <div className="flex ml-1 md:w-full md:m-auto md:mb-2 gap-0 md:gap-2 justify-center">
+                            {/*       <div className="flex ml-1 md:w-full md:m-auto md:mb-2 gap-0 md:gap-2 justify-center">
                                 <button className="btn relative btn-neutral border-0 md:border">
                                     <div className="flex w-full items-center justify-center gap-2">
                                         <ArrowPathIcon {...iconProps}/>Regenerate response
                                     </div>
                                 </button>
                             </div>*/}
+                            <div className="flex justify-end px-2 py-1 text-gray-500 text-sm">
+                                <span>Tokens used: {tokenCount}</span>
+                            </div>
                             <div
                                 className="flex flex-col w-full py-2 flex-grow md:py-3 md:pl-4 relative border border-black/10 bg-white dark:border-gray-900/50 dark:text-white dark:bg-gray-700 rounded-md shadow-xs">
                                    <textarea
