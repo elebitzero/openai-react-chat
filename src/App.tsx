@@ -25,7 +25,7 @@ const App = () => {
         // Calculate the initial token count
         const initialTokens = calculateTokens([...messages]);
         setTokenCount(initialTokens);
-    }, []);
+    }, [messages]);
 
     const handleTextChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
         setText(event.target.value);
