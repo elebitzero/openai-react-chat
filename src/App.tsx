@@ -15,25 +15,45 @@ interface ChatMessageBlock extends ChatMessage {
 const App = () => {
     const [loading, setLoading] = useState(false);
     const [systemPrompt, setSystemPrompt] = useState('');
+    const [systemPromptTokens, setSystemPromptTokens] = useState(0);
+    const [prevSystemPromptTokens, setPrevSystemPromptTokens] = useState(0);
     const [text, setText] = useState('');
     const isButtonDisabled = text === '' || loading;
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const [messageBlocks, setMessageBlocks] = useState<ChatMessageBlock[]>([]);
     const [tokenCount, setTokenCount] = useState(0);
+    const [prevTextTokens, setPrevTextTokens] = useState(0);
 
     useEffect(() => {
-        // Calculate the initial token count
-        const initialTokens = calculateTokens([...messages]);
-        setTokenCount(initialTokens);
-    }, [messages]);
+        // Calculate tokens for the new text input
+        const textTokens = calculateTokens({ role: 'user', content: text });
 
+        // Update the tokenCount with the text input tokens
+        setTokenCount(prevTokenCount => prevTokenCount - prevTextTokens + textTokens);
+
+        // Update the previous text tokens
+        setPrevTextTokens(textTokens);
+    }, [text]);
     const handleTextChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
         setText(event.target.value);
     };
 
     const handleSystemPromptChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
-        setSystemPrompt(event.target.value);
+        const newSystemPrompt = event.target.value;
+        setPrevSystemPromptTokens(systemPromptTokens); // Set prevSystemPromptTokens before updating systemPromptTokens
+        setSystemPrompt(newSystemPrompt);
+
+        // Calculate tokens for the new system prompt
+        const newSystemPromptTokens = calculateTokens({ role: 'system', content: newSystemPrompt });
+
+        // Update the system prompt tokens
+        setSystemPromptTokens(newSystemPromptTokens);
     };
+
+    // useEffect to update the tokenCount whenever the system prompt tokens change
+    useEffect(() => {
+        setTokenCount(prevTokenCount => prevTokenCount - prevSystemPromptTokens + systemPromptTokens);
+    }, [systemPromptTokens]);
 
 
 
@@ -63,6 +83,9 @@ const App = () => {
         if (callback) {
             callback(updatedMessages);
         }
+        const messageTokens = calculateTokens(newMessage);
+        // Update the tokenCount by accumulating the tokens
+        setTokenCount(prevTokenCount => prevTokenCount + messageTokens);
     };
 
 
@@ -79,8 +102,6 @@ const App = () => {
                 let message = response.choices[0].message;
                 setLoading(false);
                 addMessage(message.role, message.content);
-                const totalTokens = calculateTokens([...messages, message]);
-                setTokenCount(totalTokens);
             })
             .catch(error => {
                 console.log('calling toast with '+error);
@@ -97,14 +118,13 @@ const App = () => {
             });
     }
 
-    const calculateTokens = (messages: ChatMessage[]): number => {
+    const calculateTokens = (message: ChatMessage): number => {
         let tokens = 0;
-        console.log(messages);
-        for (let i = 0; i < messages.length; i++) {
-            const message = messages[i];
-            const messageTokens = message.content.match(/\b\w+\b|\S/g);
-            tokens += messageTokens?.length ?? 0;
-        }
+
+        // Calculate tokens for the message content
+        const messageTokens = message.content.match(/\b\w+\b|\S/g);
+        tokens += messageTokens?.length ?? 0;
+
         return tokens;
     };
 
