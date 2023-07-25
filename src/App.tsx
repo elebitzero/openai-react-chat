@@ -100,7 +100,7 @@ const App = () => {
     const calculateTokens = (messages: ChatMessage[]): number => {
         let tokens = 0;
         console.log(messages);
-        for (let i = 1; i < messages.length; i++) {
+        for (let i = 0; i < messages.length; i++) {
             const message = messages[i];
             const messageTokens = message.content.match(/\b\w+\b|\S/g);
             tokens += messageTokens?.length ?? 0;
