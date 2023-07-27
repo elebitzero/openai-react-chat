@@ -65,6 +65,8 @@ const App = () => {
                 if (!loading) {
                     e.preventDefault();
                     addMessage('user', text, sendMessage);
+                    const target = e.target as HTMLTextAreaElement;
+                    target.style.height = "auto";
                 }
             }
         }
