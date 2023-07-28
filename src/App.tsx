@@ -33,7 +33,7 @@ const App = () => {
 
         // Update the previous text tokens
         setPrevTextTokens(textTokens);
-    }, [text]);
+    }, [text, prevTextTokens]);
     const handleTextChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
         setText(event.target.value);
     };
@@ -53,7 +53,7 @@ const App = () => {
     // useEffect to update the tokenCount whenever the system prompt tokens change
     useEffect(() => {
         setTokenCount(prevTokenCount => prevTokenCount - prevSystemPromptTokens + systemPromptTokens);
-    }, [systemPromptTokens]);
+    }, [systemPromptTokens, prevSystemPromptTokens]);
 
 
 
