@@ -13,6 +13,7 @@ interface ChatMessageBlock extends ChatMessage {
 
 
 const App = () => {
+    const [placeholderTokens, setPlaceholderTokens] = useState(0);
     const [loading, setLoading] = useState(false);
     const [systemPrompt, setSystemPrompt] = useState('');
     const [systemPromptTokens, setSystemPromptTokens] = useState(0);
@@ -23,6 +24,15 @@ const App = () => {
     const [messageBlocks, setMessageBlocks] = useState<ChatMessageBlock[]>([]);
     const [tokenCount, setTokenCount] = useState(0);
     const [prevTextTokens, setPrevTextTokens] = useState(0);
+
+    useEffect(() => {
+        const tokens = calculateTokens({
+            role: 'system',
+            content: OPENAI_DEFAULT_SYSTEM_PROMPT
+        });
+        setPlaceholderTokens(tokens);
+        setSystemPromptTokens(tokens);
+    }, []);
 
     useEffect(() => {
         // Calculate tokens for the new text input
@@ -39,15 +49,20 @@ const App = () => {
     };
 
     const handleSystemPromptChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+
         const newSystemPrompt = event.target.value;
         setPrevSystemPromptTokens(systemPromptTokens); // Set prevSystemPromptTokens before updating systemPromptTokens
         setSystemPrompt(newSystemPrompt);
 
-        // Calculate tokens for the new system prompt
-        const newSystemPromptTokens = calculateTokens({ role: 'system', content: newSystemPrompt });
-
-        // Update the system prompt tokens
-        setSystemPromptTokens(newSystemPromptTokens);
+        if (newSystemPrompt === '') {
+            // Prompt is empty, so use placeholder tokens
+            setSystemPromptTokens(placeholderTokens);
+        } else {
+            // Calculate tokens for the new system prompt
+            const newSystemPromptTokens = calculateTokens({ role: 'system', content: newSystemPrompt });
+            // Update the system prompt tokens
+            setSystemPromptTokens(newSystemPromptTokens);
+        }
     };
 
     // useEffect to update the tokenCount whenever the system prompt tokens change
