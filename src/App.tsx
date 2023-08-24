@@ -79,9 +79,9 @@ const App = () => {
             } else {
                 if (!loading) {
                     e.preventDefault();
-                    addMessage('user', text, sendMessage);
                     const target = e.target as HTMLTextAreaElement;
                     target.style.height = "auto";
+                    addMessage('user', text, sendMessage);
                 }
             }
         }
@@ -122,6 +122,7 @@ const App = () => {
             })
             .catch(error => {
                 console.log('calling toast with '+error);
+                setLoading(false);
                 toast.error(error.message, {
                     position: "top-center",
                     autoClose: 5000,
