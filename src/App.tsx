@@ -1,4 +1,4 @@
-import React, {ChangeEvent, useEffect, useState} from 'react';
+import React, {ChangeEvent, useState} from 'react';
 import './App.css';
 import {ChatService} from "./service/ChatService";
 import Chat from "./components/Chat";
@@ -13,37 +13,37 @@ interface ChatMessageBlock extends ChatMessage {
 
 
 const App = () => {
-    const [placeholderTokens, setPlaceholderTokens] = useState(0);
+    // const [placeholderTokens, setPlaceholderTokens] = useState(0);
     const [loading, setLoading] = useState(false);
     const [systemPrompt, setSystemPrompt] = useState('');
-    const [systemPromptTokens, setSystemPromptTokens] = useState(0);
-    const [prevSystemPromptTokens, setPrevSystemPromptTokens] = useState(0);
+    // const [systemPromptTokens, setSystemPromptTokens] = useState(0);
+    // const [prevSystemPromptTokens, setPrevSystemPromptTokens] = useState(0);
     const [text, setText] = useState('');
     const isButtonDisabled = text === '' || loading;
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const [messageBlocks, setMessageBlocks] = useState<ChatMessageBlock[]>([]);
-    const [tokenCount, setTokenCount] = useState(0);
-    const [prevTextTokens, setPrevTextTokens] = useState(0);
+    // const [tokenCount, setTokenCount] = useState(0);
+    // const [prevTextTokens, setPrevTextTokens] = useState(0);
 
-    useEffect(() => {
-        const tokens = calculateTokens({
-            role: 'system',
-            content: OPENAI_DEFAULT_SYSTEM_PROMPT
-        });
-        setPlaceholderTokens(tokens);
-        setSystemPromptTokens(tokens);
-    }, []);
+    // useEffect(() => {
+    //     const tokens = calculateTokens({
+    //         role: 'system',
+    //         content: OPENAI_DEFAULT_SYSTEM_PROMPT
+    //     });
+    //     setPlaceholderTokens(tokens);
+    //     setSystemPromptTokens(tokens);
+    // }, []);
 
-    useEffect(() => {
-        // Calculate tokens for the new text input
-        const textTokens = calculateTokens({ role: 'user', content: text });
-
-        // Update the tokenCount with the text input tokens
-        setTokenCount(prevTokenCount => prevTokenCount - prevTextTokens + textTokens);
-
-        // Update the previous text tokens
-        setPrevTextTokens(textTokens);
-    }, [text, prevTextTokens]);
+    // useEffect(() => {
+    //     // Calculate tokens for the new text input
+    //     const textTokens = calculateTokens({ role: 'user', content: text });
+    //
+    //     // Update the tokenCount with the text input tokens
+    //     setTokenCount(prevTokenCount => prevTokenCount - prevTextTokens + textTokens);
+    //
+    //     // Update the previous text tokens
+    //     setPrevTextTokens(textTokens);
+    // }, [text, prevTextTokens]);
     const handleTextChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
         setText(event.target.value);
     };
@@ -51,24 +51,24 @@ const App = () => {
     const handleSystemPromptChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
 
         const newSystemPrompt = event.target.value;
-        setPrevSystemPromptTokens(systemPromptTokens); // Set prevSystemPromptTokens before updating systemPromptTokens
+        // setPrevSystemPromptTokens(systemPromptTokens); // Set prevSystemPromptTokens before updating systemPromptTokens
         setSystemPrompt(newSystemPrompt);
 
-        if (newSystemPrompt === '') {
-            // Prompt is empty, so use placeholder tokens
-            setSystemPromptTokens(placeholderTokens);
-        } else {
-            // Calculate tokens for the new system prompt
-            const newSystemPromptTokens = calculateTokens({ role: 'system', content: newSystemPrompt });
-            // Update the system prompt tokens
-            setSystemPromptTokens(newSystemPromptTokens);
-        }
+        // if (newSystemPrompt === '') {
+        //     // Prompt is empty, so use placeholder tokens
+        //     setSystemPromptTokens(placeholderTokens);
+        // } else {
+        //     // Calculate tokens for the new system prompt
+        //     const newSystemPromptTokens = calculateTokens({ role: 'system', content: newSystemPrompt });
+        //     // Update the system prompt tokens
+        //     setSystemPromptTokens(newSystemPromptTokens);
+        // }
     };
 
-    // useEffect to update the tokenCount whenever the system prompt tokens change
-    useEffect(() => {
-        setTokenCount(prevTokenCount => prevTokenCount - prevSystemPromptTokens + systemPromptTokens);
-    }, [systemPromptTokens, prevSystemPromptTokens]);
+    // // useEffect to update the tokenCount whenever the system prompt tokens change
+    // useEffect(() => {
+    //     setTokenCount(prevTokenCount => prevTokenCount - prevSystemPromptTokens + systemPromptTokens);
+    // }, [systemPromptTokens, prevSystemPromptTokens]);
 
 
 
@@ -100,9 +100,9 @@ const App = () => {
         if (callback) {
             callback(updatedMessages);
         }
-        const messageTokens = calculateTokens(newMessage);
-        // Update the tokenCount by accumulating the tokens
-        setTokenCount(prevTokenCount => prevTokenCount + messageTokens);
+        // const messageTokens = calculateTokens(newMessage);
+        // // Update the tokenCount by accumulating the tokens
+        // setTokenCount(prevTokenCount => prevTokenCount + messageTokens);
     };
 
 
@@ -135,15 +135,15 @@ const App = () => {
             });
     }
 
-    const calculateTokens = (message: ChatMessage): number => {
-        let tokens = 0;
-
-        // Calculate tokens for the message content
-        const messageTokens = message.content.match(/\b\w+\b|\S/g);
-        tokens += messageTokens?.length ?? 0;
-
-        return tokens;
-    };
+    // const calculateTokens = (message: ChatMessage): number => {
+    //     let tokens = 0;
+    //
+    //     // Calculate tokens for the message content
+    //     const messageTokens = message.content.match(/\b\w+\b|\S/g);
+    //     tokens += messageTokens?.length ?? 0;
+    //
+    //     return tokens;
+    // };
 
     function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
@@ -186,9 +186,9 @@ const App = () => {
                                     </div>
                                 </button>
                             </div>*/}
-                            <div className="flex justify-end px-2 py-1 text-gray-500 text-sm">
-                                <span>Tokens used: {tokenCount}</span>
-                            </div>
+                            {/*<div className="flex justify-end px-2 py-1 text-gray-500 text-sm">*/}
+                            {/*    <span>Tokens used: {tokenCount}</span>*/}
+                            {/*</div>*/}
                             <div
                                 className="flex flex-col w-full py-2 flex-grow md:py-3 md:pl-4 relative border border-black/10 bg-white dark:border-gray-900/50 dark:text-white dark:bg-gray-700 rounded-md shadow-xs">
                                    <textarea
