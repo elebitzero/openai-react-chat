@@ -37,6 +37,13 @@
   }
 }
 
+.chat-message.error {
+  background-color: #ffcccc; /* Use a light red color */
+  color: black; /* Set text color to black for contrast */
+  padding: 8px;
+  border-radius: 4px;
+}
+
 textarea:focus {
   outline: none;
 }

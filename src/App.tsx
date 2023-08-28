@@ -2,10 +2,11 @@ import React, {ChangeEvent, useState} from 'react';
 import './App.css';
 import {ChatService} from "./service/ChatService";
 import Chat from "./components/Chat";
-import {ChatCompletion, ChatMessage} from "./models/ChatCompletion";
+import {ChatCompletion, ChatMessage, MessageType, Role} from "./models/ChatCompletion";
 import {SubmitButton} from "./components/SubmitButton";
 import {OPENAI_DEFAULT_SYSTEM_PROMPT} from "./config";
 import {toast, ToastContainer} from "react-toastify";
+import {CustomError} from "./service/CustomError";
 
 interface ChatMessageBlock extends ChatMessage {
     id: number;
@@ -81,19 +82,19 @@ const App = () => {
                     e.preventDefault();
                     const target = e.target as HTMLTextAreaElement;
                     target.style.height = "auto";
-                    addMessage('user', text, sendMessage);
+                    addMessage(Role.User, MessageType.Normal, text, sendMessage);
                 }
             }
         }
     };
 
-    const addMessage = (role: string, content: string, callback?: (callback: ChatMessage[]) => void) => {
-        const newMessage = {role, content};
-        const updatedMessages = [...messages, newMessage];
+    const addMessage = (role: Role, messageType: MessageType, content: string, callback?: (callback: ChatMessage[]) => void) => {
+        const newMessage = {role, content} as ChatMessage;
+        const updatedMessages = [...messages, newMessage] as ChatMessage[];
 
         setMessages(updatedMessages);
         setMessageBlocks((prevChatBlocks: ChatMessageBlock[]) => {
-            const newChatBlock = {id: prevChatBlocks.length + 1, role, content};
+            const newChatBlock: ChatMessageBlock = {id: prevChatBlocks.length + 1, role: role, messageType: messageType, content: content};
             return [...prevChatBlocks, newChatBlock];
         });
 
@@ -113,27 +114,34 @@ const App = () => {
         if (!systemPromptFinal || systemPromptFinal === '') {
             systemPromptFinal = OPENAI_DEFAULT_SYSTEM_PROMPT;
         }
-        let messages = [{role: 'system', content: systemPromptFinal}, ...updatedMessages];
+        let messages = [{role: Role.System, content: systemPromptFinal} as ChatMessage, ...updatedMessages];
         ChatService.sendMessage(messages, ChatService.getSelectedModelId())
             .then((response: ChatCompletion) => {
                 let message = response.choices[0].message;
                 setLoading(false);
-                addMessage(message.role, message.content);
+                addMessage(message.role, MessageType.Normal, message.content);
             })
-            .catch(error => {
-                console.log('calling toast with '+error);
-                setLoading(false);
-                toast.error(error.message, {
-                    position: "top-center",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                });
-            });
+            .catch(err => {
+                    if (err instanceof CustomError) {
+                        const message: string = err.message;
+                        setLoading(false);
+                        addMessage(Role.Assistant, MessageType.Error, message);
+                    } else {
+                        console.log('calling toast with ' + err.message);
+                        toast.error(err.message, {
+                            position: "top-center",
+                            autoClose: 5000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "light",
+                        });
+                    }
+                }
+            )
+                ;
     }
 
     // const calculateTokens = (message: ChatMessage): number => {
@@ -148,7 +156,7 @@ const App = () => {
 
     function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
-        addMessage('user', text, sendMessage);
+        addMessage(Role.User, MessageType.Normal, text, sendMessage);
     }
 
     return (
@@ -174,7 +182,14 @@ const App = () => {
                          ></textarea>
                     </div>
                 </div>
-                <Chat chatBlocks={messageBlocks}/>
+                <Chat
+                    chatBlocks={messageBlocks.map((block, index) => ({
+                        id: block.id,
+                        role: block.role,
+                        messageType: block.messageType,
+                        content: block.content,
+                    }))}
+                />
                 <div
                     className="absolute bottom-0 left-0 w-full border-t md:border-t-0 dark:border-white/20 md:border-transparent md:dark:border-transparent bg-white dark:bg-gray-800 md:!bg-transparent dark:md:bg-vert-dark-gradient pt-2">
                     <form onSubmit={handleSubmit}

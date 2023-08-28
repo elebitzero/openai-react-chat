@@ -1,6 +1,7 @@
 import {OpenAIModel} from "../models/model";
 import {ChatCompletion, ChatMessage} from "../models/ChatCompletion";
 import {CHAT_PARAMETERS, OPENAI_API_KEY} from "../config";
+import {CustomError} from "./CustomError";
 
 export class ChatService {
     private static models: Promise<OpenAIModel[]> | null = null;
@@ -36,7 +37,7 @@ export class ChatService {
 
         if (!response.ok) {
             const err = await response.json();
-            throw new Error(err.error.message);
+            throw new CustomError(err.error.message,err);
         }
 
         return await response.json();
