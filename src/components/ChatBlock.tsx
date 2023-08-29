@@ -33,7 +33,7 @@ const ChatBlock: React.FC<Props> = ({block}) => {
                         ) : null}
                         {/* Decorator Icon */}
                         {block.messageType === MessageType.Error && (
-                            <div className="absolute bottom-0 right-0 transform translate-x-1/2 translate-y-1/2">
+                            <div className="absolute bottom-0 right-0 transform translate-x-1/3 translate-y-1/3">
                                 <ExclamationCircleIcon className="text-red-500" width={12} height={12} />
                             </div>
                         )}
