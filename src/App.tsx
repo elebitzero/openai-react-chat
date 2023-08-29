@@ -182,14 +182,7 @@ const App = () => {
                          ></textarea>
                     </div>
                 </div>
-                <Chat
-                    chatBlocks={messageBlocks.map((block, index) => ({
-                        id: block.id,
-                        role: block.role,
-                        messageType: block.messageType,
-                        content: block.content,
-                    }))}
-                />
+                <Chat chatBlocks={messageBlocks}/>
                 <div
                     className="absolute bottom-0 left-0 w-full border-t md:border-t-0 dark:border-white/20 md:border-transparent md:dark:border-transparent bg-white dark:bg-gray-800 md:!bg-transparent dark:md:bg-vert-dark-gradient pt-2">
                     <form onSubmit={handleSubmit}

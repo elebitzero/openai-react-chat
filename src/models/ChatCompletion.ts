@@ -32,7 +32,7 @@ export function getMessageType(messageTypeString: string): MessageType {
 
 export interface ChatMessage {
     role: Role;
-    messageType?: MessageType;
+    messageType: MessageType;
     content: string;
     name?: string;
 }

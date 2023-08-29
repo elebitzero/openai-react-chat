@@ -1,16 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import ChatBlock from "./ChatBlock";
+import ChatBlock, {ChatBlockModel} from "./ChatBlock";
 import ModelSelect from "./ModelSelect";
 import {OpenAIModel} from "../models/model";
 import {ChatService} from "../service/ChatService";
 import {OPENAI_MODEL_LIST} from "../config";
 import {toast} from "react-toastify";
-
-interface ChatBlockModel {
-    id: number;
-    content: string;
-    role: string;
-}
 
 interface Props {
     chatBlocks: ChatBlockModel[];
@@ -52,7 +46,7 @@ const Chat: React.FC<Props> = ({chatBlocks}) => {
         }
     }, []);
 
-    useEffect( () => {
+    useEffect(() => {
         toast.error(error, {
             position: "top-center",
             autoClose: 5000,
