@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import ChatBlock, {ChatBlockModel} from "./ChatBlock";
 import ModelSelect from "./ModelSelect";
 import {OpenAIModel} from "../models/model";
@@ -14,9 +14,13 @@ const Chat: React.FC<Props> = ({chatBlocks}) => {
     const [isNewConversation, setIsNewConversation] = useState<boolean>(false);
     const [models, setModels] = useState<OpenAIModel[]>([]);
     const [error, setError] = useState<string | null>(null);
+    const chatDivRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         setIsNewConversation(chatBlocks.length === 0);
+        if (chatDivRef.current) {
+            chatDivRef.current.scrollTop = chatDivRef.current.scrollHeight;
+        }
     }, [chatBlocks]);
 
     useEffect(() => {
@@ -61,7 +65,7 @@ const Chat: React.FC<Props> = ({chatBlocks}) => {
 
     return (
 
-        <div className="flex-1 overflow-auto">
+        <div className="flex-1 overflow-auto"  ref={chatDivRef}>
             <div className="flex flex-col items-center text-sm dark:bg-gray-800">
                 <div
                     className="flex w-full items-center justify-center gap-1 border-b border-black/10 bg-gray-50 p-3 text-gray-500 dark:border-gray-900/50 dark:bg-gray-700 dark:text-gray-300">

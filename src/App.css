@@ -37,10 +37,6 @@
   }
 }
 
-.assistant-background {
-  background-color: #F7F7F8;
-}
-
 textarea:focus {
   outline: none;
 }
