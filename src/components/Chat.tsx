@@ -68,7 +68,7 @@ const Chat: React.FC<Props> = ({chatBlocks}) => {
         <div className="flex-1 overflow-auto"  ref={chatDivRef}>
             <div className="flex flex-col items-center text-sm dark:bg-gray-800">
                 <div
-                    className="flex w-full items-center justify-center gap-1 border-b border-black/10 bg-gray-50 p-3 text-gray-500 dark:border-gray-900/50 dark:bg-gray-700 dark:text-gray-300">
+                    className="flex w-full items-center justify-center gap-1 border-b border-black/10 p-3 text-gray-500 dark:border-gray-900/50 dark:bg-gray-700 dark:text-gray-300">
                     <div className="flex items-center flex-row gap-1" style={{width: '50ch'}}>
                         <span>Model: {isNewConversation ? '' : ChatService.getSelectedModelId()}</span>
                         <span className="flex-grow">

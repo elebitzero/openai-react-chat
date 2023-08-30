@@ -21,7 +21,7 @@ const ChatBlock: React.FC<Props> = ({block}) => {
     const errorStyles = block.messageType === MessageType.Error ? { backgroundColor: '#F5E6E6', borderColor: 'red', borderWidth: '1px', borderRadius: '8px', padding: '10px'} : {};
 
     return (
-        <div key={`chat-block-${block.id}`} className="group w-full text-gray-800 dark:text-gray-100 border-b border-black/10 dark:border-gray-900/50 ${block.role === 'assistant' ? 'assistant-background' : ''}">
+        <div key={`chat-block-${block.id}`} className="group w-full text-gray-800 dark:text-gray-100 border-b border-black/10 dark:border-gray-900/50" style={block.role === 'assistant' ? { backgroundColor: '#F7F7F8' } : {}}>
             <div className="text-base gap-4 md:gap-6 md:max-w-2xl lg:max-w-xl xl:max-w-3xl p-4 flex lg:px-0 m-auto">
                 <div className="w-[30px] flex flex-col relative items-end">
                     <div className="relative flex h-[30px] w-[30px] p-0 rounded-sm items-center justify-center">
