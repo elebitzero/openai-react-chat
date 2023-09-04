@@ -1,4 +1,4 @@
-import React, {ChangeEvent, useState} from 'react';
+import React, {ChangeEvent, useRef, useState} from 'react';
 import './App.css';
 import {ChatService} from "./service/ChatService";
 import Chat from "./components/Chat";
@@ -14,6 +14,8 @@ interface ChatMessageBlock extends ChatMessage {
 
 
 const App = () => {
+    const textAreaRef = useRef<HTMLTextAreaElement>(null);  // Create a ref
+
     // const [placeholderTokens, setPlaceholderTokens] = useState(0);
     const [loading, setLoading] = useState(false);
     const [systemPrompt, setSystemPrompt] = useState('');
@@ -49,6 +51,27 @@ const App = () => {
         setText(event.target.value);
     };
 
+    const handleAutoResize = (e: React.FormEvent<HTMLTextAreaElement>) => {
+        const target = e.currentTarget; // Using e.currentTarget instead of e.target for better type inference
+        const maxHeight = parseInt(getComputedStyle(target).lineHeight, 10) * 10; // 10 rows
+
+        // Reset height to auto so that it reduces size when text is removed
+        target.style.height = 'auto';
+
+        // Limit the height to 10 rows high
+        if (target.scrollHeight <= maxHeight) {
+            target.style.height = `${target.scrollHeight}px`;
+        } else {
+            target.style.height = `${maxHeight}px`;
+        }
+
+        // Reset to the original size when cleared
+        if (target.value === '') {
+            target.style.height = 'auto';
+        }
+    };
+
+
     const handleSystemPromptChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
 
         const newSystemPrompt = event.target.value;
@@ -72,7 +95,6 @@ const App = () => {
     // }, [systemPromptTokens, prevSystemPromptTokens]);
 
 
-
     const checkForEnterKey = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if (e.key === 'Enter') {
             if (e.shiftKey) {
@@ -81,8 +103,8 @@ const App = () => {
                 if (!loading) {
                     e.preventDefault();
                     const target = e.target as HTMLTextAreaElement;
-                    target.style.height = "auto";
                     addMessage(Role.User, MessageType.Normal, text, sendMessage);
+                    (e.target as HTMLTextAreaElement).style.height = 'auto'; // Revert back to original size
                 }
             }
         }
@@ -154,9 +176,12 @@ const App = () => {
     //     return tokens;
     // };
 
-    function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-        event.preventDefault();
+    function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault();
         addMessage(Role.User, MessageType.Normal, text, sendMessage);
+        if (textAreaRef.current) {
+            textAreaRef.current.style.height = 'auto';  // Use the ref to reset the height
+        }
     }
 
     return (
@@ -203,20 +228,22 @@ const App = () => {
                                    <textarea
                                        tabIndex={0}
                                        data-id="request-:r4:-1"
-                                       style={{maxHeight: "200px", overflowY: "hidden"}}
+                                       ref={textAreaRef}  // Attach the ref to the textarea
+                                       style={{maxHeight: "200px", overflowY: "auto"}}
                                        rows={1}
                                        placeholder="Send a message..."
                                        className="m-0 w-full resize-none border-0 bg-transparent p-0 pr-7 focus:ring-0 focus-visible:ring-0 outline-none shadow-none dark:bg-transparent pl-2 md:pl-0"
                                        value={text}
                                        onKeyDown={checkForEnterKey}
                                        onChange={handleTextChange}
-                                       onInput={(e) => {
-                                           const target = e.target as HTMLTextAreaElement;
-                                           target.style.height = "auto";
-                                           target.style.height = target.scrollHeight + "px";
-                                       }}
+                                       onInput={handleAutoResize}
                                    ></textarea>
-                                <SubmitButton disabled={isButtonDisabled} loading={loading}/>
+                                <SubmitButton
+                                    disabled={isButtonDisabled}
+                                    loading={loading}
+                                    style={text !== '' ? {backgroundColor: "rgb(171, 104, 255)"} : {}}
+                                    isTextEmpty={text === ''}
+                                />
                             </div>
                         </div>
                     </form>
