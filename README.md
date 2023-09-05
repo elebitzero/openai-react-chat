@@ -1,6 +1,6 @@
 # OpenAI React Chat Web Application
 
-This project provides a web frontend for the OpenAI chat api. This project is for developers or advanced users that are familiar with [OpenAI Chat GPT](https://chat.openai.com/) but want to customize the web interface.
+This project provides a web frontend for the OpenAI chat API. This project is for developers or advanced users that are familiar with [OpenAI Chat GPT](https://chat.openai.com/) but want to customize the web interface.
 
 ## Goals
 * Provide the same features as [OpenAI Chat GPT](https://chat.openai.com/) and [OpenAI Playground](https://platform.openai.com/playground).
@@ -14,7 +14,7 @@ This project provides a web frontend for the OpenAI chat api. This project is fo
 * [Node.JS](https://nodejs.dev/en/)
 * [npm](https://www.npmjs.com/)
 * [OpenAI API Account](https://openai.com/blog/openai-api)
-  * Note: GPT-4 api access is currently accessible to those who have made at least [one successful payment](https://help.openai.com/en/articles/7102672-how-can-i-access-gpt-4) through the openai developer platform.
+  * Note: GPT-4 API access is currently accessible to those who have made at least [one successful payment](https://help.openai.com/en/articles/7102672-how-can-i-access-gpt-4) through the openai developer platform.
 
 
 ## Setup
