@@ -1,10 +1,9 @@
 # OpenAI React Chat Web Application
 
 This project provides a web frontend for the OpenAI chat API. This project is for developers or advanced users that are familiar with [OpenAI Chat GPT](https://chat.openai.com/) but want to customize the web interface.
-
+<!-- markdown-link-check-disable -->
 ## Goals
-<!-- markdown-link-check-disable-next-line -->
-* Provide the same features as [OpenAI Chat GPT](https://chat.openai.com/) and 
+* Provide the same features as [OpenAI Chat GPT](https://chat.openai.com/) and <!-- markdown-link-check-enable -->
 [OpenAI Playground](https://platform.openai.com/playground).
 * Use a modern web stack of React, Tailwind CSS, and Typescript.
 
