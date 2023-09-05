@@ -7,7 +7,8 @@ This project provides a web frontend for the OpenAI chat API. This project is fo
 * Use a modern web stack of React, Tailwind CSS, and Typescript.
 
 ## Screenshot
-![image](https://github.com/elebitzero/openai-react-chat/assets/42903164/8a0c6e3f-f484-470e-89d3-61f89996ebd1)
+![image](https://github.com/elebitzero/openai-react-chat/assets/42903164/7c1b6571-2aaf-4aff-847a-c03900993d56)
+
 
 ## Requirements
 
