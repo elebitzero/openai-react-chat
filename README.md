@@ -3,11 +3,10 @@
 This project provides a web frontend for the OpenAI chat api. This project is for developers or advanced users that are familiar with [OpenAI Chat GPT](https://chat.openai.com/) but want to customize the web interface.
 
 ## Goals
-* Provide the same features as [OpenAI Chat GPT](https://chat.openai.com/) with some elements of the [OpenAI Playground](https://platform.openai.com/playground), but not go beyond that.
+* Provide the same features as [OpenAI Chat GPT](https://chat.openai.com/) and [OpenAI Playground](https://platform.openai.com/playground).
 * Use a modern web stack of React, Tailwind CSS, and Typescript.
 
-## Features
-* Code completion:
+## Screenshot
 ![image](https://github.com/elebitzero/openai-react-chat/assets/42903164/8a0c6e3f-f484-470e-89d3-61f89996ebd1)
 
 ## Requirements
@@ -15,6 +14,8 @@ This project provides a web frontend for the OpenAI chat api. This project is fo
 * [Node.JS](https://nodejs.dev/en/)
 * [npm](https://www.npmjs.com/)
 * [OpenAI API Account](https://openai.com/blog/openai-api)
+  * Note: GPT-4 api access is currently accessible to those who have made at least [one successful payment](https://help.openai.com/en/articles/7102672-how-can-i-access-gpt-4) through the openai developer platform.
+
 
 ## Setup
 
