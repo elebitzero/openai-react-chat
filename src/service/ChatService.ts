@@ -23,9 +23,13 @@ export class ChatService {
             "Authorization": `Bearer ${OPENAI_API_KEY}`
         };
 
+        // Map to a new array with the messageType removed
+        const messagesWithoutMessageType =
+            messages.map(({ messageType, id: number,  ...rest }) => rest);
+
         const requestBody = {
             model: modelId,
-            messages: messages,
+            messages: messagesWithoutMessageType,
             temperature: CHAT_PARAMETERS.temperature
         };
 

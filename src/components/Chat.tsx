@@ -1,13 +1,14 @@
 import React, {useEffect, useRef, useState} from 'react';
-import ChatBlock, {ChatBlockModel} from "./ChatBlock";
+import ChatBlock from "./ChatBlock";
 import ModelSelect from "./ModelSelect";
 import {OpenAIModel} from "../models/model";
 import {ChatService} from "../service/ChatService";
 import {OPENAI_MODEL_LIST} from "../config";
 import {toast} from "react-toastify";
+import {ChatMessage} from "../models/ChatCompletion";
 
 interface Props {
-    chatBlocks: ChatBlockModel[];
+    chatBlocks: ChatMessage[];
 }
 
 const Chat: React.FC<Props> = ({chatBlocks}) => {

@@ -8,52 +8,23 @@ import {OPENAI_DEFAULT_SYSTEM_PROMPT} from "./config";
 import {toast, ToastContainer} from "react-toastify";
 import {CustomError} from "./service/CustomError";
 
-interface ChatMessageBlock extends ChatMessage {
-    id: number;
-}
-
-
 const App = () => {
     const textAreaRef = useRef<HTMLTextAreaElement>(null);  // Create a ref
 
-    // const [placeholderTokens, setPlaceholderTokens] = useState(0);
     const [loading, setLoading] = useState(false);
     const [systemPrompt, setSystemPrompt] = useState('');
-    // const [systemPromptTokens, setSystemPromptTokens] = useState(0);
-    // const [prevSystemPromptTokens, setPrevSystemPromptTokens] = useState(0);
     const [text, setText] = useState('');
     const isButtonDisabled = text === '' || loading;
     const [messages, setMessages] = useState<ChatMessage[]>([]);
-    const [messageBlocks, setMessageBlocks] = useState<ChatMessageBlock[]>([]);
-    // const [tokenCount, setTokenCount] = useState(0);
-    // const [prevTextTokens, setPrevTextTokens] = useState(0);
 
-    // useEffect(() => {
-    //     const tokens = calculateTokens({
-    //         role: 'system',
-    //         content: OPENAI_DEFAULT_SYSTEM_PROMPT
-    //     });
-    //     setPlaceholderTokens(tokens);
-    //     setSystemPromptTokens(tokens);
-    // }, []);
-
-    // useEffect(() => {
-    //     // Calculate tokens for the new text input
-    //     const textTokens = calculateTokens({ role: 'user', content: text });
-    //
-    //     // Update the tokenCount with the text input tokens
-    //     setTokenCount(prevTokenCount => prevTokenCount - prevTextTokens + textTokens);
-    //
-    //     // Update the previous text tokens
-    //     setPrevTextTokens(textTokens);
-    // }, [text, prevTextTokens]);
     const handleTextChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
         setText(event.target.value);
     };
 
     const handleAutoResize = (e: React.FormEvent<HTMLTextAreaElement>) => {
-        const target = e.currentTarget; // Using e.currentTarget instead of e.target for better type inference
-        const maxHeight = parseInt(getComputedStyle(target).lineHeight, 10) * 10; // 10 rows
+        const target = e.currentTarget;
+        const MAX_ROWS = 10;
+        const maxHeight = parseInt(getComputedStyle(target).lineHeight, MAX_ROWS) * MAX_ROWS;
 
         // Reset height to auto so that it reduces size when text is removed
         target.style.height = 'auto';
@@ -71,29 +42,10 @@ const App = () => {
         }
     };
 
-
     const handleSystemPromptChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
-
         const newSystemPrompt = event.target.value;
-        // setPrevSystemPromptTokens(systemPromptTokens); // Set prevSystemPromptTokens before updating systemPromptTokens
         setSystemPrompt(newSystemPrompt);
-
-        // if (newSystemPrompt === '') {
-        //     // Prompt is empty, so use placeholder tokens
-        //     setSystemPromptTokens(placeholderTokens);
-        // } else {
-        //     // Calculate tokens for the new system prompt
-        //     const newSystemPromptTokens = calculateTokens({ role: 'system', content: newSystemPrompt });
-        //     // Update the system prompt tokens
-        //     setSystemPromptTokens(newSystemPromptTokens);
-        // }
     };
-
-    // // useEffect to update the tokenCount whenever the system prompt tokens change
-    // useEffect(() => {
-    //     setTokenCount(prevTokenCount => prevTokenCount - prevSystemPromptTokens + systemPromptTokens);
-    // }, [systemPromptTokens, prevSystemPromptTokens]);
-
 
     const checkForEnterKey = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if (e.key === 'Enter') {
@@ -111,21 +63,21 @@ const App = () => {
     };
 
     const addMessage = (role: Role, messageType: MessageType, content: string, callback?: (callback: ChatMessage[]) => void) => {
-        const newMessage = {role, content} as ChatMessage;
-        const updatedMessages = [...messages, newMessage] as ChatMessage[];
+        const newMessage: ChatMessage = {role: role, messageType: messageType, content: content};
 
-        setMessages(updatedMessages);
-        setMessageBlocks((prevChatBlocks: ChatMessageBlock[]) => {
-            const newChatBlock: ChatMessageBlock = {id: prevChatBlocks.length + 1, role: role, messageType: messageType, content: content};
-            return [...prevChatBlocks, newChatBlock];
+        setMessages((prevMessages: ChatMessage[]) => {
+            const message: ChatMessage = {
+                id: messages.length + 1,
+                role: role,
+                messageType: messageType,
+                content: content
+            };
+            return [...prevMessages, message];
         });
 
         if (callback) {
-            callback(updatedMessages);
+            callback([...messages, newMessage]);
         }
-        // const messageTokens = calculateTokens(newMessage);
-        // // Update the tokenCount by accumulating the tokens
-        // setTokenCount(prevTokenCount => prevTokenCount + messageTokens);
     };
 
 
@@ -136,7 +88,10 @@ const App = () => {
         if (!systemPromptFinal || systemPromptFinal === '') {
             systemPromptFinal = OPENAI_DEFAULT_SYSTEM_PROMPT;
         }
-        let messages = [{role: Role.System, content: systemPromptFinal} as ChatMessage, ...updatedMessages];
+        let messages: ChatMessage[] = [{
+            role: Role.System,
+            content: systemPromptFinal
+        } as ChatMessage, ...updatedMessages];
         ChatService.sendMessage(messages, ChatService.getSelectedModelId())
             .then((response: ChatCompletion) => {
                 let message = response.choices[0].message;
@@ -163,24 +118,14 @@ const App = () => {
                     }
                 }
             )
-                ;
+        ;
     }
-
-    // const calculateTokens = (message: ChatMessage): number => {
-    //     let tokens = 0;
-    //
-    //     // Calculate tokens for the message content
-    //     const messageTokens = message.content.match(/\b\w+\b|\S/g);
-    //     tokens += messageTokens?.length ?? 0;
-    //
-    //     return tokens;
-    // };
 
     function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         addMessage(Role.User, MessageType.Normal, text, sendMessage);
         if (textAreaRef.current) {
-            textAreaRef.current.style.height = 'auto';  // Use the ref to reset the height
+            textAreaRef.current.style.height = 'auto';
         }
     }
 
@@ -199,7 +144,7 @@ const App = () => {
                                    placeholder={OPENAI_DEFAULT_SYSTEM_PROMPT}
                                    value={systemPrompt}
                                    onChange={handleSystemPromptChange}
-                                   onInput={(e) => {
+                                   onInput={(e: React.FormEvent<HTMLTextAreaElement>) => {
                                        const target = e.target as HTMLTextAreaElement;
                                        target.style.height = "auto";
                                        target.style.height = target.scrollHeight + "px";
@@ -207,28 +152,18 @@ const App = () => {
                          ></textarea>
                     </div>
                 </div>
-                <Chat chatBlocks={messageBlocks}/>
+                <Chat chatBlocks={messages}/>
                 <div
                     className="absolute bottom-0 left-0 w-full border-t md:border-t-0 dark:border-white/20 md:border-transparent md:dark:border-transparent bg-white dark:bg-gray-800 md:!bg-transparent dark:md:bg-vert-dark-gradient pt-2">
                     <form onSubmit={handleSubmit}
                           className="stretch mx-2 flex flex-row gap-3 last:mb-2 md:mx-4 md:last:mb-6 lg:mx-auto lg:max-w-2xl xl:max-w-3xl">
                         <div className="relative flex h-full flex-1 md:flex-col">
-                            {/*       <div className="flex ml-1 md:w-full md:m-auto md:mb-2 gap-0 md:gap-2 justify-center">
-                                <button className="btn relative btn-neutral border-0 md:border">
-                                    <div className="flex w-full items-center justify-center gap-2">
-                                        <ArrowPathIcon {...iconProps}/>Regenerate response
-                                    </div>
-                                </button>
-                            </div>*/}
-                            {/*<div className="flex justify-end px-2 py-1 text-gray-500 text-sm">*/}
-                            {/*    <span>Tokens used: {tokenCount}</span>*/}
-                            {/*</div>*/}
                             <div
                                 className="flex flex-col w-full py-2 flex-grow md:py-3 md:pl-4 relative border border-black/10 bg-white dark:border-gray-900/50 dark:text-white dark:bg-gray-700 rounded-md shadow-xs">
                                    <textarea
                                        tabIndex={0}
                                        data-id="request-:r4:-1"
-                                       ref={textAreaRef}  // Attach the ref to the textarea
+                                       ref={textAreaRef}
                                        style={{maxHeight: "200px", overflowY: "auto"}}
                                        rows={1}
                                        placeholder="Send a message..."

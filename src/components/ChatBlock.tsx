@@ -3,18 +3,11 @@ import {UserCircleIcon} from "@heroicons/react/24/outline";
 import {OpenAILogo} from "../svg";
 import MarkdownBlock from './MarkdownBlock';
 import CopyButton, {CopyButtonMode} from "./CopyButton";
-import {MessageType, Role} from "../models/ChatCompletion";
+import {ChatMessage, MessageType, Role} from "../models/ChatCompletion";
 import {ExclamationCircleIcon} from "@heroicons/react/24/solid";
 
-export interface ChatBlockModel {
-    id: number;
-    role: Role;
-    messageType: MessageType;
-    content: string;
-}
-
 interface Props {
-    block: ChatBlockModel;
+    block: ChatMessage;
 }
 
 const ChatBlock: React.FC<Props> = ({block}) => {
