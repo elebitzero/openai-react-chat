@@ -31,15 +31,15 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
             const defaultOptions = models.filter(model => !/-\d{4}$/.test(model.id));
 
             setOptions([
-                ...defaultOptions.map((model) => ({ value: model.id, label: model.id })),
-                { value: "more", label: SHOW_MORE_MODELS }
+                ...defaultOptions.map((model) => ({value: model.id, label: model.id})),
+                {value: "more", label: SHOW_MORE_MODELS}
             ]);
 
             if (OPENAI_DEFAULT_MODEL && OPENAI_DEFAULT_MODEL.length > 0) {
                 let found = false;
                 for (const model of models) {
                     if (model.id === OPENAI_DEFAULT_MODEL) {
-                        setSelectedOption({ value: model.id, label: model.id });
+                        setSelectedOption({value: model.id, label: model.id});
                         found = true;
                         break;
                     }
@@ -54,7 +54,7 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
 
             // Set the selectedOption to the first model in the list
             const firstModel = models[0];
-            setSelectedOption({ value: firstModel.id, label: firstModel.id });
+            setSelectedOption({value: firstModel.id, label: firstModel.id});
             setLoading(false);
         } else {
             setLoading(true);

@@ -10,8 +10,8 @@
     --primary-700: #1a7f64;
     --primary-800: #1b5d4a;
     --primary-900: #183d31;
-    --primary-50a: rgba(16,163,127,.2);
-    --primary-100a: rgba(16,163,127,.3);
+    --primary-50a: rgba(16, 163, 127, .2);
+    --primary-100a: rgba(16, 163, 127, .3);
     --secondary: #5436da;
     --secondary-50: #ecebf9;
     --secondary-100: #d2cff2;
@@ -23,7 +23,7 @@
     --secondary-700: #482da8;
     --secondary-800: #3b2479;
     --secondary-900: #281852;
-    --secondary-100a: rgba(84,54,218,.3);
+    --secondary-100a: rgba(84, 54, 218, .3);
     --green-50: #ebfaeb;
     --green-100: #d2f4d3;
     --green-200: #b9eebc;
@@ -34,7 +34,7 @@
     --green-700: #1a7f64;
     --green-800: #1b5d4a;
     --green-900: #183d31;
-    --green-100a: rgba(16,163,127,.3);
+    --green-100a: rgba(16, 163, 127, .3);
     --red-50: #fdebeb;
     --red-100: #f9cfcf;
     --red-200: #f6b2b3;
@@ -45,7 +45,7 @@
     --red-700: #9d2b2e;
     --red-800: #7b2124;
     --red-900: #59181a;
-    --red-100a: rgba(239,65,70,.3);
+    --red-100a: rgba(239, 65, 70, .3);
     --gray-50: #f7f7f8;
     --gray-100: #ececf1;
     --gray-200: #d9d9e3;
@@ -74,6 +74,6 @@
     --content-v-padding: 40px;
     --content-h-padding: 56px;
     --border-radius: 4px;
-    --sans-serif: "ColfaxAI",helvetica,sans-serif;
-    --monospace: "Roboto Mono",sfmono-regular,consolas,liberation mono,menlo,courier,monospace;
+    --sans-serif: "ColfaxAI", helvetica, sans-serif;
+    --monospace: "Roboto Mono", sfmono-regular, consolas, liberation mono, menlo, courier, monospace;
 }

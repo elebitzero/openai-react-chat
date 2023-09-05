@@ -25,7 +25,7 @@ export class ChatService {
 
         // Map to a new array with the messageType removed
         const messagesWithoutMessageType =
-            messages.map(({ messageType, id: number,  ...rest }) => rest);
+            messages.map(({messageType, id: number, ...rest}) => rest);
 
         const requestBody = {
             model: modelId,
@@ -41,7 +41,7 @@ export class ChatService {
 
         if (!response.ok) {
             const err = await response.json();
-            throw new CustomError(err.error.message,err);
+            throw new CustomError(err.error.message, err);
         }
 
         return await response.json();

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { CheckIcon, ClipboardIcon } from "@heroicons/react/24/outline";
-import { iconProps } from "../svg";
+import React, {useEffect, useState} from "react";
+import {CheckIcon, ClipboardIcon} from "@heroicons/react/24/outline";
+import {iconProps} from "../svg";
 
 export enum CopyButtonMode {
     Normal = "normal",
@@ -12,7 +12,7 @@ interface CopyButtonProps {
     mode?: CopyButtonMode;
 }
 
-const CopyButton = ({ text, mode = CopyButtonMode.Normal }: CopyButtonProps) => {
+const CopyButton = ({text, mode = CopyButtonMode.Normal}: CopyButtonProps) => {
     const [isCopied, setIsCopied] = useState(false);
 
     useEffect(() => {

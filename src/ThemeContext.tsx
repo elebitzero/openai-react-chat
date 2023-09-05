@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect, ReactNode } from 'react';
+import {createContext, ReactNode, useEffect, useState} from 'react';
 
 interface ThemeContextType {
     darkTheme: boolean;
@@ -7,14 +7,15 @@ interface ThemeContextType {
 
 export const ThemeContext = createContext<ThemeContextType>({
     darkTheme: true,
-    toggleTheme: () => {},
+    toggleTheme: () => {
+    },
 });
 
 interface ThemeProviderProps {
     children: ReactNode;
 }
 
-export const ThemeProvider = ({ children }: ThemeProviderProps) => {
+export const ThemeProvider = ({children}: ThemeProviderProps) => {
     const [darkTheme, setDarkTheme] = useState(false);
 
     useEffect(() => {
@@ -33,7 +34,7 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
     };
 
     return (
-        <ThemeContext.Provider value={{ darkTheme, toggleTheme }}>
+        <ThemeContext.Provider value={{darkTheme, toggleTheme}}>
             {children}
         </ThemeContext.Provider>
     );

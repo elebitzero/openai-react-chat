@@ -109,7 +109,7 @@
     margin-bottom: 1.6em;
     margin-top: 1.6em;
     padding-left: 1em;
-    quotes: "\201C""\201D""\2018""\2019"
+    quotes: "\201C" "\201D" "\2018" "\2019"
 }
 
 .prose :where(blockquote p:first-of-type):not(:where([class~=not-prose] *)):before {
@@ -344,7 +344,7 @@
     --tw-prose-invert-captions: #9ca3af;
     --tw-prose-invert-code: #fff;
     --tw-prose-invert-pre-code: #d1d5db;
-    --tw-prose-invert-pre-bg: rgba(0,0,0,.5);
+    --tw-prose-invert-pre-bg: rgba(0, 0, 0, .5);
     --tw-prose-invert-th-borders: #4b5563;
     --tw-prose-invert-td-borders: #374151;
     font-size: 1rem;

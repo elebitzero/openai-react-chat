@@ -1,5 +1,5 @@
-import React, { CSSProperties } from 'react';
-import { PaperAirplaneIcon, EllipsisHorizontalIcon } from '@heroicons/react/24/outline';
+import React, {CSSProperties} from 'react';
+import {EllipsisHorizontalIcon, PaperAirplaneIcon} from '@heroicons/react/24/outline';
 import './SubmitButton.css';
 
 interface SubmitButtonProps {
@@ -9,7 +9,7 @@ interface SubmitButtonProps {
     isTextEmpty: boolean;
 }
 
-export const SubmitButton: React.FC<SubmitButtonProps> = ({ loading, disabled, style, isTextEmpty }) => {
+export const SubmitButton: React.FC<SubmitButtonProps> = ({loading, disabled, style, isTextEmpty}) => {
     const strokeColor = isTextEmpty ? 'currentColor' : 'white';
 
     return (
@@ -20,9 +20,9 @@ export const SubmitButton: React.FC<SubmitButtonProps> = ({ loading, disabled, s
             style={style}
         >
             {loading ? (
-                <EllipsisHorizontalIcon className="animate-ellipsis-pulse" width={24} height={24} stroke={strokeColor} />
+                <EllipsisHorizontalIcon className="animate-ellipsis-pulse" width={24} height={24} stroke={strokeColor}/>
             ) : (
-                <PaperAirplaneIcon width={24} height={24} stroke={strokeColor} />
+                <PaperAirplaneIcon width={24} height={24} stroke={strokeColor}/>
             )}
         </button>
     );
