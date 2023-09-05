@@ -3,7 +3,9 @@
 This project provides a web frontend for the OpenAI chat API. This project is for developers or advanced users that are familiar with [OpenAI Chat GPT](https://chat.openai.com/) but want to customize the web interface.
 
 ## Goals
-* Provide the same features as [OpenAI Chat GPT](https://chat.openai.com/) and [OpenAI Playground](https://platform.openai.com/playground).
+<!-- markdown-link-check-disable-next-line -->
+* Provide the same features as [OpenAI Chat GPT](https://chat.openai.com/) and 
+[OpenAI Playground](https://platform.openai.com/playground).
 * Use a modern web stack of React, Tailwind CSS, and Typescript.
 
 ## Screenshot
@@ -30,6 +32,7 @@ git clone https://github.com/elebitzero/openai-react-chat.git
 npm install
 npm start
 ```
+<!-- markdown-link-check-disable-next-line -->
 The local website [http://localhost:3000/](http://localhost:3000/) should open in your browser.
 
 ## Contributions
