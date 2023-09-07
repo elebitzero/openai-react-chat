@@ -67,7 +67,7 @@ const App = () => {
 
         setMessages((prevMessages: ChatMessage[]) => {
             const message: ChatMessage = {
-                id: messages.length + 1,
+                id: prevMessages.length + 1,
                 role: role,
                 messageType: messageType,
                 content: content
