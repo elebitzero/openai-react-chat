@@ -3,6 +3,22 @@ import {ChatCompletion, ChatMessage} from "../models/ChatCompletion";
 import {CHAT_PARAMETERS, OPENAI_API_KEY} from "../config";
 import {CustomError} from "./CustomError";
 
+interface CompletionChunk {
+    id: string;
+    object: string;
+    created: number;
+    model: string;
+    choices: CompletionChunkChoice[];
+}
+
+interface CompletionChunkChoice {
+    index: number;
+    delta: {
+        content: string;
+    };
+    finish_reason: null | string; // If there can be other values than 'null', use appropriate type instead of string.
+}
+
 export class ChatService {
     private static models: Promise<OpenAIModel[]> | null = null;
     static selectedModelId: string = '';
@@ -45,6 +61,84 @@ export class ChatService {
         }
 
         return await response.json();
+    }
+
+
+    static async sendMessageStreamed(messages: ChatMessage[], modelId: string, callback: (content: string) => void): Promise<any> {
+        let endpoint = "https://api.openai.com/v1/chat/completions";
+        let headers = {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${OPENAI_API_KEY}`
+        };
+
+        // Map to a new array with the messageType removed
+        const messagesWithoutMessageType =
+            messages.map(({messageType, id: number, ...rest}) => rest);
+
+        const requestBody = {
+            model: modelId,
+            messages: messagesWithoutMessageType,
+            stream: true,
+            temperature: CHAT_PARAMETERS.temperature
+        };
+
+        const response = await fetch(endpoint, {
+            method: "POST",
+            headers: headers,
+            body: JSON.stringify(requestBody),
+
+        });
+
+        if (!response.ok) {
+            const err = await response.json();
+            throw new CustomError(err.error.message, err);
+        }
+
+        if (response.body) {
+            // Read the response as a stream of data
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder("utf-8");
+
+            while (true) {
+                const streamChunk = await reader.read();
+                const {done, value} = streamChunk;
+                if (done) {
+                    break;
+                }
+                let DONE = false;
+                const decodedChunk = decoder.decode(value);
+                const rawData = decodedChunk.split("data: ").filter(Boolean);  // Split on "data: " and remove any empty strings
+                const chunks: CompletionChunk[] = rawData.map(chunk => {
+                    if (chunk.trim() === '[DONE]') {
+                        DONE = true;
+                        return; // Skip parsing this term and continue with the next
+                    }
+                    return JSON.parse(chunk);
+                }).filter(Boolean); // Filter out undefined values which may be a result of the [DONE] term check
+
+                chunks.forEach(chunk => {
+                    chunk.choices.forEach(choice => {
+                        if (choice.delta && choice.delta.content) {  // Check if delta and content exist
+                            const content = choice.delta.content;
+                            try {
+                                callback(content);
+                            }
+                            catch (err) {
+                                if (err instanceof Error) {
+                                    console.error(err.message);
+                                }
+                                console.log('error in client. continuing...')
+                            }
+                        } else if (choice?.finish_reason === 'stop') {
+                            // done
+                        }
+                    });
+                });
+                if (DONE) {
+                    return;
+                }
+            }
+        }
     }
 
     static fetchModels = (): Promise<OpenAIModel[]> => {

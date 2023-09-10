@@ -20,7 +20,6 @@ export const ThemeProvider = ({children}: ThemeProviderProps) => {
 
     useEffect(() => {
         if (darkTheme) {
-            console.log('dark theme enabled');
             document.documentElement.classList.add('dark');
             document.documentElement.style.setProperty('color-scheme', 'dark');
         } else {

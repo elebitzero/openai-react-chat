@@ -48,7 +48,7 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
                     setLoading(false);
                     return;
                 } else {
-                    console.log('Model ' + OPENAI_DEFAULT_MODEL + ' not in the list of models');
+                    console.warn('Model ' + OPENAI_DEFAULT_MODEL + ' not in the list of models');
                 }
             }
 

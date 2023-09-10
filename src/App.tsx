@@ -72,11 +72,19 @@ const App = () => {
                 messageType: messageType,
                 content: content
             };
-            return [...prevMessages, message];
+            const updatedMessages = [...prevMessages, message];
+            return updatedMessages;
         });
 
+        const message: ChatMessage = {
+            id: messages.length + 1,
+            role: role,
+            messageType: messageType,
+            content: content
+        };
+        const updatedMessages = [...messages, message];
         if (callback) {
-            callback([...messages, newMessage]);
+            callback(updatedMessages);
         }
     };
 
@@ -92,11 +100,9 @@ const App = () => {
             role: Role.System,
             content: systemPromptFinal
         } as ChatMessage, ...updatedMessages];
-        ChatService.sendMessage(messages, ChatService.getSelectedModelId())
+        ChatService.sendMessageStreamed(messages, ChatService.getSelectedModelId(), handleStreamedResponse)
             .then((response: ChatCompletion) => {
-                let message = response.choices[0].message;
-                setLoading(false);
-                addMessage(message.role, MessageType.Normal, message.content);
+                // nop
             })
             .catch(err => {
                     if (err instanceof CustomError) {
@@ -104,7 +110,6 @@ const App = () => {
                         setLoading(false);
                         addMessage(Role.Assistant, MessageType.Error, message);
                     } else {
-                        console.log('calling toast with ' + err.message);
                         toast.error(err.message, {
                             position: "top-center",
                             autoClose: 5000,
@@ -117,8 +122,37 @@ const App = () => {
                         });
                     }
                 }
-            )
-        ;
+            ).finally(() => {
+            setLoading(false); // Stop loading here, whether successful or not
+        });
+    }
+
+    function handleStreamedResponse(content: string) {
+        setMessages(prevMessages => {
+            let isNew: boolean = false;
+            if (prevMessages[prevMessages.length-1].role == Role.User) {
+                isNew = true;
+            }
+
+            if (isNew) {
+                const message: ChatMessage = {
+                    id: prevMessages.length + 1,
+                    role: Role.Assistant,
+                    messageType: MessageType.Normal,
+                    content: content
+                };
+                return [...prevMessages, message];
+            } else {
+                // Clone the last message and update its content
+                const updatedMessage = {
+                    ...prevMessages[prevMessages.length-1],
+                    content: prevMessages[prevMessages.length-1].content + content
+                };
+
+                // Replace the old last message with the updated one
+                return [...prevMessages.slice(0, -1), updatedMessage];
+            }
+        });
     }
 
     function handleSubmit(e: React.FormEvent<HTMLFormElement>) {

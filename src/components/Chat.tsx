@@ -11,7 +11,7 @@ interface Props {
     chatBlocks: ChatMessage[];
 }
 
-const Chat: React.FC<Props> = ({chatBlocks}) => {
+const Chat: React.FC<Props> = ({chatBlocks }) => {
     const [isNewConversation, setIsNewConversation] = useState<boolean>(false);
     const [models, setModels] = useState<OpenAIModel[]>([]);
     const [error, setError] = useState<string | null>(null);
