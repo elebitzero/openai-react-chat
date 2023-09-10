@@ -99,6 +99,7 @@ export class ChatService {
             const reader = response.body.getReader();
             const decoder = new TextDecoder("utf-8");
 
+            let partialDecodedChunk = undefined;
             while (true) {
                 const streamChunk = await reader.read();
                 const {done, value} = streamChunk;
@@ -106,14 +107,29 @@ export class ChatService {
                     break;
                 }
                 let DONE = false;
-                const decodedChunk = decoder.decode(value);
+                let decodedChunk = decoder.decode(value);
+                if (partialDecodedChunk) {
+                    decodedChunk = "data: "+partialDecodedChunk+decodedChunk;
+                }
                 const rawData = decodedChunk.split("data: ").filter(Boolean);  // Split on "data: " and remove any empty strings
-                const chunks: CompletionChunk[] = rawData.map(chunk => {
+                const chunks: CompletionChunk[] = rawData.map((chunk, index) => {
+                    partialDecodedChunk = undefined;
                     if (chunk.trim() === '[DONE]') {
                         DONE = true;
                         return; // Skip parsing this term and continue with the next
                     }
-                    return JSON.parse(chunk);
+                    let o;
+                    try {
+                        o = JSON.parse(chunk);
+                    }
+                    catch (err) {
+                        if (index === rawData.length - 1) { // Check if this is the last element
+                            partialDecodedChunk = chunk;
+                        } else if (err instanceof Error) {
+                            console.error(err.message);
+                        }
+                    }
+                    return o;
                 }).filter(Boolean); // Filter out undefined values which may be a result of the [DONE] term check
 
                 chunks.forEach(chunk => {
