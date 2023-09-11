@@ -82,7 +82,7 @@ const Chat: React.FC<Props> = ({chatBlocks }) => {
                 {chatBlocks.map((block) => (
                     <ChatBlock key={`chat-block-${block.id}`} block={block}/>
                 ))}
-                <div className="w-full h-32 md:h-48 flex-shrink-0"></div>
+                <div className="w-full h-32 flex-shrink-0"></div>
             </div>
         </div>
     );
