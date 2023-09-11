@@ -9,7 +9,8 @@ This project provides a web frontend for the OpenAI chat API. This project is fo
 See [FEATURES.md](FEATURES.md) for details.
 
 ## Screenshot
-![image](https://github.com/elebitzero/openai-react-chat/assets/42903164/7c1b6571-2aaf-4aff-847a-c03900993d56)
+![chat-python-lcd](https://github.com/elebitzero/openai-react-chat/assets/42903164/8d019f4c-cc7f-4689-8e98-e59c179b8cca)
+
 
 
 ## Requirements
