@@ -1,6 +1,9 @@
 name: Check Markdown links
 
-on: push
+on:
+  push:
+    paths:
+      - '**.md'
 
 jobs:
   markdown-link-check:
