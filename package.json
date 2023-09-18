@@ -7,6 +7,7 @@
     "@headlessui/react": "^1.7.17",
     "@heroicons/react": "^2.0.18",
     "autoprefixer": "^10.4.15",
+    "dexie": "^3.2.4",
     "highlight.js": "^11.8.0",
     "postcss": "^8.4.29",
     "postcss-cli": "^10.1.0",

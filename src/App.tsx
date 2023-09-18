@@ -1,4 +1,4 @@
-import React, {ChangeEvent, useRef, useState} from 'react';
+import React, {ChangeEvent, useEffect, useRef, useState} from 'react';
 import './App.css';
 import {ChatService} from "./service/ChatService";
 import Chat from "./components/Chat";
@@ -7,15 +7,69 @@ import {SubmitButton} from "./components/SubmitButton";
 import {OPENAI_DEFAULT_SYSTEM_PROMPT} from "./config";
 import {toast, ToastContainer} from "react-toastify";
 import {CustomError} from "./service/CustomError";
+import db, {Conversation, getConversationById} from "./service/ConversationDB";
+import Sidebar from "./components/SideBar";
+import {conversationSelectedEmitter, conversationsEmitter} from "./service/EventEmitter";
+
+export const updateConversationMessages = async (id: number, updatedMessages: any[]) => {
+    const conversation = await db.conversations.get(id);
+    if (conversation) {
+        conversation.messages = JSON.stringify(updatedMessages);
+        await db.conversations.put(conversation);
+    }
+}
 
 const App = () => {
     const textAreaRef = useRef<HTMLTextAreaElement>(null);  // Create a ref
+    const [isNewConversation, setIsNewConversation] = useState<boolean>(false);
 
+    const [conversationId, setConversationId] = useState(0);
     const [loading, setLoading] = useState(false);
     const [systemPrompt, setSystemPrompt] = useState('');
     const [text, setText] = useState('');
     const isButtonDisabled = text === '' || loading;
     const [messages, setMessages] = useState<ChatMessage[]>([]);
+
+    useEffect(() => {
+        const handleSelectedConversation = (id: number) => {
+            if (id) {
+                getConversationById(id).then(conversation => {
+                    if (conversation) {
+                        setConversationId(conversation.id)
+                        setSystemPrompt(conversation.systemPrompt);
+                        ChatService.setSelectedModelId(conversation.model);
+                        const messages: ChatMessage[] = JSON.parse(conversation.messages);
+                        setMessages(messages);
+                    } else {
+                        console.error("Conversation not found.");
+                    }
+                });
+            } else {
+                setIsNewConversation(true);
+                setConversationId(0);
+                setSystemPrompt('');
+                // ChatService.setSelectedModelId('');
+                setMessages([]);
+            }
+        };
+
+        conversationSelectedEmitter.on('selectConversation', handleSelectedConversation);
+
+        // Cleanup: remove the event listener when the component unmounts
+        return () => {
+            conversationSelectedEmitter.off('selectConversation', handleSelectedConversation);
+        };
+    }, []);
+
+    useEffect(() => {
+        setIsNewConversation(messages.length === 0);
+        if (conversationId) {
+            // Only update if there are messages
+            if (messages.length > 0) {
+                updateConversationMessages(conversationId, messages);
+            }
+        }
+    }, [messages]);
 
     const handleTextChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
         setText(event.target.value);
@@ -47,6 +101,24 @@ const App = () => {
         setSystemPrompt(newSystemPrompt);
     };
 
+    function startConversation() {
+        // todo: use AI to generate title from the user message
+        const id = Date.now();
+        const timestamp = Date.now();
+        setConversationId(id);
+        let shortenedText = text.substring(0, 25);
+        const conversation = {
+            id: id,
+            timestamp: timestamp,
+            title: shortenedText,
+            model: ChatService.getSelectedModelId(),
+            systemPrompt: systemPrompt,
+            messages: "[]"
+        };
+        conversationsEmitter.emit('newConversation', conversation);
+        db.conversations.add(conversation);
+    }
+
     const checkForEnterKey = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if (e.key === 'Enter') {
             if (e.shiftKey) {
@@ -55,6 +127,9 @@ const App = () => {
                 if (!loading) {
                     e.preventDefault();
                     const target = e.target as HTMLTextAreaElement;
+                    if (isNewConversation) {
+                        startConversation();
+                    }
                     addMessage(Role.User, MessageType.Normal, text, sendMessage);
                     (e.target as HTMLTextAreaElement).style.height = 'auto'; // Revert back to original size
                 }
@@ -130,7 +205,7 @@ const App = () => {
     function handleStreamedResponse(content: string) {
         setMessages(prevMessages => {
             let isNew: boolean = false;
-            if (prevMessages[prevMessages.length-1].role == Role.User) {
+            if (prevMessages[prevMessages.length - 1].role == Role.User) {
                 isNew = true;
             }
 
@@ -145,8 +220,8 @@ const App = () => {
             } else {
                 // Clone the last message and update its content
                 const updatedMessage = {
-                    ...prevMessages[prevMessages.length-1],
-                    content: prevMessages[prevMessages.length-1].content + content
+                    ...prevMessages[prevMessages.length - 1],
+                    content: prevMessages[prevMessages.length - 1].content + content
                 };
 
                 // Replace the old last message with the updated one
@@ -157,6 +232,9 @@ const App = () => {
 
     function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
+        if (isNewConversation) {
+            startConversation();
+        }
         addMessage(Role.User, MessageType.Normal, text, sendMessage);
         if (textAreaRef.current) {
             textAreaRef.current.style.height = 'auto';
@@ -164,14 +242,15 @@ const App = () => {
     }
 
     return (
-        <div className="flex h-full max-w-full flex-1 flex-col">
-            <ToastContainer/>
-            <main
-                className="relative h-full w-full transition-width flex flex-col overflow-hidden items-stretch flex-1">
-                <div className="text-input-with-header chat-pg-instructions flex items-center justify-center m-5">
-                    <div className="text-input-header-subheading subheading">System:</div>
-                    <div
-                        className="text-input-header-wrapper overflow-wrapper text-input flex items-center justify-center w-3/5">
+        <div className="overflow-hidden w-full h-full relative flex z-0">
+            <Sidebar></Sidebar>
+            <div className="flex h-full max-w-full flex-1 flex-col">
+                <ToastContainer/>
+                <main className="relative h-full w-full transition-width flex flex-col overflow-hidden items-stretch flex-1">
+                    <div className="text-input-with-header chat-pg-instructions flex items-center justify-center m-5">
+                        <div className="text-input-header-subheading subheading">System:</div>
+                        <div
+                            className="text-input-header-wrapper overflow-wrapper text-input flex items-center justify-center w-3/5">
                          <textarea aria-label="Input"
                                    style={{maxHeight: "200px", overflowY: "auto"}}
                                    className="focus:ring-0 focus-visible:ring-0 outline-none shadow-none text-input text-input-lg text-input-full text-input-header-buffer"
@@ -184,16 +263,16 @@ const App = () => {
                                        target.style.height = target.scrollHeight + "px";
                                    }}
                          ></textarea>
+                        </div>
                     </div>
-                </div>
-                <Chat chatBlocks={messages}/>
-                <div
-                    className="absolute bottom-0 left-0 w-full border-t md:border-t-0 dark:border-white/20 md:border-transparent md:dark:border-transparent bg-white dark:bg-gray-800 md:!bg-transparent dark:md:bg-vert-dark-gradient pt-2">
-                    <form onSubmit={handleSubmit}
-                          className="stretch mx-2 flex flex-row gap-3 last:mb-2 md:mx-4 md:last:mb-6 lg:mx-auto lg:max-w-2xl xl:max-w-3xl">
-                        <div className="relative flex h-full flex-1 md:flex-col">
-                            <div
-                                className="flex flex-col w-full py-2 flex-grow md:py-3 md:pl-4 relative border border-black/10 bg-white dark:border-gray-900/50 dark:text-white dark:bg-gray-700 rounded-md shadow-xs">
+                    <Chat chatBlocks={messages}/>
+                    <div
+                        className="absolute bottom-0 left-0 w-full border-t md:border-t-0 dark:border-white/20 md:border-transparent md:dark:border-transparent bg-white dark:bg-gray-800 md:!bg-transparent dark:md:bg-vert-dark-gradient pt-2">
+                        <form onSubmit={handleSubmit}
+                              className="stretch mx-2 flex flex-row gap-3 last:mb-2 md:mx-4 md:last:mb-6 lg:mx-auto lg:max-w-2xl xl:max-w-3xl">
+                            <div className="relative flex h-full flex-1 md:flex-col">
+                                <div
+                                    className="flex flex-col w-full py-2 flex-grow md:py-3 md:pl-4 relative border border-black/10 bg-white dark:border-gray-900/50 dark:text-white dark:bg-gray-700 rounded-md shadow-xs">
                                    <textarea
                                        tabIndex={0}
                                        data-id="request-:r4:-1"
@@ -207,17 +286,18 @@ const App = () => {
                                        onChange={handleTextChange}
                                        onInput={handleAutoResize}
                                    ></textarea>
-                                <SubmitButton
-                                    disabled={isButtonDisabled}
-                                    loading={loading}
-                                    style={text !== '' ? {backgroundColor: "rgb(171, 104, 255)"} : {}}
-                                    isTextEmpty={text === ''}
-                                />
+                                    <SubmitButton
+                                        disabled={isButtonDisabled}
+                                        loading={loading}
+                                        style={text !== '' ? {backgroundColor: "rgb(171, 104, 255)"} : {}}
+                                        isTextEmpty={text === ''}
+                                    />
+                                </div>
                             </div>
-                        </div>
-                    </form>
-                </div>
-            </main>
+                        </form>
+                    </div>
+                </main>
+            </div>
         </div>
     );
 }

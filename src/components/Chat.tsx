@@ -18,13 +18,6 @@ const Chat: React.FC<Props> = ({chatBlocks }) => {
     const chatDivRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        setIsNewConversation(chatBlocks.length === 0);
-        if (chatDivRef.current) {
-            chatDivRef.current.scrollTop = chatDivRef.current.scrollHeight;
-        }
-    }, [chatBlocks]);
-
-    useEffect(() => {
 
         if (OPENAI_MODEL_LIST && OPENAI_MODEL_LIST.length > 0) {
             setModels(OPENAI_MODEL_LIST.map(id => {
@@ -50,6 +43,14 @@ const Chat: React.FC<Props> = ({chatBlocks }) => {
                 });
         }
     }, []);
+
+    useEffect(() => {
+        setIsNewConversation(chatBlocks.length === 0);
+        console.log('isNewConversation = '+isNewConversation);
+        if (chatDivRef.current) {
+            chatDivRef.current.scrollTop = chatDivRef.current.scrollHeight;
+        }
+    }, [chatBlocks]);
 
     useEffect(() => {
         toast.error(error, {

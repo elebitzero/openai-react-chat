@@ -1554,6 +1554,32 @@ pre[class*=language-] {
     color: rgba(172, 172, 190, var(--tw-text-opacity))
 }
 
+.dark .dark\:from-gray-800 {
+    --tw-gradient-from: #343541 var(--tw-gradient-from-position);
+    --tw-gradient-to: rgba(52,53,65,0) var(--tw-gradient-to-position);
+    --tw-gradient-stops: var(--tw-gradient-from),var(--tw-gradient-to);
+}
+
+.dark .dark\:from-gray-900 {
+    --tw-gradient-from: #202123 var(--tw-gradient-from-position);
+    --tw-gradient-to: rgba(32,33,35,0) var(--tw-gradient-to-position);
+    --tw-gradient-stops: var(--tw-gradient-from),var(--tw-gradient-to);
+}
+
+.dark .group:hover .dark\:group-hover\:bg-gray-700{
+    --tw-bg-opacity:1;
+    background-color:rgba(64,65,79,var(--tw-bg-opacity))
+}
+.dark .group:hover .dark\:group-hover\:from-\[\#2A2B32\]{
+    --tw-gradient-from:#2a2b32 var(--tw-gradient-from-position);
+    --tw-gradient-to:rgba(42,43,50,0) var(--tw-gradient-to-position);
+    --tw-gradient-stops:var(--tw-gradient-from),var(--tw-gradient-to)
+}
+.dark .group\/option:hover .dark\:group-hover\/option\:text-gray-100{
+    --tw-text-opacity:1;
+    color:rgba(236,236,241,var(--tw-text-opacity))
+}
+
 @media (min-width: 640px) {
     .sm\:absolute {
         position: absolute
