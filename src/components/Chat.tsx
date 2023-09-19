@@ -46,7 +46,6 @@ const Chat: React.FC<Props> = ({chatBlocks }) => {
 
     useEffect(() => {
         setIsNewConversation(chatBlocks.length === 0);
-        console.log('isNewConversation = '+isNewConversation);
         if (chatDivRef.current) {
             chatDivRef.current.scrollTop = chatDivRef.current.scrollHeight;
         }
