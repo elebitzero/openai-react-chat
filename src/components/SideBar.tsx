@@ -4,9 +4,14 @@ import {conversationSelectedEmitter, conversationsEmitter} from '../service/Even
 import {ChatBubbleLeftIcon, PencilSquareIcon, PlusIcon, TrashIcon} from "@heroicons/react/24/outline";
 import {iconProps} from "../svg";  // Assuming you have this path for the EventEmitter
 
-const Sidebar: React.FC = () => {
+
+interface SidebarProps {
+    isSidebarCollapsed: boolean;
+    toggleSidebarCollapse: () => void;
+}
+const Sidebar: React.FC<SidebarProps> = ({ isSidebarCollapsed, toggleSidebarCollapse }) => {
+
     const [conversations, setConversations] = useState<Conversation[]>([]);
-    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
     const [selectedId, setSelectedId] = useState<number | null>(null);
     const NUM_INITIAL_CONVERSATIONS = 200;
 
@@ -62,10 +67,6 @@ const Sidebar: React.FC = () => {
         setSelectedId(conversation.id);
         conversationSelectedEmitter.emit('selectConversation', conversation.id);
     }
-
-    const toggleSidebarCollapse = () => {
-        setIsSidebarCollapsed((prevCollapsed) => !prevCollapsed);
-    };
 
     return (
         <div className="sidebar-container">
@@ -197,49 +198,10 @@ const Sidebar: React.FC = () => {
                                         </div>
                                     </div>
                                 </div>
-
                             </nav>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div>
-                {isSidebarCollapsed && (
-                    <a
-                        className="flex px-3 min-h-[44px] py-1 gap-3 transition-colors duration-200 dark:text-black cursor-pointer text-sm rounded-md border dark:border-white/20 hover:bg-gray-500/10 h-11 w-11 flex-shrink-0 items-center justify-center bg-white"
-                        onClick={toggleSidebarCollapse}
-                    >
-                        <svg
-                            stroke="black"
-                            fill="none"
-                            strokeWidth="2"
-                            viewBox="0 0 24 24"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            className="icon-sm"
-                            height="1em"
-                            width="1em"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                            <line x1="9" y1="3" x2="9" y2="21"></line>
-                        </svg>
-                        <span style={{
-                            position: "absolute",
-                            border: "0px",
-                            width: "1px",
-                            height: "1px",
-                            padding: "0px",
-                            margin: "-1px",
-                            overflow: "hidden",
-                            clip: "rect(0px, 0px, 0px, 0px)",
-                            whiteSpace: "nowrap",
-                            overflowWrap: "normal"
-                        }}>
-      {isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-    </span>
-                    </a>
-                )}
             </div>
         </div>
     );

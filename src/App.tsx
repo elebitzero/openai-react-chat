@@ -22,7 +22,7 @@ export const updateConversationMessages = async (id: number, updatedMessages: an
 const App = () => {
     const textAreaRef = useRef<HTMLTextAreaElement>(null);  // Create a ref
     const [isNewConversation, setIsNewConversation] = useState<boolean>(false);
-
+    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
     const [conversationId, setConversationId] = useState(0);
     const [loading, setLoading] = useState(false);
     const [systemPrompt, setSystemPrompt] = useState('');
@@ -241,13 +241,57 @@ const App = () => {
         }
     }
 
+    function toggleSidebarCollapse() {
+        setIsSidebarCollapsed((prevCollapsed) => !prevCollapsed);
+    }
+
     return (
         <div className="overflow-hidden w-full h-full relative flex z-0">
-            <Sidebar></Sidebar>
+            <Sidebar isSidebarCollapsed={isSidebarCollapsed}
+                     toggleSidebarCollapse={toggleSidebarCollapse}
+            />
             <div className="flex h-full max-w-full flex-1 flex-col">
                 <ToastContainer/>
                 <main className="relative h-full w-full transition-width flex flex-col overflow-hidden items-stretch flex-1">
                     <div className="text-input-with-header chat-pg-instructions flex items-center justify-center m-5">
+                        <div>
+                            {isSidebarCollapsed && (
+                                <a
+                                    className="flex px-3 min-h-[44px] py-1 gap-3 transition-colors duration-200 dark:text-black cursor-pointer text-sm rounded-md border dark:border-white/20 hover:bg-gray-500/10 h-11 w-11 flex-shrink-0 items-center justify-center bg-white"
+                                    onClick={toggleSidebarCollapse}
+                                >
+                                    <svg
+                                        stroke="black"
+                                        fill="none"
+                                        strokeWidth="2"
+                                        viewBox="0 0 24 24"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        className="icon-sm"
+                                        height="1em"
+                                        width="1em"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                        <line x1="9" y1="3" x2="9" y2="21"></line>
+                                    </svg>
+                                    <span style={{
+                                        position: "absolute",
+                                        border: "0px",
+                                        width: "1px",
+                                        height: "1px",
+                                        padding: "0px",
+                                        margin: "-1px",
+                                        overflow: "hidden",
+                                        clip: "rect(0px, 0px, 0px, 0px)",
+                                        whiteSpace: "nowrap",
+                                        overflowWrap: "normal"
+                                    }}>
+      {isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+    </span>
+                                </a>
+                            )}
+                        </div>
                         <div className="text-input-header-subheading subheading">System:</div>
                         <div
                             className="text-input-header-wrapper overflow-wrapper text-input flex items-center justify-center w-3/5">
