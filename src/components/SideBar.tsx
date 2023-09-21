@@ -175,7 +175,7 @@ const Sidebar: React.FC = () => {
                                                                         style={{opacity: 1, height: "auto"}}>
                                                                         <a
                                                                             onClick={() => selectConversation(convo)}
-                                                                            className="flex py-3 px-3 items-center gap-3 relative rounded-md hover:bg-gray-100 dark:hover:bg-[#2A2B32] cursor-pointer break-all bg-gray-50 hover:pr-4 dark:bg-gray-900 group"
+                                                                            className="flex py-3 px-3 items-center gap-3 relative rounded-md cursor-pointer break-all bg-gray-50 dark:bg-gray-900"
                                                                         >
                                                                             <ChatBubbleLeftIcon {...iconProps} />
                                                                             <div
