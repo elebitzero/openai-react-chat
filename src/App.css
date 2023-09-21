@@ -37,6 +37,27 @@
     }
 }
 
+.expand-button {
+    width: 64px; /* Adjust to match the button's width */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    cursor: pointer;
+    transition: width 0.3s ease; /* Add transition for smooth animation */
+}
+
+.sidebar-container {
+    display: flex;
+    flex-direction: row;
+    transition: width 0.3s ease; /* Add transition for smooth animation */
+}
+
+.sidebar.collapsed {
+    width: 0;
+}
+
 textarea:focus {
     outline: none;
 }

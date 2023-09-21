@@ -6,6 +6,7 @@ import {iconProps} from "../svg";  // Assuming you have this path for the EventE
 
 const Sidebar: React.FC = () => {
     const [conversations, setConversations] = useState<Conversation[]>([]);
+    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
     const [selectedId, setSelectedId] = useState<number | null>(null);
     const NUM_INITIAL_CONVERSATIONS = 200;
 
@@ -62,34 +63,41 @@ const Sidebar: React.FC = () => {
         conversationSelectedEmitter.emit('selectConversation', conversation.id);
     }
 
+    const toggleSidebarCollapse = () => {
+        setIsSidebarCollapsed((prevCollapsed) => !prevCollapsed);
+    };
+
     return (
-        <div className="sidebar h-full flex-shrink-0 overflow-x-hidden dark bg-gray-900" style={{width: "260px"}}>
-            <div className="h-full w-[260px]">
-                <div className="flex h-full min-h-0 flex-col ">
-                    <div className="scrollbar-trigger relative h-full w-full flex-1 items-start border-white/20">
-                        <h2 style={{
-                            position: "absolute",
-                            border: "0px",
-                            width: "1px",
-                            height: "1px",
-                            padding: "0px",
-                            margin: "-1px",
-                            overflow: "hidden",
-                            clip: "rect(0px, 0px, 0px, 0px)",
-                            whiteSpace: "nowrap",
-                            overflowWrap: "normal"
-                        }}>
-                            Chat history
-                        </h2>
-                        <nav className="flex h-full w-full flex-col p-2" aria-label="Chat history">
-                            <div className="mb-1 flex flex-row gap-2">
-                                <a className="flex px-3 min-h-[44px] py-1 items-center gap-3 transition-colors duration-200 dark:text-white cursor-pointer text-sm rounded-md border dark:border-white/20 hover:bg-gray-500/10 h-11 bg-white dark:bg-transparent flex-grow overflow-hidden"
-                                   onClick={() => handleNewChat()}>
-                                    <PlusIcon {...iconProps} />
-                                    <span className="truncate">New chat</span>
-                                </a>
-                                <span className="" data-state="closed" style={{ visibility: "hidden" }}>
-                                    <a className="flex px-3 min-h-[44px] py-1 gap-3 transition-colors duration-200 dark:text-white cursor-pointer text-sm rounded-md border dark:border-white/20 hover:bg-gray-500/10 h-11 w-11 flex-shrink-0 items-center justify-center bg-white dark:bg-transparent">
+        <div className="sidebar-container">
+            <div className="sidebar h-full flex-shrink-0 overflow-x-hidden dark bg-gray-900"
+                 style={{width: isSidebarCollapsed ? "0px" : "260px"}}>
+                <div className="h-full w-[260px]">
+                    <div className="flex h-full min-h-0 flex-col ">
+                        <div className="scrollbar-trigger relative h-full w-full flex-1 items-start border-white/20">
+                            <h2 style={{
+                                position: "absolute",
+                                border: "0px",
+                                width: "1px",
+                                height: "1px",
+                                padding: "0px",
+                                margin: "-1px",
+                                overflow: "hidden",
+                                clip: "rect(0px, 0px, 0px, 0px)",
+                                whiteSpace: "nowrap",
+                                overflowWrap: "normal"
+                            }}>
+                                Chat history
+                            </h2>
+                            <nav className="flex h-full w-full flex-col p-2" aria-label="Chat history">
+                                <div className="mb-1 flex flex-row gap-2">
+                                    <a className="flex px-3 min-h-[44px] py-1 items-center gap-3 transition-colors duration-200 dark:text-white cursor-pointer text-sm rounded-md border dark:border-white/20 hover:bg-gray-500/10 h-11 bg-white dark:bg-transparent flex-grow overflow-hidden"
+                                       onClick={() => handleNewChat()}>
+                                        <PlusIcon {...iconProps} />
+                                        <span className="truncate">New chat</span>
+                                    </a>
+                                    <span className="" data-state="closed">
+                                    <a className="flex px-3 min-h-[44px] py-1 gap-3 transition-colors duration-200 dark:text-white cursor-pointer text-sm rounded-md border dark:border-white/20 hover:bg-gray-500/10 h-11 w-11 flex-shrink-0 items-center justify-center bg-white dark:bg-transparent"
+                                       onClick={toggleSidebarCollapse}>
                                         <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24"
                                              strokeLinecap="round" strokeLinejoin="round" className="icon-sm"
                                              height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
@@ -108,15 +116,16 @@ const Sidebar: React.FC = () => {
                                             whiteSpace: "nowrap",
                                             overflowWrap: "normal"
                                         }}>
-                                            Close sidebar
+                                            {isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
                                         </span>
                                     </a>
                                 </span>
-                            </div>
+                                </div>
 
-                            <div className="flex-col flex-1 transition-opacity duration-500 -mr-2 pr-2 overflow-y-auto">
-                                <div className="flex flex-col gap-2 pb-2 dark:text-gray-100 text-gray-800 text-sm">
-                                    <div>
+                                <div
+                                    className="flex-col flex-1 transition-opacity duration-500 -mr-2 pr-2 overflow-y-auto">
+                                    <div className="flex flex-col gap-2 pb-2 dark:text-gray-100 text-gray-800 text-sm">
+                                        <div>
                                         <span>
                                             <div className="relative" data-projection-id="3"
                                                  style={{height: "auto", opacity: 1}}>
@@ -131,19 +140,23 @@ const Sidebar: React.FC = () => {
                                                         conversations.map(convo => {
                                                             if (convo.id === selectedId) {
                                                                 return (
-                                                                    <li key={convo.id} className="relative z-[15]" data-projection-id="5"
+                                                                    <li key={convo.id} className="relative z-[15]"
+                                                                        data-projection-id="5"
                                                                         style={{opacity: 1, height: "auto"}}>
                                                                         <a
                                                                             className="flex py-3 px-3 items-center gap-3 relative rounded-md hover:bg-gray-100 cursor-pointer break-all bg-gray-100 dark:bg-gray-800 pr-14 dark:hover:bg-gray-800 group"
                                                                         >
                                                                             <ChatBubbleLeftIcon {...iconProps} />
-                                                                            <div className="flex-1 text-ellipsis max-h-5 overflow-hidden break-all relative">
+                                                                            <div
+                                                                                className="flex-1 text-ellipsis max-h-5 overflow-hidden break-all relative">
                                                                                 {convo.title}
                                                                                 <div
                                                                                     className="absolute inset-y-0 right-0 w-8 z-10 bg-gradient-to-l dark:from-gray-800 from-gray-100"></div>
                                                                             </div>
-                                                                            <div className="absolute flex right-1 z-10 dark:text-gray-300 text-gray-800 visible">
-                                                                                <button className="p-1 hover:text-white" style={{ visibility: "hidden" }}>
+                                                                            <div
+                                                                                className="absolute flex right-1 z-10 dark:text-gray-300 text-gray-800 visible">
+                                                                                <button className="p-1 hover:text-white"
+                                                                                        style={{visibility: "hidden"}}>
                                                                                     <PencilSquareIcon {...iconProps} />
                                                                                 </button>
                                                                                 <button
@@ -157,14 +170,16 @@ const Sidebar: React.FC = () => {
                                                                 );
                                                             } else {
                                                                 return (
-                                                                    <li key={convo.id} className="relative z-[15]" data-projection-id="7"
+                                                                    <li key={convo.id} className="relative z-[15]"
+                                                                        data-projection-id="7"
                                                                         style={{opacity: 1, height: "auto"}}>
                                                                         <a
                                                                             onClick={() => selectConversation(convo)}
                                                                             className="flex py-3 px-3 items-center gap-3 relative rounded-md hover:bg-gray-100 dark:hover:bg-[#2A2B32] cursor-pointer break-all bg-gray-50 hover:pr-4 dark:bg-gray-900 group"
                                                                         >
                                                                             <ChatBubbleLeftIcon {...iconProps} />
-                                                                            <div className="flex-1 text-ellipsis max-h-5 overflow-hidden break-all relative">
+                                                                            <div
+                                                                                className="flex-1 text-ellipsis max-h-5 overflow-hidden break-all relative">
                                                                                 {convo.title}
                                                                                 <div
                                                                                     className="absolute inset-y-0 right-0 w-8 z-10 bg-gradient-to-l dark:from-gray-900 from-gray-50 group-hover:from-gray-100 dark:group-hover:from-[#2A2B32]"></div>
@@ -179,13 +194,52 @@ const Sidebar: React.FC = () => {
                                                 </ol>
                                             </div>
                                         </span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-                        </nav>
+                            </nav>
+                        </div>
                     </div>
                 </div>
+            </div>
+            <div>
+                {isSidebarCollapsed && (
+                    <a
+                        className="flex px-3 min-h-[44px] py-1 gap-3 transition-colors duration-200 dark:text-black cursor-pointer text-sm rounded-md border dark:border-white/20 hover:bg-gray-500/10 h-11 w-11 flex-shrink-0 items-center justify-center bg-white"
+                        onClick={toggleSidebarCollapse}
+                    >
+                        <svg
+                            stroke="black"
+                            fill="none"
+                            strokeWidth="2"
+                            viewBox="0 0 24 24"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="icon-sm"
+                            height="1em"
+                            width="1em"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="9" y1="3" x2="9" y2="21"></line>
+                        </svg>
+                        <span style={{
+                            position: "absolute",
+                            border: "0px",
+                            width: "1px",
+                            height: "1px",
+                            padding: "0px",
+                            margin: "-1px",
+                            overflow: "hidden",
+                            clip: "rect(0px, 0px, 0px, 0px)",
+                            whiteSpace: "nowrap",
+                            overflowWrap: "normal"
+                        }}>
+      {isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+    </span>
+                    </a>
+                )}
             </div>
         </div>
     );
