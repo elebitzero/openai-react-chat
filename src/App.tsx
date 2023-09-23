@@ -20,6 +20,7 @@ export const updateConversationMessages = async (id: number, updatedMessages: an
 }
 
 const App = () => {
+    const [conversationTitle, setConversationTitle] = useState('Default Title');
     const textAreaRef = useRef<HTMLTextAreaElement>(null);  // Create a ref
     const [isNewConversation, setIsNewConversation] = useState<boolean>(false);
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -259,6 +260,7 @@ const App = () => {
                                 <a
                                     className="flex px-3 min-h-[44px] py-1 gap-3 transition-colors duration-200 dark:text-black cursor-pointer text-sm rounded-md border dark:border-white/20 hover:bg-gray-500/10 h-11 w-11 flex-shrink-0 items-center justify-center bg-white"
                                     onClick={toggleSidebarCollapse}
+                                    title="Expand sidebar"
                                 >
                                     <svg
                                         stroke="black"
@@ -272,8 +274,8 @@ const App = () => {
                                         width="1em"
                                         xmlns="http://www.w3.org/2000/svg"
                                     >
-                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                                        <line x1="9" y1="3" x2="9" y2="21"></line>
+                                        <rect x="2" y="2" width="20" height="20" rx="2" ry="2"></rect>
+                                        <line x1="9" y1="2" x2="9" y2="22"></line>
                                     </svg>
                                     <span style={{
                                         position: "absolute",

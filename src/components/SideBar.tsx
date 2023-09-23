@@ -98,12 +98,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarCollapsed, toggleSidebarColl
                                     </a>
                                     <span className="" data-state="closed">
                                     <a className="flex px-3 min-h-[44px] py-1 gap-3 transition-colors duration-200 dark:text-white cursor-pointer text-sm rounded-md border dark:border-white/20 hover:bg-gray-500/10 h-11 w-11 flex-shrink-0 items-center justify-center bg-white dark:bg-transparent"
-                                       onClick={toggleSidebarCollapse}>
+                                       onClick={toggleSidebarCollapse}
+                                       title="Close sidebar">
                                         <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24"
                                              strokeLinecap="round" strokeLinejoin="round" className="icon-sm"
                                              height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
-                                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                                            <line x1="9" y1="3" x2="9" y2="21"></line>
+                                            <rect x="2" y="2" width="20" height="20" rx="2" ry="2"></rect>
+                                            <line x1="9" y1="2" x2="9" y2="22"></line>
                                         </svg>
                                         <span style={{
                                             position: "absolute",
