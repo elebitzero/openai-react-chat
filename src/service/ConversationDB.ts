@@ -7,6 +7,8 @@ export interface Conversation {
     model: string,
     systemPrompt: string,
     messages: string; // We're storing the messages as a JSON string
+    marker?: boolean; // If marker=true, then this is placeholder conversation
+    // where title is a heading e.g. 'Today', 'Yesterday', used in sidebar
 }
 
 class ConversationDB extends Dexie {
