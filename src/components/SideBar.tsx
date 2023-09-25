@@ -2,8 +2,8 @@ import React, {useEffect, useState} from 'react';
 import db, {Conversation} from "../service/ConversationDB";
 import {conversationSelectedEmitter, conversationsEmitter} from '../service/EventEmitter';
 import {ChatBubbleLeftIcon, PencilSquareIcon, PlusIcon, TrashIcon} from "@heroicons/react/24/outline";
-import {iconProps} from "../svg";  // Assuming you have this path for the EventEmitter
-
+import {CloseSideBarIcon, iconProps} from "../svg";
+import Tooltip from "./Tooltip";  // Assuming you have this path for the EventEmitter
 
 interface SidebarProps {
     isSidebarCollapsed: boolean;
@@ -132,32 +132,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarCollapsed, toggleSidebarColl
                                         <PlusIcon {...iconProps} />
                                         <span className="truncate">New chat</span>
                                     </a>
-                                    <span className="" data-state="closed">
-                                    <a className="flex px-3 min-h-[44px] py-1 gap-3 transition-colors duration-200 dark:text-white cursor-pointer text-sm rounded-md border dark:border-white/20 hover:bg-gray-500/10 h-11 w-11 flex-shrink-0 items-center justify-center bg-white dark:bg-transparent"
-                                       onClick={toggleSidebarCollapse}
-                                       title="Close sidebar">
-                                        <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24"
-                                             strokeLinecap="round" strokeLinejoin="round" className="icon-sm"
-                                             height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
-                                            <rect x="2" y="2" width="20" height="20" rx="2" ry="2"></rect>
-                                            <line x1="9" y1="2" x2="9" y2="22"></line>
-                                        </svg>
-                                        <span style={{
-                                            position: "absolute",
-                                            border: "0px",
-                                            width: "1px",
-                                            height: "1px",
-                                            padding: "0px",
-                                            margin: "-1px",
-                                            overflow: "hidden",
-                                            clip: "rect(0px, 0px, 0px, 0px)",
-                                            whiteSpace: "nowrap",
-                                            overflowWrap: "normal"
-                                        }}>
-                                            {isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-                                        </span>
-                                    </a>
-                                </span>
+                                    <Tooltip title="Close sidebar">
+                                        <a
+                                            className="flex px-3 min-h-[44px] py-1 gap-3 transition-colors duration-200 dark:text-white cursor-pointer text-sm rounded-md border dark:border-white/20 hover:bg-gray-500/10 h-11 w-11 flex-shrink-0 items-center justify-center bg-white dark:bg-transparent"
+                                            onClick={toggleSidebarCollapse}>
+                                            <CloseSideBarIcon></CloseSideBarIcon>
+                                        </a>
+                                    </Tooltip>
                                 </div>
 
                                 <div

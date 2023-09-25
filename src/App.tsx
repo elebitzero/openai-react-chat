@@ -10,6 +10,8 @@ import {CustomError} from "./service/CustomError";
 import db, {Conversation, getConversationById} from "./service/ConversationDB";
 import Sidebar from "./components/SideBar";
 import {conversationSelectedEmitter, conversationsEmitter} from "./service/EventEmitter";
+import {CloseSideBarIcon, OpenSideBarIcon} from "./svg";
+import Tooltip from "./components/Tooltip";
 
 export const updateConversationMessages = async (id: number, updatedMessages: any[]) => {
     const conversation = await db.conversations.get(id);
@@ -257,41 +259,13 @@ const App = () => {
                     <div className="text-input-with-header chat-pg-instructions flex items-center justify-center m-5">
                         <div>
                             {isSidebarCollapsed && (
-                                <a
-                                    className="flex px-3 min-h-[44px] py-1 gap-3 transition-colors duration-200 dark:text-black cursor-pointer text-sm rounded-md border dark:border-white/20 hover:bg-gray-500/10 h-11 w-11 flex-shrink-0 items-center justify-center bg-white"
-                                    onClick={toggleSidebarCollapse}
-                                    title="Expand sidebar"
-                                >
-                                    <svg
-                                        stroke="black"
-                                        fill="none"
-                                        strokeWidth="2"
-                                        viewBox="0 0 24 24"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        className="icon-sm"
-                                        height="1em"
-                                        width="1em"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                        <rect x="2" y="2" width="20" height="20" rx="2" ry="2"></rect>
-                                        <line x1="9" y1="2" x2="9" y2="22"></line>
-                                    </svg>
-                                    <span style={{
-                                        position: "absolute",
-                                        border: "0px",
-                                        width: "1px",
-                                        height: "1px",
-                                        padding: "0px",
-                                        margin: "-1px",
-                                        overflow: "hidden",
-                                        clip: "rect(0px, 0px, 0px, 0px)",
-                                        whiteSpace: "nowrap",
-                                        overflowWrap: "normal"
-                                    }}>
-      {isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-    </span>
-                                </a>
+                                <Tooltip title="Open sidebar">
+                                    <a
+                                        className="flex px-3 min-h-[44px] py-1 gap-3 transition-colors duration-200 dark:text-black cursor-pointer text-sm rounded-md hover:bg-gray-500/10 h-11 w-11 flex-shrink-0 items-center justify-center bg-white"
+                                        onClick={toggleSidebarCollapse}>
+                                        <OpenSideBarIcon></OpenSideBarIcon>
+                                    </a>
+                                </Tooltip>
                             )}
                         </div>
                         <div className="text-input-header-subheading subheading">System:</div>
