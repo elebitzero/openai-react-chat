@@ -7,10 +7,10 @@ import {SubmitButton} from "./components/SubmitButton";
 import {OPENAI_DEFAULT_SYSTEM_PROMPT} from "./config";
 import {toast, ToastContainer} from "react-toastify";
 import {CustomError} from "./service/CustomError";
-import db, {Conversation, getConversationById} from "./service/ConversationDB";
+import db, {getConversationById} from "./service/ConversationDB";
 import Sidebar from "./components/SideBar";
 import {conversationSelectedEmitter, conversationsEmitter} from "./service/EventEmitter";
-import {CloseSideBarIcon, OpenSideBarIcon} from "./svg";
+import {OpenSideBarIcon} from "./svg";
 import Tooltip from "./components/Tooltip";
 
 export const updateConversationMessages = async (id: number, updatedMessages: any[]) => {
@@ -255,7 +255,8 @@ const App = () => {
             />
             <div className="flex h-full max-w-full flex-1 flex-col">
                 <ToastContainer/>
-                <main className="relative h-full w-full transition-width flex flex-col overflow-hidden items-stretch flex-1">
+                <main
+                    className="relative h-full w-full transition-width flex flex-col overflow-hidden items-stretch flex-1">
                     <div className="text-input-with-header chat-pg-instructions flex items-center justify-center m-5">
                         <div>
                             {isSidebarCollapsed && (

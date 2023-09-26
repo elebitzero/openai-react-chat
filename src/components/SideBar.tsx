@@ -3,7 +3,7 @@ import db, {Conversation} from "../service/ConversationDB";
 import {conversationSelectedEmitter, conversationsEmitter} from '../service/EventEmitter';
 import {ChatBubbleLeftIcon, PencilSquareIcon, PlusIcon, TrashIcon} from "@heroicons/react/24/outline";
 import {CloseSideBarIcon, iconProps} from "../svg";
-import Tooltip from "./Tooltip";  // Assuming you have this path for the EventEmitter
+import Tooltip from "./Tooltip";
 
 interface SidebarProps {
     isSidebarCollapsed: boolean;
