@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import db, {Conversation} from "../service/ConversationDB";
 import {conversationSelectedEmitter, conversationsEmitter} from '../service/EventEmitter';
-import {ChatBubbleLeftIcon, PencilSquareIcon, PlusIcon, TrashIcon} from "@heroicons/react/24/outline";
+import {ChatBubbleLeftIcon, CheckIcon, PencilSquareIcon, PlusIcon, TrashIcon, XMarkIcon} from "@heroicons/react/24/outline";
 import {CloseSideBarIcon, iconProps} from "../svg";
 import Tooltip from "./Tooltip";
 
@@ -13,6 +13,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarCollapsed, toggleSidebarColl
 
     const [conversations, setConversations] = useState<Conversation[]>([]);
     const [conversationsWithMarkers, setConversationsWithMarkers] = useState<Conversation[]>([]);
+    const [isEditingTitle, setIsEditingTitle] = useState(false);
+    const [editedTitle, setEditedTitle] = useState("");
     const [selectedId, setSelectedId] = useState<number | null>(null);
     const NUM_INITIAL_CONVERSATIONS = 200;
 
@@ -49,7 +51,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarCollapsed, toggleSidebarColl
         setConversationsWithMarkers(insertTimeMarkers(sortedConversations));
     }, [conversations]);
 
-
     const handleNewChat = () => {
         // Emit an event to inform the right panel to reset to the initial state
         conversationSelectedEmitter.emit('selectConversation', null);
@@ -70,9 +71,19 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarCollapsed, toggleSidebarColl
         // Emit an event to inform the right panel to reset to the initial state
         conversationSelectedEmitter.emit('selectConversation', null);
     };
-    function selectConversation(conversation: Conversation) {
-        setSelectedId(conversation.id);
-        conversationSelectedEmitter.emit('selectConversation', conversation.id);
+
+    const selectConversation = (conversation: Conversation) => {
+        if (isEditingTitle) {
+            // If in edit mode, cancel edit mode and select the new conversation
+            setIsEditingTitle(false);
+            setEditedTitle(''); // Clear editedTitle
+            setSelectedId(conversation.id);
+            conversationSelectedEmitter.emit('selectConversation', conversation.id);
+        } else {
+            // If not in edit mode, simply select the conversation
+            setSelectedId(conversation.id);
+            conversationSelectedEmitter.emit('selectConversation', conversation.id);
+        }
     }
 
     const getHeaderFromTimestamp = (timestamp: number) => {
@@ -102,6 +113,17 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarCollapsed, toggleSidebarColl
             withMarkers.push(convo);
         });
         return withMarkers;
+    };
+
+    const toggleEditMode = (convo: Conversation) => {
+        if (!isEditingTitle) {
+            // Entering edit mode, initialize editedTitle with convo.title
+            setEditedTitle(convo.title);
+        } else {
+            // Exiting edit mode, clear editedTitle
+            setEditedTitle('');
+        }
+        setIsEditingTitle(!isEditingTitle);
     };
 
     return (
@@ -166,27 +188,89 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarCollapsed, toggleSidebarColl
                                                                             data-projection-id="5"
                                                                             style={{opacity: 1, height: "auto"}}>
                                                                             <a
-                                                                                className="flex py-3 px-3 items-center gap-3 relative rounded-md hover:bg-gray-100 cursor-pointer break-all bg-gray-100 dark:bg-gray-800 pr-14 dark:hover:bg-gray-800 group"
+                                                                                className={`flex py-3 px-3 items-center gap-3 relative rounded-md hover:bg-gray-100 cursor-pointer break-all bg-gray-100 dark:bg-gray-800 pr-14 dark:hover:bg-gray-800 group`}
                                                                             >
                                                                                 <ChatBubbleLeftIcon {...iconProps} />
-                                                                                <div
-                                                                                    className="flex-1 text-ellipsis max-h-5 overflow-hidden break-all relative">
-                                                                                    {convo.title}
-                                                                                    <div
-                                                                                        className="absolute inset-y-0 right-0 w-8 z-10 bg-gradient-to-l dark:from-gray-800 from-gray-100"></div>
-                                                                                </div>
-                                                                                <div
-                                                                                    className="absolute flex right-1 z-10 dark:text-gray-300 text-gray-800 visible">
-                                                                                    <button
-                                                                                        className="p-1 hover:text-white"
-                                                                                        style={{visibility: "hidden"}}>
-                                                                                        <PencilSquareIcon {...iconProps} />
-                                                                                    </button>
-                                                                                    <button
-                                                                                        onClick={() => deleteConversation(convo.id)}
-                                                                                        className="p-1 hover:text-white">
-                                                                                        <TrashIcon {...iconProps} />
-                                                                                    </button>
+                                                                                {isEditingTitle ? (
+                                                                                    <div className={"flex items-center gap-3"}>
+                                                                                        <input
+                                                                                            type="text"
+                                                                                            className={'dark:bg-gray-800 dark:text-gray-100'}
+                                                                                            value={editedTitle}
+                                                                                            onChange={(e) => setEditedTitle(e.target.value)}
+                                                                                            autoFocus={true}
+                                                                                            maxLength={30}
+                                                                                            style={{width: "125px"}}
+                                                                                            onBlur={() => {
+                                                                                                if (isEditingTitle) {
+                                                                                                    // If in edit mode and the input loses focus, cancel the edit
+                                                                                                    setEditedTitle('');
+                                                                                                    setIsEditingTitle(false);
+                                                                                                }
+                                                                                            }}
+                                                                                        />
+                                                                                    </div>
+                                                                                ) : (
+                                                                                    <div className="flex-1 text-ellipsis max-h-5 overflow-hidden break-all relative">
+                                                                                        {convo.title}
+                                                                                        <div className="absolute inset-y-0 right-0 w-8 z-10 bg-gradient-to-l dark:from-gray-800 from-gray-100"></div>
+                                                                                    </div>
+                                                                                )}
+                                                                                <div className="absolute flex right-1 z-10 dark:text-gray-300 text-gray-800">
+                                                                                    {isEditingTitle ? (
+                                                                                        <div>
+                                                                                            <button
+                                                                                                onClick={() => {
+                                                                                                    // Save the edited title here
+                                                                                                    db.conversations.update(convo.id, { title: editedTitle })
+                                                                                                        .then(updatedCount => {
+                                                                                                            if (updatedCount > 0) {
+                                                                                                                // Update the conversation title in the state
+                                                                                                                const updatedConversations = conversations.map((conversation) => {
+                                                                                                                    if (conversation.id === convo.id) {
+                                                                                                                        return { ...conversation, title: editedTitle };
+                                                                                                                    }
+                                                                                                                    return conversation;
+                                                                                                                });
+                                                                                                                setConversations(updatedConversations);
+                                                                                                                setIsEditingTitle(false); // Exit edit mode
+                                                                                                            } else {
+                                                                                                                // Handle the case where the update in the database fails
+                                                                                                                console.error("Failed to update conversation title in the database.");
+                                                                                                            }
+                                                                                                        })
+                                                                                                        .catch(error => {
+                                                                                                            console.error("Error updating conversation title in the database:", error);
+                                                                                                        });
+                                                                                                }}
+                                                                                            >
+                                                                                                <CheckIcon {...iconProps} />
+                                                                                            </button>
+                                                                                            <button
+                                                                                                onClick={() => {
+                                                                                                    setIsEditingTitle(false); // Exit edit mode without saving
+                                                                                                    setEditedTitle(""); // Clear the edited title
+                                                                                                }}
+                                                                                            >
+                                                                                                <XMarkIcon {...iconProps} />
+                                                                                            </button>
+                                                                                        </div>
+                                                                                    ) : (
+                                                                                        <>
+                                                                                            <button
+                                                                                                onClick={() => toggleEditMode(convo)}
+                                                                                                className={`p-1 hover:text-white`}
+                                                                                            >
+                                                                                                <PencilSquareIcon {...iconProps} />
+                                                                                            </button>
+                                                                                            <button
+                                                                                                onClick={() => deleteConversation(convo.id)}
+                                                                                                className="p-1 hover:text-white"
+                                                                                            >
+                                                                                                <TrashIcon {...iconProps} />
+                                                                                            </button>
+                                                                                        </>
+                                                                                    )}
                                                                                 </div>
                                                                             </a>
                                                                         </li>
