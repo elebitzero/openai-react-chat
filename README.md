@@ -3,7 +3,7 @@
 This project provides a web frontend for the OpenAI chat API. This project is for developers or advanced users that are familiar with [OpenAI ChatGPT](https://chat.openai.com/) but want to customize the web interface.
 ## Goals
 * Provide the same features as [OpenAI ChatGPT](https://chat.openai.com/) and <!-- markdown-link-check-enable -->
-[OpenAI Playground](https://platform.openai.com/playground?mode=chat.
+[OpenAI Playground](https://platform.openai.com/playground?mode=chat).
 * Use a modern web stack of React, Tailwind CSS, and Typescript.
 
 See [FEATURES.md](FEATURES.md) for details.
