@@ -141,6 +141,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarCollapsed, toggleSidebarColl
         }
     };
 
+    const handleContextMenu = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        setIsEditingTitle(false);
+    };
+
     const insertTimeMarkers = (conversations: Conversation[]) => {
         let lastHeader = "";
         const withMarkers: Conversation[] = [];
@@ -241,7 +245,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarCollapsed, toggleSidebarColl
                                                                                             onKeyDown={(e) => handleTitleInputKeyPress(e,convo)}
                                                                                             autoFocus={true}
                                                                                             maxLength={30}
-                                                                                            style={{width: "125px"}}
+                                                                                            style={{width: "135px"}}
                                                                                             onBlur={(e) => {
                                                                                                 if (isEditingTitle) {
                                                                                                     handleInputBlur(e,convo);
@@ -259,29 +263,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarCollapsed, toggleSidebarColl
                                                                                     {isEditingTitle ? (
                                                                                         <div>
                                                                                             <button
-                                                                                                onClick={() => {
-                                                                                                    // Save the edited title here
-                                                                                                    db.conversations.update(convo.id, { title: editedTitle })
-                                                                                                        .then(updatedCount => {
-                                                                                                            if (updatedCount > 0) {
-                                                                                                                // Update the conversation title in the state
-                                                                                                                const updatedConversations = conversations.map((conversation) => {
-                                                                                                                    if (conversation.id === convo.id) {
-                                                                                                                        return { ...conversation, title: editedTitle };
-                                                                                                                    }
-                                                                                                                    return conversation;
-                                                                                                                });
-                                                                                                                setConversations(updatedConversations);
-                                                                                                                setIsEditingTitle(false); // Exit edit mode
-                                                                                                            } else {
-                                                                                                                // Handle the case where the update in the database fails
-                                                                                                                console.error("Failed to update conversation title in the database.");
-                                                                                                            }
-                                                                                                        })
-                                                                                                        .catch(error => {
-                                                                                                            console.error("Error updating conversation title in the database:", error);
-                                                                                                        });
-                                                                                                }}
+                                                                                                onClick={() => {saveEditedTitle(convo)}}
+                                                                                                onContextMenu={handleContextMenu}
                                                                                             >
                                                                                                 <CheckIcon {...iconProps} />
                                                                                             </button>
