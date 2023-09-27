@@ -101,6 +101,46 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarCollapsed, toggleSidebarColl
         return date.toLocaleString('default', { month: 'long' });
     };
 
+    const handleTitleInputKeyPress = (e: React.KeyboardEvent<HTMLInputElement>, conversation : Conversation) => {
+        if (e.key === 'Enter') {
+            // Save the edited title when Enter key is pressed
+            saveEditedTitle(conversation);
+        }
+    };
+
+    const saveEditedTitle = (conversation: Conversation) => {
+        db.conversations
+            .update(conversation.id, { title: editedTitle })
+            .then((updatedCount: number) => {
+                if (updatedCount > 0) {
+                    // Update the conversation title in the state
+                    const updatedConversations = conversations.map((c) => {
+                        if (c.id === conversation.id) {
+                            return { ...c, title: editedTitle };
+                        }
+                        return c;
+                    });
+                    setConversations(updatedConversations);
+                    setIsEditingTitle(false); // Exit edit mode
+                } else {
+                    // Handle the case where the update in the database fails
+                    console.error('Failed to update conversation title in the database.');
+                }
+            })
+            .catch((error: Error) => {
+                console.error('Error updating conversation title in the database:', error);
+            });
+    };
+
+    const handleInputBlur = (e: React.FocusEvent<HTMLInputElement>, conversation : Conversation) => {
+        // Check if the blur event was not caused by pressing the Enter key
+        if (!e.relatedTarget) {
+            // If in edit mode and the input loses focus, cancel the edit
+            setEditedTitle(conversation.title);
+            setIsEditingTitle(false);
+        }
+    };
+
     const insertTimeMarkers = (conversations: Conversation[]) => {
         let lastHeader = "";
         const withMarkers: Conversation[] = [];
@@ -198,14 +238,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarCollapsed, toggleSidebarColl
                                                                                             className={'dark:bg-gray-800 dark:text-gray-100'}
                                                                                             value={editedTitle}
                                                                                             onChange={(e) => setEditedTitle(e.target.value)}
+                                                                                            onKeyDown={(e) => handleTitleInputKeyPress(e,convo)}
                                                                                             autoFocus={true}
                                                                                             maxLength={30}
                                                                                             style={{width: "125px"}}
-                                                                                            onBlur={() => {
+                                                                                            onBlur={(e) => {
                                                                                                 if (isEditingTitle) {
-                                                                                                    // If in edit mode and the input loses focus, cancel the edit
-                                                                                                    setEditedTitle('');
-                                                                                                    setIsEditingTitle(false);
+                                                                                                    handleInputBlur(e,convo);
                                                                                                 }
                                                                                             }}
                                                                                         />
