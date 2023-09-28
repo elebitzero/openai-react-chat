@@ -245,7 +245,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarCollapsed, toggleSidebarColl
                                                                                             onKeyDown={(e) => handleTitleInputKeyPress(e,convo)}
                                                                                             autoFocus={true}
                                                                                             maxLength={30}
-                                                                                            style={{width: "135px"}}
+                                                                                            style={{width: "150px"}}
                                                                                             onBlur={(e) => {
                                                                                                 if (isEditingTitle) {
                                                                                                     handleInputBlur(e,convo);
@@ -264,6 +264,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarCollapsed, toggleSidebarColl
                                                                                         <>
                                                                                             <button
                                                                                                 onClick={() => {saveEditedTitle(convo)}}
+                                                                                                className={`p-1 hover:text-white`}
                                                                                                 onContextMenu={handleContextMenu}
                                                                                             >
                                                                                                 <CheckIcon {...iconProps} />
@@ -273,6 +274,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarCollapsed, toggleSidebarColl
                                                                                                     setIsEditingTitle(false); // Exit edit mode without saving
                                                                                                     setEditedTitle(""); // Clear the edited title
                                                                                                 }}
+                                                                                                className={`p-1 hover:text-white`}
                                                                                             >
                                                                                                 <XMarkIcon {...iconProps} />
                                                                                             </button>
