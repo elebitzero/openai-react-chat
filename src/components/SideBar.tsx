@@ -261,7 +261,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarCollapsed, toggleSidebarColl
                                                                                 )}
                                                                                 <div className="absolute flex right-1 z-10 dark:text-gray-300 text-gray-800">
                                                                                     {isEditingTitle ? (
-                                                                                        <div>
+                                                                                        <>
                                                                                             <button
                                                                                                 onClick={() => {saveEditedTitle(convo)}}
                                                                                                 onContextMenu={handleContextMenu}
@@ -276,7 +276,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarCollapsed, toggleSidebarColl
                                                                                             >
                                                                                                 <XMarkIcon {...iconProps} />
                                                                                             </button>
-                                                                                        </div>
+                                                                                        </>
                                                                                     ) : (
                                                                                         <>
                                                                                             <button
