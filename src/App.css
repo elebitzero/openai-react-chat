@@ -1596,7 +1596,7 @@ pre[class*=language-] {
 }
 
 .dark .dark\:from-gray-900 {
-    --tw-gradient-from: #202123 var(--tw-gradient-from-position);
+    --tw-gradient-from: rgb(17 24 39 / var(--tw-bg-opacity)) var(--tw-gradient-from-position);
     --tw-gradient-to: rgba(32,33,35,0) var(--tw-gradient-to-position);
     --tw-gradient-stops: var(--tw-gradient-from),var(--tw-gradient-to);
 }
