@@ -9,9 +9,10 @@ import {ChatMessage} from "../models/ChatCompletion";
 
 interface Props {
     chatBlocks: ChatMessage[];
+    onChatScroll: (isAtBottom : boolean) => void;
 }
 
-const Chat: React.FC<Props> = ({chatBlocks }) => {
+const Chat: React.FC<Props> = ({chatBlocks, onChatScroll}) => {
     const [isNewConversation, setIsNewConversation] = useState<boolean>(false);
     const [models, setModels] = useState<OpenAIModel[]>([]);
     const [error, setError] = useState<string | null>(null);
@@ -64,9 +65,32 @@ const Chat: React.FC<Props> = ({chatBlocks }) => {
         });
     }, [error])
 
+    useEffect(() => {
+        const chatContainer = chatDivRef.current;
+        if (chatContainer) {
+            const isAtBottom =
+                chatContainer.scrollHeight - chatContainer.scrollTop ===
+                chatContainer.clientHeight;
+
+            // Initially hide the button if chat is at the bottom
+            onChatScroll(isAtBottom);
+        }
+    }, []);
+
+    const handleScroll = () => {
+        if (chatDivRef.current) {
+            const scrollThreshold = 20; // Adjust this value as needed
+            const isAtBottom =
+                chatDivRef.current.scrollHeight -
+                chatDivRef.current.scrollTop <=
+                chatDivRef.current.clientHeight + scrollThreshold;
+            onChatScroll(isAtBottom);
+        }
+    };
+
     return (
 
-        <div className="flex-1 overflow-auto" ref={chatDivRef}>
+        <div className="flex-1 overflow-auto" ref={chatDivRef} id={'chat-container'} onScroll={handleScroll}>
             <div className="flex flex-col items-center text-sm dark:bg-gray-800">
                 <div
                     className="flex w-full items-center justify-center gap-1 border-b border-black/10 p-3 text-gray-500 dark:border-gray-900/50 dark:bg-gray-700 dark:text-gray-300">

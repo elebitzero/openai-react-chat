@@ -4,6 +4,7 @@ import {ChatService} from "./service/ChatService";
 import Chat from "./components/Chat";
 import {ChatCompletion, ChatMessage, MessageType, Role} from "./models/ChatCompletion";
 import {SubmitButton} from "./components/SubmitButton";
+import {ScrollToBottomButton} from "./components/ScrollToBottomButton";
 import {OPENAI_DEFAULT_SYSTEM_PROMPT} from "./config";
 import {toast, ToastContainer} from "react-toastify";
 import {CustomError} from "./service/CustomError";
@@ -23,7 +24,8 @@ export const updateConversationMessages = async (id: number, updatedMessages: an
 
 const App = () => {
     const [conversationTitle, setConversationTitle] = useState('Default Title');
-    const textAreaRef = useRef<HTMLTextAreaElement>(null);  // Create a ref
+    const [showScrollButton, setShowScrollButton] = useState(false);
+    const textAreaRef = useRef<HTMLTextAreaElement>(null);
     const [isNewConversation, setIsNewConversation] = useState<boolean>(false);
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
     const [conversationId, setConversationId] = useState(0);
@@ -248,6 +250,17 @@ const App = () => {
         setIsSidebarCollapsed((prevCollapsed) => !prevCollapsed);
     }
 
+    const scrollToBottom = () => {
+        const chatContainer = document.getElementById('chat-container'); // Replace with your chat container's actual ID
+        if (chatContainer) {
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+    };
+
+    const handleChatScroll = (isAtBottom: boolean) => {
+        setShowScrollButton(isAtBottom);
+    };
+
     return (
         <div className="overflow-hidden w-full h-full relative flex z-0">
             <Sidebar isSidebarCollapsed={isSidebarCollapsed}
@@ -286,9 +299,10 @@ const App = () => {
                          ></textarea>
                         </div>
                     </div>
-                    <Chat chatBlocks={messages}/>
+                    <Chat chatBlocks={messages} onChatScroll={handleChatScroll}/>
                     <div
                         className="absolute bottom-0 left-0 w-full border-t md:border-t-0 dark:border-white/20 md:border-transparent md:dark:border-transparent bg-white dark:bg-gray-800 md:!bg-transparent dark:md:bg-vert-dark-gradient pt-2">
+                        {showScrollButton || <ScrollToBottomButton onClick={scrollToBottom} />}
                         <form onSubmit={handleSubmit}
                               className="stretch mx-2 flex flex-row gap-3 last:mb-2 md:mx-4 md:last:mb-6 lg:mx-auto lg:max-w-2xl xl:max-w-3xl">
                             <div className="relative flex h-full flex-1 md:flex-col">

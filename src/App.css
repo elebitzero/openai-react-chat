@@ -129,6 +129,17 @@ textarea:focus-visible {
     width: 100%;
 }
 
+.scroll-to-bottom-button {
+    position: absolute;
+    left: 58em;
+    bottom: 5em;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    padding: 5px;
+    cursor: pointer;
+}
+
 /* Custom Scrollbar Styles */
 ::-webkit-scrollbar {
     width: 8px;
