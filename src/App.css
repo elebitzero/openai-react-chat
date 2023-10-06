@@ -131,7 +131,7 @@ textarea:focus-visible {
 
 .scroll-to-bottom-button {
     position: absolute;
-    left: 58em;
+    right: 1.5em;
     bottom: 5em;
     background-color: #fff;
     border: 1px solid #ccc;
