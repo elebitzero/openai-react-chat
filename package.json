@@ -7,7 +7,7 @@
     "@headlessui/react": "^1.7.17",
     "@heroicons/react": "^2.0.18",
     "@radix-ui/react-tooltip": "^1.0.6",
-    "autoprefixer": "^10.4.15",
+    "autoprefixer": "^10.4.16",
     "dexie": "^3.2.4",
     "highlight.js": "^11.8.0",
     "postcss": "^8.4.29",
