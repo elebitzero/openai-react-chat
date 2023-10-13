@@ -14,7 +14,7 @@ export const SubmitButton: React.FC<SubmitButtonProps> = ({loading, disabled, st
     const strokeColor = isTextEmpty ? 'currentColor' : 'white';
 
     return (
-        <Tooltip title="Send message" side="top">
+        <Tooltip title="Send message" side="top" sideOffset={0}>
             <button
                 type="submit"
                 disabled={loading || disabled}
