@@ -198,7 +198,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarCollapsed, toggleSidebarColl
                                         <PlusIcon {...iconProps} />
                                         <span className="truncate">New chat</span>
                                     </a>
-                                    <Tooltip title="Close sidebar">
+                                    <Tooltip title="Close sidebar" side="right">
                                         <a
                                             className="flex px-3 min-h-[44px] py-1 gap-3 transition-colors duration-200 dark:text-white cursor-pointer text-sm rounded-md border dark:border-white/20 hover:bg-gray-500/10 h-11 w-11 flex-shrink-0 items-center justify-center bg-white dark:bg-transparent"
                                             onClick={toggleSidebarCollapse}>

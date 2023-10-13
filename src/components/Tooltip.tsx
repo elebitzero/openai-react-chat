@@ -5,9 +5,10 @@ import * as RadixTooltip from '@radix-ui/react-tooltip';
 interface TooltipProps {
     title: string;
     children: React.ReactNode; // Explicitly adding children
+    side: "top" | "right" | "bottom" | "left";
 }
 
-const Tooltip: React.FC<TooltipProps> = ({title, children}) => {
+const Tooltip: React.FC<TooltipProps> = ({title, children, side}) => {
     return (
         <RadixTooltip.Provider delayDuration={400}>
             <RadixTooltip.Root>
@@ -17,7 +18,7 @@ const Tooltip: React.FC<TooltipProps> = ({title, children}) => {
                 <RadixTooltip.Portal>
                     <RadixTooltip.Content
                         className="relative rounded-lg border border-black/10 bg-black p-1 shadow-xs transition-opacity max-w-xs"
-                        side={"right"}
+                        side={side}
                         sideOffset={10}
                     >
             <span

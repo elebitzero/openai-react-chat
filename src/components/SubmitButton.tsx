@@ -1,6 +1,7 @@
 import React, {CSSProperties} from 'react';
 import {EllipsisHorizontalIcon, PaperAirplaneIcon} from '@heroicons/react/24/outline';
 import './SubmitButton.css';
+import Tooltip from "./Tooltip";
 
 interface SubmitButtonProps {
     loading: boolean;
@@ -13,6 +14,7 @@ export const SubmitButton: React.FC<SubmitButtonProps> = ({loading, disabled, st
     const strokeColor = isTextEmpty ? 'currentColor' : 'white';
 
     return (
+        <Tooltip title="Send message" side="top">
         <button
             type="submit"
             disabled={loading || disabled}
@@ -25,5 +27,6 @@ export const SubmitButton: React.FC<SubmitButtonProps> = ({loading, disabled, st
                 <PaperAirplaneIcon width={24} height={24} stroke={strokeColor}/>
             )}
         </button>
+        </Tooltip>
     );
 };

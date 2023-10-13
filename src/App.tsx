@@ -273,7 +273,7 @@ const App = () => {
                     <div className="text-input-with-header chat-pg-instructions flex items-center justify-center m-5">
                         <div>
                             {isSidebarCollapsed && (
-                                <Tooltip title="Open sidebar">
+                                <Tooltip title="Open sidebar" side="right">
                                     <a
                                         className="flex px-3 min-h-[44px] py-1 gap-3 transition-colors duration-200 dark:text-black cursor-pointer text-sm rounded-md hover:bg-gray-500/10 h-11 w-11 flex-shrink-0 items-center justify-center bg-white"
                                         onClick={toggleSidebarCollapse}>
