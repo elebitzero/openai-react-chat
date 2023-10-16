@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import db, {Conversation} from "../service/ConversationDB";
 import {conversationSelectedEmitter, conversationsEmitter} from '../service/EventEmitter';
 import {ChatBubbleLeftIcon, CheckIcon, PencilSquareIcon, PlusIcon, TrashIcon, XMarkIcon} from "@heroicons/react/24/outline";
@@ -10,7 +10,7 @@ interface SidebarProps {
     toggleSidebarCollapse: () => void;
 }
 const Sidebar: React.FC<SidebarProps> = ({ isSidebarCollapsed, toggleSidebarCollapse }) => {
-
+    const acceptButtonRef = useRef<HTMLButtonElement | null>(null);
     const [conversations, setConversations] = useState<Conversation[]>([]);
     const [conversationsWithMarkers, setConversationsWithMarkers] = useState<Conversation[]>([]);
     const [isEditingTitle, setIsEditingTitle] = useState(false);
@@ -133,12 +133,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarCollapsed, toggleSidebarColl
     };
 
     const handleInputBlur = (e: React.FocusEvent<HTMLInputElement>, conversation : Conversation) => {
-        // Check if the blur event was not caused by pressing the Enter key
-        if (!e.relatedTarget) {
-            // If in edit mode and the input loses focus, cancel the edit
-            setEditedTitle(conversation.title);
-            setIsEditingTitle(false);
+        if (acceptButtonRef.current) {
+            saveEditedTitle(conversation);
         }
+        // Check if the blur event was not caused by pressing the Enter key
+        // If in edit mode and the input loses focus, cancel the edit
+        setEditedTitle(conversation.title);
+        setIsEditingTitle(false);
     };
 
     const handleContextMenu = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -263,6 +264,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarCollapsed, toggleSidebarColl
                                                                                     {isEditingTitle ? (
                                                                                         <>
                                                                                             <button
+                                                                                                ref={acceptButtonRef}
                                                                                                 onClick={() => {saveEditedTitle(convo)}}
                                                                                                 className={`p-1 hover:text-white`}
                                                                                                 onContextMenu={handleContextMenu}
