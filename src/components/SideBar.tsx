@@ -1,7 +1,15 @@
 import React, {useEffect, useRef, useState} from 'react';
-import db, {Conversation} from "../service/ConversationDB";
+import db, {Conversation, searchConversationsByTitle} from "../service/ConversationDB";
 import {conversationSelectedEmitter, conversationsEmitter} from '../service/EventEmitter';
-import {ChatBubbleLeftIcon, CheckIcon, PencilSquareIcon, PlusIcon, TrashIcon, XMarkIcon} from "@heroicons/react/24/outline";
+import {
+    ChatBubbleLeftIcon,
+    CheckIcon,
+    MagnifyingGlassIcon,
+    PencilSquareIcon,
+    PlusIcon,
+    TrashIcon,
+    XMarkIcon
+} from "@heroicons/react/24/outline";
 import {CloseSideBarIcon, iconProps} from "../svg";
 import Tooltip from "./Tooltip";
 
@@ -19,18 +27,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarCollapsed, toggleSidebarColl
     const NUM_INITIAL_CONVERSATIONS = 200;
 
     useEffect(() => {
-        db.conversations
-            .orderBy('timestamp')
-            .reverse()
-            .limit(NUM_INITIAL_CONVERSATIONS)
-            .toArray()
-            .then(fetchedConversations => {
-                const modifiedConversations = fetchedConversations.map(conversation => ({
-                    ...conversation,
-                    messages: "[]"
-                }));
-                setConversations(modifiedConversations);
-            });
+        loadConversations();
 
         const handleNewConversation = (conversation: Conversation) => {
             setSelectedId(conversation.id);
@@ -50,6 +47,21 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarCollapsed, toggleSidebarColl
         const sortedConversations = [...conversations].sort((a, b) => b.timestamp - a.timestamp);  // Sort by timestamp if not already sorted
         setConversationsWithMarkers(insertTimeMarkers(sortedConversations));
     }, [conversations]);
+
+    const loadConversations = () => {
+        db.conversations
+            .orderBy('timestamp')
+            .reverse()
+            .limit(NUM_INITIAL_CONVERSATIONS)
+            .toArray()
+            .then(fetchedConversations => {
+                const modifiedConversations = fetchedConversations.map(conversation => ({
+                    ...conversation,
+                    messages: "[]"
+                }));
+                setConversations(modifiedConversations);
+            });
+    }
 
     const handleNewChat = () => {
         // Emit an event to inform the right panel to reset to the initial state
@@ -171,6 +183,25 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarCollapsed, toggleSidebarColl
         setIsEditingTitle(!isEditingTitle);
     };
 
+    const handleSearch = async (searchString: string) => {
+        if (!searchString || searchString.trim() === '') {
+            loadConversations();
+            return;
+        }
+
+        try {
+            const foundConversations = await searchConversationsByTitle(searchString);
+            const modifiedConversations = foundConversations.map(conversation => ({
+                ...conversation,
+                messages: "[]"
+            }));
+            setConversations(modifiedConversations);
+        } catch (error) {
+            console.error("Error during search:", error);
+        }
+    };
+
+
     return (
         <div className="sidebar-container">
             <div className="sidebar h-full flex-shrink-0 overflow-x-hidden dark bg-gray-900"
@@ -207,7 +238,33 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarCollapsed, toggleSidebarColl
                                         </a>
                                     </Tooltip>
                                 </div>
+                                <div className="flex flex-row items-center mb-2">
+                                    <input
+                                        id="searchInput"
+                                        className="flex-grow rounded-md border dark:border-white/20 px-2 py-1"
+                                        type="text"
+                                        placeholder="Search..."
+                                        onKeyPress={(e) => {
+                                            if (e.key === 'Enter') {
+                                                // Handle search logic
+                                                handleSearch(e.currentTarget.value);
+                                            }
+                                        }}
+                                    />
+                                    <button
+                                        className="ml-2 rounded-md border dark:border-white/20 p-1"
+                                        onClick={() => {
+                                            const inputElement = document.getElementById('searchInput') as HTMLInputElement | null;
 
+                                            if (inputElement) {
+                                                const inputValue = inputElement.value;
+                                                handleSearch(inputValue);
+                                            }
+                                        }}
+                                    >
+                                    <MagnifyingGlassIcon style={{ color: "#FFFFFF" }} {...iconProps} />
+                                    </button>
+                                </div>
                                 <div
                                     className="flex-col flex-1 transition-opacity duration-500 -mr-2 pr-2 overflow-y-auto">
                                     <div className="flex flex-col gap-2 pb-2 dark:text-gray-100 text-gray-800 text-sm">

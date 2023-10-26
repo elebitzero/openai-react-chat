@@ -302,7 +302,7 @@ const App = () => {
                     <Chat chatBlocks={messages} onChatScroll={handleChatScroll}/>
                     <div
                         className="absolute bottom-0 left-0 w-full border-t md:border-t-0 dark:border-white/20 md:border-transparent md:dark:border-transparent bg-white dark:bg-gray-800 md:!bg-transparent dark:md:bg-vert-dark-gradient pt-2">
-                        {showScrollButton || <ScrollToBottomButton onClick={scrollToBottom} />}
+                        {showScrollButton || <ScrollToBottomButton onClick={scrollToBottom}/>}
                         <form onSubmit={handleSubmit}
                               className="stretch mx-2 flex flex-row gap-3 last:mb-2 md:mx-4 md:last:mb-6 lg:mx-auto lg:max-w-2xl xl:max-w-3xl">
                             <div className="relative flex h-full flex-1 md:flex-col">

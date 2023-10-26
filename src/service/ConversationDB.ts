@@ -27,6 +27,14 @@ export async function getConversationById(id: number): Promise<Conversation | un
     return db.conversations.get(id);
 }
 
+export async function searchConversationsByTitle(searchString: string): Promise<Conversation[]> {
+    const results = await db.conversations
+        .filter(conversation => conversation.title.includes(searchString))
+        .toArray();
+    return results;
+}
+
+
 const db = new ConversationDB();
 
 export default db;
