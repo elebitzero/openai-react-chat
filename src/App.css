@@ -124,6 +124,10 @@ textarea:focus-visible {
     resize: none;
 }
 
+.copy-button:hover svg path {
+    stroke: black;
+}
+
 .text-input-full {
     display: block;
     width: 100%;

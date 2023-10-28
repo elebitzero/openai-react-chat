@@ -52,7 +52,7 @@ const ChatBlock: React.FC<Props> = ({block}) => {
                     </div>
                     <div className="flex justify-end lg:block">
                         <div
-                            className="text-gray-400 flex self-end lg:self-center justify-center mt-2 lg:absolute lg:top-0 lg:translate-x-full lg:right-0 lg:mt-0 lg:pl-2 visible ml-auto">
+                            className="copy-button text-gray-400 flex self-end lg:self-center justify-center mt-2 lg:absolute lg:top-0 lg:translate-x-full lg:right-0 lg:mt-0 lg:pl-2 visible ml-auto">
                             <CopyButton mode={CopyButtonMode.Compact}
                                         text={block.content}/>
                         </div>
