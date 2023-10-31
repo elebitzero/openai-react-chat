@@ -303,7 +303,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarCollapsed, toggleSidebarColl
                                                                                             onKeyDown={(e) => handleTitleInputKeyPress(e,convo)}
                                                                                             autoFocus={true}
                                                                                             maxLength={30}
-                                                                                            style={{width: "142px"}}
+                                                                                            style={{width: "10em"}}
                                                                                             onBlur={(e) => {
                                                                                                 if (isEditingTitle) {
                                                                                                     handleInputBlur(e,convo);
