@@ -45,13 +45,11 @@
     justify-content: center;
     background-color: white;
     cursor: pointer;
-    transition: width 0.3s ease; /* Add transition for smooth animation */
 }
 
 .sidebar-container {
     display: flex;
     flex-direction: row;
-    transition: width 0.3s ease; /* Add transition for smooth animation */
 }
 
 .sidebar.collapsed {

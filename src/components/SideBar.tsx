@@ -204,7 +204,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarCollapsed, toggleSidebarColl
 
     return (
         <div className="sidebar-container">
-            <div className="sidebar h-full flex-shrink-0 overflow-x-hidden dark bg-gray-900"
+            <div className="sidebar duration-500 transition-all h-full flex-shrink-0 overflow-x-hidden dark bg-gray-900"
                  style={{width: isSidebarCollapsed ? "0px" : "260px"}}>
                 <div className="h-full w-[260px]">
                     <div className="flex h-full min-h-0 flex-col ">
