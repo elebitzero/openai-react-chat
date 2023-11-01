@@ -266,23 +266,24 @@ const App = () => {
             <Sidebar isSidebarCollapsed={isSidebarCollapsed}
                      toggleSidebarCollapse={toggleSidebarCollapse}
             />
+            <div className="sidebar-button">
+                {isSidebarCollapsed && (
+                    <Tooltip title="Open sidebar" side="right" sideOffset={10}>
+                        <a
+                            className="flex px-3 min-h-[44px] py-1 gap-3 transition-colors duration-200 dark:text-black cursor-pointer text-sm rounded-md hover:bg-gray-500/10 h-11 w-11 flex-shrink-0 items-center justify-center bg-white"
+                            onClick={toggleSidebarCollapse}>
+                            <OpenSideBarIcon></OpenSideBarIcon>
+                        </a>
+                    </Tooltip>
+                )}
+            </div>
             <div className="flex h-full max-w-full flex-1 flex-col">
                 <ToastContainer/>
                 <main
                     className="relative h-full w-full transition-width flex flex-col overflow-hidden items-stretch flex-1">
                     <div className="text-input-with-header chat-pg-instructions flex items-center justify-center m-5">
-                        <div>
-                            {isSidebarCollapsed && (
-                                <Tooltip title="Open sidebar" side="right" sideOffset={10}>
-                                    <a
-                                        className="flex px-3 min-h-[44px] py-1 gap-3 transition-colors duration-200 dark:text-black cursor-pointer text-sm rounded-md hover:bg-gray-500/10 h-11 w-11 flex-shrink-0 items-center justify-center bg-white"
-                                        onClick={toggleSidebarCollapse}>
-                                        <OpenSideBarIcon></OpenSideBarIcon>
-                                    </a>
-                                </Tooltip>
-                            )}
-                        </div>
-                        <div className="text-input-header-subheading subheading">System:</div>
+                        <div className="text-input-header-subheading subheading"
+                             style={{ marginLeft: isSidebarCollapsed ? '4em' : '0' }}>System:</div>
                         <div
                             className="text-input-header-wrapper overflow-wrapper text-input flex items-center justify-center w-3/5">
                          <textarea aria-label="Input"

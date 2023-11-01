@@ -47,6 +47,12 @@
     cursor: pointer;
 }
 
+.sidebar-button {
+    position: absolute;
+    margin: 0.5em;
+    z-index: 100;
+}
+
 .sidebar-container {
     display: flex;
     flex-direction: row;
