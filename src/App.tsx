@@ -10,9 +10,10 @@ import {toast, ToastContainer} from "react-toastify";
 import {CustomError} from "./service/CustomError";
 import db, {getConversationById} from "./service/ConversationDB";
 import Sidebar from "./components/SideBar";
-import {conversationSelectedEmitter, conversationsEmitter} from "./service/EventEmitter";
+import {conversationsEmitter} from "./service/EventEmitter";
 import {OpenSideBarIcon} from "./svg";
 import Tooltip from "./components/Tooltip";
+import {useLocation} from "react-router-dom";
 
 export const updateConversationMessages = async (id: number, updatedMessages: any[]) => {
     const conversation = await db.conversations.get(id);
@@ -21,6 +22,11 @@ export const updateConversationMessages = async (id: number, updatedMessages: an
         await db.conversations.put(conversation);
     }
 }
+
+function useCurrentPath() {
+    return useLocation().pathname;
+}
+
 
 const App = () => {
     const [conversationTitle, setConversationTitle] = useState('Default Title');
@@ -34,11 +40,13 @@ const App = () => {
     const [text, setText] = useState('');
     const isButtonDisabled = text === '' || loading;
     const [messages, setMessages] = useState<ChatMessage[]>([]);
+    const currentPath = useCurrentPath();
 
     useEffect(() => {
-        const handleSelectedConversation = (id: number) => {
-            if (id) {
-                getConversationById(id).then(conversation => {
+        const handleSelectedConversation = (id: string | null) => {
+            if (id && id.length > 0) {
+                let n = Number(id);
+                getConversationById(n).then(conversation => {
                     if (conversation) {
                         setConversationId(conversation.id)
                         setSystemPrompt(conversation.systemPrompt);
@@ -58,13 +66,9 @@ const App = () => {
             }
         };
 
-        conversationSelectedEmitter.on('selectConversation', handleSelectedConversation);
-
-        // Cleanup: remove the event listener when the component unmounts
-        return () => {
-            conversationSelectedEmitter.off('selectConversation', handleSelectedConversation);
-        };
-    }, []);
+        const itemId = currentPath.split('/c/')[1];
+        handleSelectedConversation(itemId)
+    }, [currentPath]);
 
     useEffect(() => {
         setIsNewConversation(messages.length === 0);

@@ -23,4 +23,3 @@ class EventEmitter {
 
 
 export const conversationsEmitter = new EventEmitter();
-export const conversationSelectedEmitter = new EventEmitter();

@@ -1,6 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
-import db, {Conversation, searchConversationsByTitle} from "../service/ConversationDB";
-import {conversationSelectedEmitter, conversationsEmitter} from '../service/EventEmitter';
+import {useLocation, useNavigate} from 'react-router-dom';
+import db, {Conversation, getConversationById, searchConversationsByTitle} from "../service/ConversationDB";
+import {conversationsEmitter} from '../service/EventEmitter';
 import {
     ChatBubbleLeftIcon,
     CheckIcon,
@@ -17,7 +18,12 @@ interface SidebarProps {
     isSidebarCollapsed: boolean;
     toggleSidebarCollapse: () => void;
 }
-const Sidebar: React.FC<SidebarProps> = ({ isSidebarCollapsed, toggleSidebarCollapse }) => {
+
+function useCurrentPath() {
+    return useLocation().pathname;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({isSidebarCollapsed, toggleSidebarCollapse}) => {
     const acceptButtonRef = useRef<HTMLButtonElement | null>(null);
     const [conversations, setConversations] = useState<Conversation[]>([]);
     const [conversationsWithMarkers, setConversationsWithMarkers] = useState<Conversation[]>([]);
@@ -25,6 +31,28 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarCollapsed, toggleSidebarColl
     const [editedTitle, setEditedTitle] = useState("");
     const [selectedId, setSelectedId] = useState<number | null>(null);
     const NUM_INITIAL_CONVERSATIONS = 200;
+    const navigate = useNavigate();
+    const currentPath = useCurrentPath();
+
+    useEffect(() => {
+        const handleSelectedConversation = (id: string | null) => {
+            if (id && id.length > 0) {
+                let n = Number(id);
+                getConversationById(n).then(conversation => {
+                    if (conversation) {
+                        setSelectedId(conversation.id);
+                    } else {
+                        console.error("Conversation not found.");
+                    }
+                });
+            } else {
+                setSelectedId(null);
+            }
+        };
+
+        const itemId = currentPath.split('/c/')[1];
+        handleSelectedConversation(itemId)
+    }, [currentPath]);
 
     useEffect(() => {
         loadConversations();
@@ -64,8 +92,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarCollapsed, toggleSidebarColl
     }
 
     const handleNewChat = () => {
-        // Emit an event to inform the right panel to reset to the initial state
-        conversationSelectedEmitter.emit('selectConversation', null);
+        navigate('');
     }
 
     const deleteConversation = (conversationId: number) => {
@@ -79,9 +106,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarCollapsed, toggleSidebarColl
         );
         // Reset the selectedId to null
         setSelectedId(null);
-
-        // Emit an event to inform the right panel to reset to the initial state
-        conversationSelectedEmitter.emit('selectConversation', null);
+        navigate('');
     };
 
     const selectConversation = (conversation: Conversation) => {
@@ -89,13 +114,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarCollapsed, toggleSidebarColl
             // If in edit mode, cancel edit mode and select the new conversation
             setIsEditingTitle(false);
             setEditedTitle(''); // Clear editedTitle
-            setSelectedId(conversation.id);
-            conversationSelectedEmitter.emit('selectConversation', conversation.id);
         } else {
             // If not in edit mode, simply select the conversation
-            setSelectedId(conversation.id);
-            conversationSelectedEmitter.emit('selectConversation', conversation.id);
         }
+        setSelectedId(conversation.id);
+        navigate(`/c/${conversation.id}`);
     }
 
     const getHeaderFromTimestamp = (timestamp: number) => {
@@ -110,10 +133,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarCollapsed, toggleSidebarColl
         if (diffDays <= 7) return 'Previous 7 Days';
         if (diffDays <= 30) return 'Previous 30 Days';
 
-        return date.toLocaleString('default', { month: 'long' });
+        return date.toLocaleString('default', {month: 'long'});
     };
 
-    const handleTitleInputKeyPress = (e: React.KeyboardEvent<HTMLInputElement>, conversation : Conversation) => {
+    const handleTitleInputKeyPress = (e: React.KeyboardEvent<HTMLInputElement>, conversation: Conversation) => {
         if (e.key === 'Enter') {
             // Save the edited title when Enter key is pressed
             saveEditedTitle(conversation);
@@ -122,13 +145,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarCollapsed, toggleSidebarColl
 
     const saveEditedTitle = (conversation: Conversation) => {
         db.conversations
-            .update(conversation.id, { title: editedTitle })
+            .update(conversation.id, {title: editedTitle})
             .then((updatedCount: number) => {
                 if (updatedCount > 0) {
                     // Update the conversation title in the state
                     const updatedConversations = conversations.map((c) => {
                         if (c.id === conversation.id) {
-                            return { ...c, title: editedTitle };
+                            return {...c, title: editedTitle};
                         }
                         return c;
                     });
@@ -144,7 +167,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarCollapsed, toggleSidebarColl
             });
     };
 
-    const handleInputBlur = (e: React.FocusEvent<HTMLInputElement>, conversation : Conversation) => {
+    const handleInputBlur = (e: React.FocusEvent<HTMLInputElement>, conversation: Conversation) => {
         if (acceptButtonRef.current) {
             saveEditedTitle(conversation);
         }
@@ -164,7 +187,15 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarCollapsed, toggleSidebarColl
         conversations.forEach((convo, index) => {
             const currentHeader = getHeaderFromTimestamp(convo.timestamp);
             if (currentHeader !== lastHeader) {
-                withMarkers.push({id: 0, messages: "", model: "", systemPrompt: "", timestamp: 0, marker: true, title: currentHeader });
+                withMarkers.push({
+                    id: 0,
+                    messages: "",
+                    model: "",
+                    systemPrompt: "",
+                    timestamp: 0,
+                    marker: true,
+                    title: currentHeader
+                });
                 lastHeader = currentHeader;
             }
             withMarkers.push(convo);
@@ -262,7 +293,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarCollapsed, toggleSidebarColl
                                             }
                                         }}
                                     >
-                                    <MagnifyingGlassIcon style={{ color: "#FFFFFF" }} {...iconProps} />
+                                        <MagnifyingGlassIcon style={{color: "#FFFFFF"}} {...iconProps} />
                                     </button>
                                 </div>
                                 <div
@@ -277,13 +308,16 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarCollapsed, toggleSidebarColl
                                                         conversationsWithMarkers.map((convo, index) => {
                                                             if ("marker" in convo) {
                                                                 return (
-                                                                    <li key={`marker-${index}`} className="sticky top-0 z-[16]">
+                                                                    <li key={`marker-${index}`}
+                                                                        className="sticky top-0 z-[16]">
                                                                         <h3 className="h-9 pb-2 pt-3 px-3 text-xs text-gray-500 font-medium text-ellipsis overflow-hidden bg-gray-50 dark:bg-gray-900">
                                                                             {convo.title}
                                                                         </h3>
                                                                     </li>
                                                                 );
                                                             } else {
+                                                                const linkTo = `/c/${convo.id}`;
+
                                                                 if (convo.id === selectedId) {
                                                                     return (
                                                                         <li key={convo.id} className="relative z-[15]"
@@ -294,35 +328,41 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarCollapsed, toggleSidebarColl
                                                                             >
                                                                                 <ChatBubbleLeftIcon {...iconProps} />
                                                                                 {isEditingTitle ? (
-                                                                                    <div className={"flex items-center gap-3"}>
+                                                                                    <div
+                                                                                        className={"flex items-center gap-3"}>
                                                                                         <input
                                                                                             type="text"
                                                                                             className={'dark:bg-gray-800 dark:text-gray-100'}
                                                                                             value={editedTitle}
                                                                                             onChange={(e) => setEditedTitle(e.target.value)}
-                                                                                            onKeyDown={(e) => handleTitleInputKeyPress(e,convo)}
+                                                                                            onKeyDown={(e) => handleTitleInputKeyPress(e, convo)}
                                                                                             autoFocus={true}
                                                                                             maxLength={30}
                                                                                             style={{width: "10em"}}
                                                                                             onBlur={(e) => {
                                                                                                 if (isEditingTitle) {
-                                                                                                    handleInputBlur(e,convo);
+                                                                                                    handleInputBlur(e, convo);
                                                                                                 }
                                                                                             }}
                                                                                         />
                                                                                     </div>
                                                                                 ) : (
-                                                                                    <div className="flex-1 text-ellipsis max-h-5 overflow-hidden break-all relative">
+                                                                                    <div
+                                                                                        className="flex-1 text-ellipsis max-h-5 overflow-hidden break-all relative">
                                                                                         {convo.title}
-                                                                                        <div className="absolute inset-y-0 right-0 w-8 z-10 bg-gradient-to-l dark:from-gray-800 from-gray-100"></div>
+                                                                                        <div
+                                                                                            className="absolute inset-y-0 right-0 w-8 z-10 bg-gradient-to-l dark:from-gray-800 from-gray-100"></div>
                                                                                     </div>
                                                                                 )}
-                                                                                <div className="absolute flex right-1 z-10 dark:text-gray-300 text-gray-800">
+                                                                                <div
+                                                                                    className="absolute flex right-1 z-10 dark:text-gray-300 text-gray-800">
                                                                                     {isEditingTitle ? (
                                                                                         <>
                                                                                             <button
                                                                                                 ref={acceptButtonRef}
-                                                                                                onClick={() => {saveEditedTitle(convo)}}
+                                                                                                onClick={() => {
+                                                                                                    saveEditedTitle(convo)
+                                                                                                }}
                                                                                                 className={`p-1 hover:text-white`}
                                                                                                 onContextMenu={handleContextMenu}
                                                                                             >
