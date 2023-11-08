@@ -57,6 +57,9 @@ const App = () => {
                             const messages: ChatMessage[] = JSON.parse(conversation.messages);
                             setMessages(messages);
                             setTextAreaText('');
+                            if (textAreaRef.current) {
+                                textAreaRef.current.style.height = 'auto';
+                            }
                         } else {
                             console.error("Conversation not found.");
                         }
