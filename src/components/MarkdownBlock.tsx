@@ -3,18 +3,10 @@ import 'highlight.js/styles/github.css';
 import ReactMarkdown from 'react-markdown';
 import "./MarkdownBlock.css";
 
-import {Light as SyntaxHighlighter} from 'react-syntax-highlighter';
-import java from 'react-syntax-highlighter/dist/esm/languages/hljs/java';
-import javascript from 'react-syntax-highlighter/dist/esm/languages/hljs/javascript';
-import python from 'react-syntax-highlighter/dist/esm/languages/hljs/python';
-import typescript from 'react-syntax-highlighter/dist/esm/languages/hljs/typescript';
+import SyntaxHighlighter from 'react-syntax-highlighter';
 import CopyButton from "./CopyButton";
 import {docco} from "react-syntax-highlighter/dist/esm/styles/hljs";
 
-SyntaxHighlighter.registerLanguage('javascript', javascript);
-SyntaxHighlighter.registerLanguage('typescript', typescript);
-SyntaxHighlighter.registerLanguage('python', python);
-SyntaxHighlighter.registerLanguage('python', java);
 
 interface ChatBlockProps {
     markdown: string;
