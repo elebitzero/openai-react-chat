@@ -6,6 +6,8 @@ import './globalStyles.css';
 import {ThemeProvider} from "./ThemeContext";
 import 'react-toastify/dist/ReactToastify.css';
 import App from "./App";
+import {conversationsEmitter} from "./service/EventEmitter";
+import ChatBlock from "./components/ChatBlock";
 
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement
@@ -18,8 +20,8 @@ root.render(
             </ThemeProvider>
         </React.StrictMode>
         <Routes>
-            <Route path="/" element={<App/>}/>
-            <Route path="/c/:conversationId" element={<div/>}/>
+            <Route path="/" />
+            <Route path="/c/:conversationId" />
             {/* ... other routes ... */}
             {/* Redirect from incorrect double slash URLs */}
             <Route path="//*" element={<Navigate to="/" replace/>}/>
