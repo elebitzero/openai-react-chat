@@ -13,7 +13,7 @@ import Sidebar from "./components/SideBar";
 import {conversationsEmitter} from "./service/EventEmitter";
 import {OpenSideBarIcon} from "./svg";
 import Tooltip from "./components/Tooltip";
-import {useLocation} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 
 export const updateConversationMessages = async (id: number, updatedMessages: any[]) => {
     const conversation = await db.conversations.get(id);
@@ -32,6 +32,7 @@ const App = () => {
     const [conversationTitle, setConversationTitle] = useState('Default Title');
     const [showScrollButton, setShowScrollButton] = useState(false);
     const textAreaRef = useRef<HTMLTextAreaElement>(null);
+    const [isNewCreation, setIsNewCreation] = useState(false);
     const [isNewConversation, setIsNewConversation] = useState<boolean>(false);
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
     const [conversationId, setConversationId] = useState(0);
@@ -41,28 +42,33 @@ const App = () => {
     const isButtonDisabled = text === '' || loading;
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const currentPath = useCurrentPath();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const handleSelectedConversation = (id: string | null) => {
-            if (id && id.length > 0) {
-                let n = Number(id);
-                getConversationById(n).then(conversation => {
-                    if (conversation) {
-                        setConversationId(conversation.id)
-                        setSystemPrompt(conversation.systemPrompt);
-                        ChatService.setSelectedModelId(conversation.model);
-                        const messages: ChatMessage[] = JSON.parse(conversation.messages);
-                        setMessages(messages);
-                    } else {
-                        console.error("Conversation not found.");
-                    }
-                });
+            if (!isNewCreation) {
+                if (id && id.length > 0) {
+                    let n = Number(id);
+                    getConversationById(n).then(conversation => {
+                        if (conversation) {
+                            setConversationId(conversation.id)
+                            setSystemPrompt(conversation.systemPrompt);
+                            ChatService.setSelectedModelId(conversation.model);
+                            const messages: ChatMessage[] = JSON.parse(conversation.messages);
+                            setMessages(messages);
+                        } else {
+                            console.error("Conversation not found.");
+                        }
+                    });
+                } else {
+                    setIsNewConversation(true);
+                    setConversationId(0);
+                    setSystemPrompt('');
+                    // ChatService.setSelectedModelId('');
+                    setMessages([]);
+                }
             } else {
-                setIsNewConversation(true);
-                setConversationId(0);
-                setSystemPrompt('');
-                // ChatService.setSelectedModelId('');
-                setMessages([]);
+                setIsNewCreation(false);
             }
         };
 
@@ -126,6 +132,8 @@ const App = () => {
         };
         conversationsEmitter.emit('newConversation', conversation);
         db.conversations.add(conversation);
+        setIsNewCreation(true);
+        navigate(`/c/${conversation.id}`);
     }
 
     const checkForEnterKey = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -147,7 +155,6 @@ const App = () => {
     };
 
     const addMessage = (role: Role, messageType: MessageType, content: string, callback?: (callback: ChatMessage[]) => void) => {
-        const newMessage: ChatMessage = {role: role, messageType: messageType, content: content};
 
         setMessages((prevMessages: ChatMessage[]) => {
             const message: ChatMessage = {
@@ -160,13 +167,13 @@ const App = () => {
             return updatedMessages;
         });
 
-        const message: ChatMessage = {
+        const newMessage: ChatMessage = {
             id: messages.length + 1,
             role: role,
             messageType: messageType,
             content: content
         };
-        const updatedMessages = [...messages, message];
+        const updatedMessages = [...messages, newMessage];
         if (callback) {
             callback(updatedMessages);
         }
