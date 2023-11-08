@@ -38,11 +38,11 @@ const App = () => {
     const [conversationId, setConversationId] = useState(0);
     const [loading, setLoading] = useState(false);
     const [systemPrompt, setSystemPrompt] = useState('');
-    const [text, setText] = useState('');
-    const isButtonDisabled = text === '' || loading;
+    const [isTextEmpty, setIsTextEmpty] = useState(true);
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const currentPath = useCurrentPath();
     const navigate = useNavigate();
+
 
     useEffect(() => {
         const handleSelectedConversation = (id: string | null) => {
@@ -56,6 +56,7 @@ const App = () => {
                             ChatService.setSelectedModelId(conversation.model);
                             const messages: ChatMessage[] = JSON.parse(conversation.messages);
                             setMessages(messages);
+                            setTextAreaText('');
                         } else {
                             console.error("Conversation not found.");
                         }
@@ -87,7 +88,7 @@ const App = () => {
     }, [messages]);
 
     const handleTextChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
-        setText(event.target.value);
+        setIsTextEmpty(event.target.value === '');
     };
 
     const handleAutoResize = (e: React.FormEvent<HTMLTextAreaElement>) => {
@@ -116,12 +117,27 @@ const App = () => {
         setSystemPrompt(newSystemPrompt);
     };
 
+    function getTextAreaValue() {
+        if (textAreaRef.current) {
+            return textAreaRef.current.value
+        } else {
+            return '';
+        }
+    }
+
+    function setTextAreaText(s: string) {
+        if (textAreaRef.current) {
+            textAreaRef.current.value = s;
+        }
+        setIsTextEmpty(!s || s == '');
+    }
+
     function startConversation() {
         // todo: use AI to generate title from the user message
         const id = Date.now();
         const timestamp = Date.now();
         setConversationId(id);
-        let shortenedText = text.substring(0, 25);
+        let shortenedText = getTextAreaValue().substring(0, 25);
         const conversation = {
             id: id,
             timestamp: timestamp,
@@ -147,7 +163,7 @@ const App = () => {
                     if (isNewConversation) {
                         startConversation();
                     }
-                    addMessage(Role.User, MessageType.Normal, text, sendMessage);
+                    addMessage(Role.User, MessageType.Normal,  getTextAreaValue(), sendMessage);
                     (e.target as HTMLTextAreaElement).style.height = 'auto'; // Revert back to original size
                 }
             }
@@ -182,7 +198,7 @@ const App = () => {
 
     function sendMessage(updatedMessages: ChatMessage[]) {
         setLoading(true);
-        setText('');
+        setTextAreaText('');
         let systemPromptFinal = systemPrompt;
         if (!systemPromptFinal || systemPromptFinal === '') {
             systemPromptFinal = OPENAI_DEFAULT_SYSTEM_PROMPT;
@@ -251,7 +267,7 @@ const App = () => {
         if (isNewConversation) {
             startConversation();
         }
-        addMessage(Role.User, MessageType.Normal, text, sendMessage);
+        addMessage(Role.User, MessageType.Normal, getTextAreaValue(), sendMessage);
         if (textAreaRef.current) {
             textAreaRef.current.style.height = 'auto';
         }
@@ -328,16 +344,15 @@ const App = () => {
                                        rows={1}
                                        placeholder="Send a message..."
                                        className="m-0 w-full resize-none border-0 bg-transparent p-0 pr-7 focus:ring-0 focus-visible:ring-0 outline-none shadow-none dark:bg-transparent pl-2 md:pl-0"
-                                       value={text}
                                        onKeyDown={checkForEnterKey}
                                        onChange={handleTextChange}
                                        onInput={handleAutoResize}
                                    ></textarea>
                                     <SubmitButton
-                                        disabled={isButtonDisabled}
+                                        disabled={isTextEmpty || loading}
                                         loading={loading}
-                                        style={text !== '' ? {backgroundColor: "rgb(171, 104, 255)"} : {}}
-                                        isTextEmpty={text === ''}
+                                        style={ !isTextEmpty ? {backgroundColor: "rgb(171, 104, 255)"} : {}}
+                                        isTextEmpty={ isTextEmpty}
                                     />
                                 </div>
                             </div>
