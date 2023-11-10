@@ -311,25 +311,28 @@ const App = () => {
                 <ToastContainer/>
                 <main
                     className="relative h-full w-full transition-width flex flex-col overflow-hidden items-stretch flex-1">
-                    <div className="text-input-with-header chat-pg-instructions flex items-center justify-center m-5">
-                        <div className="text-input-header-subheading subheading"
-                             style={{ marginLeft: isSidebarCollapsed ? '4em' : '0' }}>System:</div>
-                        <div
-                            className="text-input-header-wrapper overflow-wrapper text-input flex items-center justify-center w-3/5">
-                         <textarea aria-label="Input"
-                                   style={{maxHeight: "200px", overflowY: "auto"}}
-                                   className="focus:ring-0 focus-visible:ring-0 outline-none shadow-none text-input text-input-lg text-input-full text-input-header-buffer"
-                                   placeholder={OPENAI_DEFAULT_SYSTEM_PROMPT}
-                                   value={systemPrompt}
-                                   onChange={handleSystemPromptChange}
-                                   onInput={(e: React.FormEvent<HTMLTextAreaElement>) => {
-                                       const target = e.target as HTMLTextAreaElement;
-                                       target.style.height = "auto";
-                                       target.style.height = target.scrollHeight + "px";
-                                   }}
-                         ></textarea>
+                    {isNewConversation ? (
+                        // Render the "System" part for new conversations
+                        <div className="text-input-with-header chat-pg-instructions flex items-center justify-center m-5">
+                            <div className="text-input-header-subheading subheading"
+                                 style={{ marginLeft: isSidebarCollapsed ? '4em' : '0' }}>System:</div>
+                            <div
+                                className="text-input-header-wrapper overflow-wrapper text-input flex items-center justify-center w-3/5">
+                                <textarea aria-label="Input"
+                                          style={{maxHeight: "200px", overflowY: "auto"}}
+                                          className="focus:ring-0 focus-visible:ring-0 outline-none shadow-none text-input text-input-lg text-input-full text-input-header-buffer"
+                                          placeholder={OPENAI_DEFAULT_SYSTEM_PROMPT}
+                                          value={systemPrompt}
+                                          onChange={handleSystemPromptChange}
+                                          onInput={(e: React.FormEvent<HTMLTextAreaElement>) => {
+                                              const target = e.target as HTMLTextAreaElement;
+                                              target.style.height = "auto";
+                                              target.style.height = target.scrollHeight + "px";
+                                          }}
+                                ></textarea>
+                            </div>
                         </div>
-                    </div>
+                    ) : null}
                     <Chat chatBlocks={messages} onChatScroll={handleChatScroll}/>
                     <div
                         className="absolute bottom-0 left-0 w-full border-t md:border-t-0 dark:border-white/20 md:border-transparent md:dark:border-transparent bg-white dark:bg-gray-800 md:!bg-transparent dark:md:bg-vert-dark-gradient pt-2">
