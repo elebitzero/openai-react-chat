@@ -14,6 +14,7 @@ import {conversationsEmitter} from "./service/EventEmitter";
 import {OpenSideBarIcon} from "./svg";
 import Tooltip from "./components/Tooltip";
 import {useLocation, useNavigate} from "react-router-dom";
+import MessageBox, { MessageBoxHandles } from "./components/MessageBox";
 
 export const updateConversationMessages = async (id: number, updatedMessages: any[]) => {
     const conversation = await db.conversations.get(id);
@@ -29,20 +30,17 @@ function useCurrentPath() {
 
 
 const App = () => {
-    const [conversationTitle, setConversationTitle] = useState('Default Title');
     const [showScrollButton, setShowScrollButton] = useState(false);
-    const textAreaRef = useRef<HTMLTextAreaElement>(null);
     const [isNewCreation, setIsNewCreation] = useState(false);
     const [isNewConversation, setIsNewConversation] = useState<boolean>(false);
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
     const [conversationId, setConversationId] = useState(0);
-    const [loading, setLoading] = useState(false);
     const [systemPrompt, setSystemPrompt] = useState('');
-    const [isTextEmpty, setIsTextEmpty] = useState(true);
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const currentPath = useCurrentPath();
     const navigate = useNavigate();
-
+    const [loading, setLoading] = useState(false);
+    const messageBoxRef = useRef<MessageBoxHandles>(null);
 
     useEffect(() => {
         const handleSelectedConversation = (id: string | null) => {
@@ -56,10 +54,7 @@ const App = () => {
                             ChatService.setSelectedModelId(conversation.model);
                             const messages: ChatMessage[] = JSON.parse(conversation.messages);
                             setMessages(messages);
-                            setTextAreaText('');
-                            if (textAreaRef.current) {
-                                textAreaRef.current.style.height = 'auto';
-                            }
+                            clearTextArea();
                         } else {
                             console.error("Conversation not found.");
                         }
@@ -90,57 +85,19 @@ const App = () => {
         }
     }, [messages]);
 
-    const handleTextChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
-        setIsTextEmpty(event.target.value === '');
-    };
-
-    const handleAutoResize = (e: React.FormEvent<HTMLTextAreaElement>) => {
-        const target = e.currentTarget;
-        const MAX_ROWS = 10;
-        const maxHeight = parseInt(getComputedStyle(target).lineHeight, MAX_ROWS) * MAX_ROWS;
-
-        // Reset height to auto so that it reduces size when text is removed
-        target.style.height = 'auto';
-
-        // Limit the height to 10 rows high
-        if (target.scrollHeight <= maxHeight) {
-            target.style.height = `${target.scrollHeight}px`;
-        } else {
-            target.style.height = `${maxHeight}px`;
-        }
-
-        // Reset to the original size when cleared
-        if (target.value === '') {
-            target.style.height = 'auto';
-        }
-    };
-
     const handleSystemPromptChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
         const newSystemPrompt = event.target.value;
         setSystemPrompt(newSystemPrompt);
     };
 
-    function getTextAreaValue() {
-        if (textAreaRef.current) {
-            return textAreaRef.current.value
-        } else {
-            return '';
-        }
-    }
 
-    function setTextAreaText(s: string) {
-        if (textAreaRef.current) {
-            textAreaRef.current.value = s;
-        }
-        setIsTextEmpty(!s || s == '');
-    }
 
-    function startConversation() {
+    function startConversation(message: string) {
         // todo: use AI to generate title from the user message
         const id = Date.now();
         const timestamp = Date.now();
         setConversationId(id);
-        let shortenedText = getTextAreaValue().substring(0, 25);
+        let shortenedText = message.substring(0, 25);
         const conversation = {
             id: id,
             timestamp: timestamp,
@@ -155,23 +112,13 @@ const App = () => {
         navigate(`/c/${conversation.id}`);
     }
 
-    const checkForEnterKey = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-        if (e.key === 'Enter') {
-            if (e.shiftKey) {
-                return;
-            } else {
-                if (!loading) {
-                    e.preventDefault();
-                    const target = e.target as HTMLTextAreaElement;
-                    if (isNewConversation) {
-                        startConversation();
-                    }
-                    addMessage(Role.User, MessageType.Normal,  getTextAreaValue(), sendMessage);
-                    (e.target as HTMLTextAreaElement).style.height = 'auto'; // Revert back to original size
-                }
-            }
+
+    const callApp = (message: string) => {
+        if (isNewConversation) {
+            startConversation(message);
         }
-    };
+        addMessage(Role.User, MessageType.Normal,  message, sendMessage);
+    }
 
     const addMessage = (role: Role, messageType: MessageType, content: string, callback?: (callback: ChatMessage[]) => void) => {
 
@@ -201,7 +148,7 @@ const App = () => {
 
     function sendMessage(updatedMessages: ChatMessage[]) {
         setLoading(true);
-        setTextAreaText('');
+        clearTextArea();
         let systemPromptFinal = systemPrompt;
         if (!systemPromptFinal || systemPromptFinal === '') {
             systemPromptFinal = OPENAI_DEFAULT_SYSTEM_PROMPT;
@@ -265,17 +212,6 @@ const App = () => {
         });
     }
 
-    function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-        e.preventDefault();
-        if (isNewConversation) {
-            startConversation();
-        }
-        addMessage(Role.User, MessageType.Normal, getTextAreaValue(), sendMessage);
-        if (textAreaRef.current) {
-            textAreaRef.current.style.height = 'auto';
-        }
-    }
-
     function toggleSidebarCollapse() {
         setIsSidebarCollapsed((prevCollapsed) => !prevCollapsed);
     }
@@ -290,6 +226,15 @@ const App = () => {
     const handleChatScroll = (isAtBottom: boolean) => {
         setShowScrollButton(isAtBottom);
     };
+
+    const clearTextArea = () => {
+        messageBoxRef.current?.clearTextValue();
+    };
+
+    const getTextAreaValue = () => {
+        const value = messageBoxRef.current?.getTextValue();
+    };
+
 
     return (
         <div className="overflow-hidden w-full h-full relative flex z-0">
@@ -337,33 +282,8 @@ const App = () => {
                     <div
                         className="absolute bottom-0 left-0 w-full border-t md:border-t-0 dark:border-white/20 md:border-transparent md:dark:border-transparent bg-white dark:bg-gray-800 md:!bg-transparent dark:md:bg-vert-dark-gradient pt-2">
                         {showScrollButton || <ScrollToBottomButton onClick={scrollToBottom}/>}
-                        <form onSubmit={handleSubmit}
-                              className="stretch mx-2 flex flex-row gap-3 last:mb-2 md:mx-4 md:last:mb-6 lg:mx-auto lg:max-w-2xl xl:max-w-3xl">
-                            <div className="relative flex h-full flex-1 md:flex-col">
-                                <div
-                                    className="flex flex-col w-full py-2 flex-grow md:py-3 md:pl-4 relative border border-black/10 bg-white dark:border-gray-900/50 dark:text-white dark:bg-gray-700 rounded-md shadow-xs">
-                                   <textarea
-                                       tabIndex={0}
-                                       data-id="request-:r4:-1"
-                                       ref={textAreaRef}
-                                       style={{maxHeight: "200px", overflowY: "auto"}}
-                                       rows={1}
-                                       placeholder="Send a message..."
-                                       className="m-0 w-full resize-none border-0 bg-transparent p-0 pr-7 focus:ring-0 focus-visible:ring-0 outline-none shadow-none dark:bg-transparent pl-2 md:pl-0"
-                                       onKeyDown={checkForEnterKey}
-                                       onChange={handleTextChange}
-                                       onInput={handleAutoResize}
-                                   ></textarea>
-                                    <SubmitButton
-                                        disabled={isTextEmpty || loading}
-                                        loading={loading}
-                                        style={ !isTextEmpty ? {backgroundColor: "rgb(171, 104, 255)"} : {}}
-                                        isTextEmpty={ isTextEmpty}
-                                    />
-                                </div>
-                            </div>
-                        </form>
                     </div>
+                    <MessageBox ref={messageBoxRef} callApp={callApp}  loading={loading}  setLoading={setLoading}/>
                 </main>
             </div>
         </div>

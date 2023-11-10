@@ -32,6 +32,7 @@ git clone https://github.com/elebitzero/openai-react-chat.git
 3. Build & Run the web server
 ```
 npm install
+npm run build:css
 npm start
 ```
 <!-- markdown-link-check-disable-next-line -->
