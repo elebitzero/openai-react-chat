@@ -1,6 +1,5 @@
 import React from 'react';
-import {UserCircleIcon} from "@heroicons/react/24/outline";
-import {OpenAILogo} from "../svg";
+import {SparklesIcon, UserCircleIcon} from "@heroicons/react/24/outline";
 import MarkdownBlock from './MarkdownBlock';
 import CopyButton, {CopyButtonMode} from "./CopyButton";
 import {ChatMessage, MessageType} from "../models/ChatCompletion";
@@ -19,6 +18,11 @@ const ChatBlock: React.FC<Props> = ({block}) => {
         padding: '10px'
     } : {};
 
+    const preformattedTextStyles: React.CSSProperties = {
+        whiteSpace: 'pre-wrap', // Allows text to wrap
+        wordBreak: 'break-word', // Break words that are too long for the container
+    };
+
     return (
         <div key={`chat-block-${block.id}`}
              className="group w-full text-gray-800 dark:text-gray-100 border-b border-black/10 dark:border-gray-900/50"
@@ -30,7 +34,7 @@ const ChatBlock: React.FC<Props> = ({block}) => {
                         {block.role === 'user' ? (
                             <UserCircleIcon width={24} height={24}/>
                         ) : block.role === 'assistant' ? (
-                            <OpenAILogo key={`open-ai-logo-${block.id}`}/>
+                            <SparklesIcon key={`open-ai-logo-${block.id}`}/>
                         ) : null}
                         {/* Decorator Icon */}
                         {block.messageType === MessageType.Error && (
@@ -45,8 +49,11 @@ const ChatBlock: React.FC<Props> = ({block}) => {
                         <div
                             className="min-h-[20px] flex flex-col items-start gap-4">
                             <div className="markdown prose w-full break-words dark:prose-invert light">
-                                <MarkdownBlock markdown={block.content}
-                                               role={block.role}/>
+                                {block.role === 'user' ? (
+                                    <div style={preformattedTextStyles}>{block.content}</div>
+                                ) : (
+                                    <MarkdownBlock markdown={block.content} role={block.role}/>
+                                )}
                             </div>
                         </div>
                     </div>
