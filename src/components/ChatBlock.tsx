@@ -4,6 +4,7 @@ import MarkdownBlock from './MarkdownBlock';
 import CopyButton, {CopyButtonMode} from "./CopyButton";
 import {ChatMessage, MessageType} from "../models/ChatCompletion";
 import {ExclamationCircleIcon} from "@heroicons/react/24/solid";
+import UserContentBlock from "./UserContentBlock";
 
 interface Props {
     block: ChatMessage;
@@ -17,11 +18,6 @@ const ChatBlock: React.FC<Props> = ({block}) => {
         borderRadius: '8px',
         padding: '10px'
     } : {};
-
-    const preformattedTextStyles: React.CSSProperties = {
-        whiteSpace: 'pre-wrap', // Allows text to wrap
-        wordBreak: 'break-word', // Break words that are too long for the container
-    };
 
     return (
         <div key={`chat-block-${block.id}`}
@@ -50,7 +46,7 @@ const ChatBlock: React.FC<Props> = ({block}) => {
                             className="min-h-[20px] flex flex-col items-start gap-4">
                             <div className="markdown prose w-full break-words dark:prose-invert light">
                                 {block.role === 'user' ? (
-                                    <div style={preformattedTextStyles}>{block.content}</div>
+                                    <UserContentBlock text={block.content} />
                                 ) : (
                                     <MarkdownBlock markdown={block.content} role={block.role}/>
                                 )}

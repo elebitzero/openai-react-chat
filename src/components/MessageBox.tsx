@@ -2,6 +2,9 @@
 import React, {useState, useRef, ChangeEvent, KeyboardEvent, FormEvent, useImperativeHandle, forwardRef} from 'react';
 import {SubmitButton} from "./SubmitButton";
 
+const BEGIN_SNIPPET_MARKER = '----BEGIN-SNIPPET----';
+const END_SNIPPET_MARKER = '----END-SNIPPET----';
+
 interface MessageBoxProps {
     callApp: Function;
     loading: boolean;
@@ -14,6 +17,8 @@ export interface MessageBoxHandles {
     getTextValue: () => string;
     resizeTextArea: () => void;
 }
+
+
 
 const MessageBox = forwardRef<MessageBoxHandles, MessageBoxProps>(({loading, setLoading, callApp}, ref) => {
 
@@ -40,6 +45,58 @@ const MessageBox = forwardRef<MessageBoxHandles, MessageBoxProps>(({loading, set
             }
         },
     }));
+
+    const insertTextAtCursor = (text: string, event: React.ClipboardEvent<HTMLTextAreaElement>) => {
+        const textarea = textAreaRef.current;
+        if (!textarea) return;
+
+        const startPos = textarea.selectionStart;
+        const endPos = textarea.selectionEnd;
+
+        // Insert the text
+        textarea.value = textarea.value.substring(0, startPos) + text + textarea.value.substring(endPos, textarea.value.length);
+
+        // Restore the cursor position after the inserted text
+        textarea.selectionStart = startPos + text.length;
+        textarea.selectionEnd = startPos + text.length;
+
+        // Trigger the change event to update the React state
+        const changeEvent = new Event('input', { bubbles: true });
+        textarea.dispatchEvent(changeEvent);
+
+        // Call the auto-resize handler
+        handleAutoResize(event as unknown as React.FormEvent<HTMLTextAreaElement>);
+
+        // Wrap the scroll restoration in requestAnimationFrame to ensure it happens after the DOM has updated
+        requestAnimationFrame(() => {
+            // Restore the scroll position to the bottom of the textarea
+            textarea.scrollTop = textarea.scrollHeight;
+        });
+    };
+
+// Update handlePaste to pass the event to insertTextAtCursor
+    const handlePaste = (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
+        // Prevent the default paste behavior
+        event.preventDefault();
+
+        // Get the pasted text from the clipboard
+        const pastedText = event.clipboardData.getData('text/plain');
+
+        // Count the number of newlines in the pasted text
+        const newlineCount = (pastedText.match(/\n/g) || []).length;
+
+        // Check if there are 10 or more newlines
+        if (newlineCount >= 10) {
+            // Add special character string '----SNIPPET----' at the beginning and end
+            const modifiedText = `${BEGIN_SNIPPET_MARKER}\n${pastedText}\n${END_SNIPPET_MARKER}`;
+            // Insert the modified text at the current cursor position
+            insertTextAtCursor(modifiedText, event);
+        } else {
+            // Insert the original text at the current cursor position
+            insertTextAtCursor(pastedText, event);
+        }
+    };
+
 
     const checkForEnterKey = (e: KeyboardEvent<HTMLTextAreaElement>) => {
         if (e.key === 'Enter') {
@@ -114,6 +171,7 @@ const MessageBox = forwardRef<MessageBoxHandles, MessageBoxProps>(({loading, set
                             onKeyDown={checkForEnterKey}
                             onChange={handleTextChange}
                             onInput={handleAutoResize}
+                            onPaste={handlePaste}
                         ></textarea>
                         <SubmitButton
                             disabled={isTextEmpty || loading}
