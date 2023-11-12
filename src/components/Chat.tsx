@@ -17,6 +17,7 @@ const Chat: React.FC<Props> = ({chatBlocks, onChatScroll}) => {
     const [models, setModels] = useState<OpenAIModel[]>([]);
     const [error, setError] = useState<string | null>(null);
     const chatDivRef = useRef<HTMLDivElement>(null);
+    const [allowAutoScroll, setAllowAutoScroll] = useState(true);
 
     useEffect(() => {
 
@@ -47,7 +48,7 @@ const Chat: React.FC<Props> = ({chatBlocks, onChatScroll}) => {
 
     useEffect(() => {
         setIsNewConversation(chatBlocks.length === 0);
-        if (chatDivRef.current) {
+        if (chatDivRef.current && allowAutoScroll) {
             chatDivRef.current.scrollTop = chatDivRef.current.scrollHeight;
         }
     }, [chatBlocks]);
@@ -85,6 +86,13 @@ const Chat: React.FC<Props> = ({chatBlocks, onChatScroll}) => {
                 chatDivRef.current.scrollTop <=
                 chatDivRef.current.clientHeight + scrollThreshold;
             onChatScroll(isAtBottom);
+
+            // If the user scrolls up, disable auto-scrolling
+            if (!isAtBottom) {
+                setAllowAutoScroll(false);
+            } else {
+                setAllowAutoScroll(true);
+            }
         }
     };
 
