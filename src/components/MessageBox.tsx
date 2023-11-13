@@ -62,7 +62,7 @@ const MessageBox = forwardRef<MessageBoxHandles, MessageBoxProps>(({loading, set
             event.preventDefault();
 
             // Add special character string '----SNIPPET----' at the beginning and end
-            const modifiedText = `${SNIPPET_MARKERS.begin}\n${pastedText}\n${SNIPPET_MARKERS.end}`;
+            const modifiedText = `${SNIPPET_MARKERS.begin}\n${pastedText}\n${SNIPPET_MARKERS.end}\n`;
 
             // Insert the modified text at the current cursor position
             insertTextAtCursor(modifiedText);
