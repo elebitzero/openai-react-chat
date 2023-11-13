@@ -138,14 +138,16 @@ textarea:focus-visible {
 }
 
 .scroll-to-bottom-button {
-    position: absolute;
-    right: 1.5em;
-    bottom: 5em;
     background-color: #fff;
     border: 1px solid #ccc;
     border-radius: 50%;
-    padding: 5px;
+    padding: 7px;
     cursor: pointer;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    bottom: 100%;
+    z-index: 1000;
 }
 
 /* Custom Scrollbar Styles */

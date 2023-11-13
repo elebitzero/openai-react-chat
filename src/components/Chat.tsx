@@ -10,14 +10,14 @@ import {ChatMessage} from "../models/ChatCompletion";
 interface Props {
     chatBlocks: ChatMessage[];
     onChatScroll: (isAtBottom : boolean) => void;
+    allowAutoScroll: boolean;
 }
 
-const Chat: React.FC<Props> = ({chatBlocks, onChatScroll}) => {
+const Chat: React.FC<Props> = ({chatBlocks, onChatScroll, allowAutoScroll}) => {
     const [isNewConversation, setIsNewConversation] = useState<boolean>(false);
     const [models, setModels] = useState<OpenAIModel[]>([]);
     const [error, setError] = useState<string | null>(null);
     const chatDivRef = useRef<HTMLDivElement>(null);
-    const [allowAutoScroll, setAllowAutoScroll] = useState(true);
 
     useEffect(() => {
 
@@ -80,18 +80,18 @@ const Chat: React.FC<Props> = ({chatBlocks, onChatScroll}) => {
 
     const handleScroll = () => {
         if (chatDivRef.current) {
-            const scrollThreshold = 20; // Adjust this value as needed
+            const scrollThreshold = 20;
             const isAtBottom =
                 chatDivRef.current.scrollHeight -
                 chatDivRef.current.scrollTop <=
                 chatDivRef.current.clientHeight + scrollThreshold;
+
+            // Notify parent component about the auto-scroll status
             onChatScroll(isAtBottom);
 
-            // If the user scrolls up, disable auto-scrolling
+            // Disable auto-scroll if the user scrolls up
             if (!isAtBottom) {
-                setAllowAutoScroll(false);
-            } else {
-                setAllowAutoScroll(true);
+                onChatScroll(false);
             }
         }
     };

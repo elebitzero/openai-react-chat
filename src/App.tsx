@@ -3,7 +3,6 @@ import './App.css';
 import {ChatService} from "./service/ChatService";
 import Chat from "./components/Chat";
 import {ChatCompletion, ChatMessage, MessageType, Role} from "./models/ChatCompletion";
-import {SubmitButton} from "./components/SubmitButton";
 import {ScrollToBottomButton} from "./components/ScrollToBottomButton";
 import {OPENAI_DEFAULT_SYSTEM_PROMPT} from "./config";
 import {toast, ToastContainer} from "react-toastify";
@@ -14,7 +13,7 @@ import {conversationsEmitter} from "./service/EventEmitter";
 import {OpenSideBarIcon} from "./svg";
 import Tooltip from "./components/Tooltip";
 import {useLocation, useNavigate} from "react-router-dom";
-import MessageBox, { MessageBoxHandles } from "./components/MessageBox";
+import MessageBox, {MessageBoxHandles} from "./components/MessageBox";
 
 export const updateConversationMessages = async (id: number, updatedMessages: any[]) => {
     const conversation = await db.conversations.get(id);
@@ -30,7 +29,7 @@ function useCurrentPath() {
 
 
 const App = () => {
-    const [showScrollButton, setShowScrollButton] = useState(false);
+
     const [isNewCreation, setIsNewCreation] = useState(false);
     const [isNewConversation, setIsNewConversation] = useState<boolean>(false);
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -40,6 +39,8 @@ const App = () => {
     const currentPath = useCurrentPath();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
+    const [showScrollButton, setShowScrollButton] = useState(false);
+    const [allowAutoScroll, setAllowAutoScroll] = useState(true);
     const messageBoxRef = useRef<MessageBoxHandles>(null);
 
     useEffect(() => {
@@ -66,11 +67,13 @@ const App = () => {
                     // ChatService.setSelectedModelId('');
                     setMessages([]);
                 }
+                setAllowAutoScroll(true);
+                setShowScrollButton(false)
             } else {
                 setIsNewCreation(false);
             }
         };
-
+        scrollToBottom();
         const itemId = currentPath.split('/c/')[1];
         handleSelectedConversation(itemId)
     }, [currentPath]);
@@ -117,6 +120,7 @@ const App = () => {
         if (isNewConversation) {
             startConversation(message);
         }
+        setAllowAutoScroll(true);
         addMessage(Role.User, MessageType.Normal,  message, sendMessage);
     }
 
@@ -223,10 +227,6 @@ const App = () => {
         }
     };
 
-    const handleChatScroll = (isAtBottom: boolean) => {
-        setShowScrollButton(isAtBottom);
-    };
-
     const clearTextArea = () => {
         messageBoxRef.current?.clearTextValue();
     };
@@ -235,6 +235,10 @@ const App = () => {
         const value = messageBoxRef.current?.getTextValue();
     };
 
+    const handleUserScroll = (isAtBottom: boolean) => {
+        setAllowAutoScroll(isAtBottom);
+        setShowScrollButton(!isAtBottom);
+    };
 
     return (
         <div className="overflow-hidden w-full h-full relative flex z-0">
@@ -252,7 +256,7 @@ const App = () => {
                     </Tooltip>
                 )}
             </div>
-            <div className="flex h-full max-w-full flex-1 flex-col">
+            <div className="flex flex-col items-stretch w-full h-full">
                 <ToastContainer/>
                 <main
                     className="relative h-full w-full transition-width flex flex-col overflow-hidden items-stretch flex-1">
@@ -278,12 +282,18 @@ const App = () => {
                             </div>
                         </div>
                     ) : null}
-                    <Chat chatBlocks={messages} onChatScroll={handleChatScroll}/>
-                    <div
-                        className="absolute bottom-0 left-0 w-full border-t md:border-t-0 dark:border-white/20 md:border-transparent md:dark:border-transparent bg-white dark:bg-gray-800 md:!bg-transparent dark:md:bg-vert-dark-gradient pt-2">
-                        {showScrollButton || <ScrollToBottomButton onClick={scrollToBottom}/>}
-                    </div>
-                    <MessageBox ref={messageBoxRef} callApp={callApp}  loading={loading}  setLoading={setLoading}/>
+                    {/*<div className="flex-grow">*/}
+                        <Chat chatBlocks={messages} onChatScroll={handleUserScroll} allowAutoScroll={allowAutoScroll}/>
+                    {/*</div>*/}
+                    {/* Absolute container for the ScrollToBottomButton */}
+                    {showScrollButton && (
+                        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 mb-10 z-10">
+                            <ScrollToBottomButton onClick={scrollToBottom} />
+                        </div>
+                    )}
+
+                    {/* MessageBox remains at the bottom */}
+                    <MessageBox ref={messageBoxRef} callApp={callApp} loading={loading} setLoading={setLoading}/>
                 </main>
             </div>
         </div>

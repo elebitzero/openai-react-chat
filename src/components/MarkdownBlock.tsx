@@ -9,7 +9,6 @@ import CopyButton from "./CopyButton";
 import {docco} from "react-syntax-highlighter/dist/esm/styles/hljs";
 import {Root} from "hast";
 
-
 interface ChatBlockProps {
     markdown: string;
     role: string;

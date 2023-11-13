@@ -1,5 +1,13 @@
 import React, {useEffect, useState} from 'react';
-import Select, {SingleValue} from 'react-select';
+import Select, {
+    ControlProps,
+    CSSObjectWithLabel,
+    GroupBase,
+    OptionProps,
+    SingleValue,
+    SingleValueProps,
+    StylesConfig
+} from 'react-select';
 import {OpenAIModel} from '../models/model';
 import {ChatService} from '../service/ChatService';
 import {OPENAI_DEFAULT_MODEL} from "../config";
@@ -25,6 +33,34 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
     const [loading, setLoading] = useState<boolean>(true);
     const SHOW_MORE_MODELS = "Show more models";
     const SHOW_FEWER_MODELS = "Show fewer models";
+
+    const customStyles: StylesConfig<SelectOption, false> = {
+        option: (provided: CSSObjectWithLabel, state: OptionProps<SelectOption, false, GroupBase<SelectOption>>) => ({
+            ...provided,
+            color: state.data.value === 'more' || state.data.value === 'less' ? 'var(--primary)' : 'black',
+            backgroundColor: state.isSelected
+                ? 'var(--gray-200)'
+                : state.isFocused
+                    ? '#F2F2F2'
+                    : provided.backgroundColor,
+            ':active': {
+                ...provided[':active'],
+                backgroundColor: !state.isDisabled
+                    ? (state.isSelected ? 'var(--gray-600)' : '#F2F2F2')
+                    : provided[':active'] ? provided[':active'].backgroundColor : undefined,
+            },
+        }),
+        control: (provided: CSSObjectWithLabel, state: ControlProps<SelectOption, false, GroupBase<SelectOption>>) => ({
+            ...provided,
+            boxShadow: state.isFocused ? '0 0 0 1px var(--gray-600)' : 'none',
+            borderColor: state.isFocused ? 'var(--gray-600)' : 'var(--gray-600)',
+        }),
+        singleValue: (provided, state: SingleValueProps<SelectOption>) => ({
+            ...provided,
+            color: state.isDisabled ? 'var(--gray-600)' : provided.color,
+        }),
+        // Add other custom styles if needed for other parts of the select component
+    };
 
     useEffect(() => {
         if (models && models.length > 0) {
@@ -105,12 +141,7 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
                 isSearchable={true}
                 placeholder='Select a model'
                 isLoading={loading}
-                styles={{
-                    option: (provided, state) => ({
-                        ...provided,
-                        color: state.data.value === 'more' || state.data.value === 'less' ? 'blue' : 'black',
-                    }),
-                }}
+                styles={customStyles}
             />
         </div>
     );
