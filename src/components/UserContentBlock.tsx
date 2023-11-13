@@ -42,7 +42,7 @@ const FoldableTextSection: React.FC<FoldableTextSectionProps> = ({ content }) =>
 
     return (
         <div>
-            <div style={contentStyles} dangerouslySetInnerHTML={{ __html: content }} />
+            <div style={contentStyles}>{content}</div>
             <button onClick={toggleSection} style={buttonStyles} aria-expanded={isExpanded}>
                 {isExpanded ? (
                     <>
