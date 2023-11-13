@@ -2,6 +2,7 @@ import {OpenAIModel} from "../models/model";
 import {ChatCompletion, ChatMessage} from "../models/ChatCompletion";
 import {CHAT_PARAMETERS, OPENAI_API_KEY} from "../config";
 import {CustomError} from "./CustomError";
+import {CHAT_COMPLETIONS_ENDPOINT, MODELS_ENDPOINT} from "../constants/apiEndpoints";
 
 interface CompletionChunk {
     id: string;
@@ -33,7 +34,7 @@ export class ChatService {
 
     static async sendMessage(messages: ChatMessage[], modelId: string): Promise<ChatCompletion> {
 
-        let endpoint = "https://api.openai.com/v1/chat/completions";
+        let endpoint = CHAT_COMPLETIONS_ENDPOINT;
         let headers = {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${OPENAI_API_KEY}`
@@ -161,7 +162,7 @@ export class ChatService {
         if (this.models !== null) {
             return Promise.resolve(this.models);
         }
-        this.models = fetch('https://api.openai.com/v1/models', {
+        this.models = fetch(MODELS_ENDPOINT, {
             headers: {
                 'Authorization': `Bearer ${OPENAI_API_KEY}`,
             },

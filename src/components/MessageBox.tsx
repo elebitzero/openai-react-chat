@@ -1,9 +1,7 @@
 // MessageBox.tsx
 import React, {useState, useRef, ChangeEvent, KeyboardEvent, FormEvent, useImperativeHandle, forwardRef} from 'react';
+import {MAX_ROWS, SNIPPET_MARKERS} from '../constants/appConstants';
 import {SubmitButton} from "./SubmitButton";
-
-const BEGIN_SNIPPET_MARKER = '----BEGIN-SNIPPET----';
-const END_SNIPPET_MARKER = '----END-SNIPPET----';
 
 interface MessageBoxProps {
     callApp: Function;
@@ -46,60 +44,39 @@ const MessageBox = forwardRef<MessageBoxHandles, MessageBoxProps>(({loading, set
         },
     }));
 
-    const insertTextAtCursor = (text: string, event: React.ClipboardEvent<HTMLTextAreaElement>) => {
-        const textarea = textAreaRef.current;
-        if (!textarea) return;
-
-        const startPos = textarea.selectionStart;
-        const endPos = textarea.selectionEnd;
-
-        // Insert the text
-        textarea.value = textarea.value.substring(0, startPos) + text + textarea.value.substring(endPos, textarea.value.length);
-
-        // Restore the cursor position after the inserted text
-        textarea.selectionStart = startPos + text.length;
-        textarea.selectionEnd = startPos + text.length;
-
-        // Trigger the change event to update the React state
-        const changeEvent = new Event('input', { bubbles: true });
-        textarea.dispatchEvent(changeEvent);
-
-        // Call the auto-resize handler
-        handleAutoResize(event as unknown as React.FormEvent<HTMLTextAreaElement>);
-
-        // Wrap the scroll restoration in requestAnimationFrame to ensure it happens after the DOM has updated
-        requestAnimationFrame(() => {
-            // Restore the scroll position to the bottom of the textarea
-            textarea.scrollTop = textarea.scrollHeight;
-        });
+    const insertTextAtCursor = (text: string) => {
+        if (!document.execCommand('insertText', false, text)) {
+            console.error('execCommand failed');
+        }
     };
-
-// Update handlePaste to pass the event to insertTextAtCursor
     const handlePaste = (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
-        // Prevent the default paste behavior
-        event.preventDefault();
-
         // Get the pasted text from the clipboard
         const pastedText = event.clipboardData.getData('text/plain');
 
         // Count the number of newlines in the pasted text
         const newlineCount = (pastedText.match(/\n/g) || []).length;
 
-        // Check if there are 10 or more newlines
-        if (newlineCount >= 10) {
+        // Check if there are MAX_ROWS or more newlines
+        if (newlineCount >= MAX_ROWS) {
+            // Prevent the default paste behavior only if you modify the pasted text
+            event.preventDefault();
+
             // Add special character string '----SNIPPET----' at the beginning and end
-            const modifiedText = `${BEGIN_SNIPPET_MARKER}\n${pastedText}\n${END_SNIPPET_MARKER}`;
+            const modifiedText = `${SNIPPET_MARKERS.begin}\n${pastedText}\n${SNIPPET_MARKERS.end}`;
+
             // Insert the modified text at the current cursor position
-            insertTextAtCursor(modifiedText, event);
+            insertTextAtCursor(modifiedText);
         } else {
-            // Insert the original text at the current cursor position
-            insertTextAtCursor(pastedText, event);
+            // If the text is not modified, allow the default paste behavior to proceed
+            // which will preserve the undo stack. No need to call insertTextAtCursor.
         }
     };
 
+    const checkForSpecialKey = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+        const isUndo = (e.ctrlKey || e.metaKey) && e.key === 'z';
+        const isEnter = (e.key === 'Enter');
 
-    const checkForEnterKey = (e: KeyboardEvent<HTMLTextAreaElement>) => {
-        if (e.key === 'Enter') {
+        if (isEnter) {
             if (e.shiftKey) {
                 return;
             } else {
@@ -110,6 +87,21 @@ const MessageBox = forwardRef<MessageBoxHandles, MessageBoxProps>(({loading, set
                     (e.target as HTMLTextAreaElement).style.height = 'auto'; // Revert back to original size
                 }
             }
+        } else if (isUndo) {
+            // Capture the target element reference before the asynchronous call
+            const textarea = textAreaRef.current;
+
+            // Call handleAutoResize shortly after the undo operation to allow the DOM to update
+            setTimeout(() => {
+                if (textarea && document.body.contains(textarea)) {
+                    // const event = new Event('input', { bubbles: true });
+                    // textarea.dispatchEvent(event);
+                    // Resize the textarea after undo
+                    handleAutoResize({currentTarget: textarea} as React.FormEvent<HTMLTextAreaElement>);
+                } else {
+                    console.error('textarea && document.body.contains(textarea) is false');
+                }
+            }, 0);
         }
     };
 
@@ -119,18 +111,22 @@ const MessageBox = forwardRef<MessageBoxHandles, MessageBoxProps>(({loading, set
 
     const handleAutoResize = (e: FormEvent<HTMLTextAreaElement>) => {
         const target = e.currentTarget;
-        const MAX_ROWS = 10;
-        const maxHeight = parseInt(getComputedStyle(target).lineHeight || '0', 10) * MAX_ROWS;
+        if (target instanceof HTMLTextAreaElement) {
+            const maxHeight = parseInt(getComputedStyle(target).lineHeight || '0', 10) * MAX_ROWS;
 
-        target.style.height = 'auto';
-        if (target.scrollHeight <= maxHeight) {
-            target.style.height = `${target.scrollHeight}px`;
-        } else {
-            target.style.height = `${maxHeight}px`;
-        }
-
-        if (target.value === '') {
             target.style.height = 'auto';
+            if (target.scrollHeight <= maxHeight) {
+                target.style.height = `${target.scrollHeight}px`;
+            } else {
+                target.style.height = `${maxHeight}px`;
+            }
+
+            if (target.value === '') {
+                target.style.height = 'auto';
+            }
+        } else {
+            console.error('target instanceof HTMLTextAreaElement is false');
+            console.log(JSON.stringify(target));
         }
     };
 
@@ -168,7 +164,7 @@ const MessageBox = forwardRef<MessageBoxHandles, MessageBoxProps>(({loading, set
                             rows={1}
                             placeholder="Send a message..."
                             className="m-0 w-full resize-none border-0 bg-transparent p-0 pr-7 focus:ring-0 focus-visible:ring-0 outline-none shadow-none dark:bg-transparent pl-2 md:pl-0"
-                            onKeyDown={checkForEnterKey}
+                            onKeyDown={checkForSpecialKey}
                             onChange={handleTextChange}
                             onInput={handleAutoResize}
                             onPaste={handlePaste}
