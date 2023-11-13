@@ -44,11 +44,35 @@ const MessageBox = forwardRef<MessageBoxHandles, MessageBoxProps>(({loading, set
         },
     }));
 
-    const insertTextAtCursor = (text: string) => {
-        if (!document.execCommand('insertText', false, text)) {
-            console.error('execCommand failed');
-        }
+    const insertTextAtCursorPosition = (textArea: HTMLTextAreaElement, textToInsert: string) => {
+        // Insert the text at the current cursor position
+        const startPos = textArea.selectionStart || 0;
+        const endPos = textArea.selectionEnd || 0;
+        textArea.value = textArea.value.substring(0, startPos) +
+            textToInsert +
+            textArea.value.substring(endPos, textArea.value.length);
+
+        // Move the cursor to the end of the inserted text
+        const newCursorPos = startPos + textToInsert.length;
+        textArea.selectionStart = newCursorPos;
+        textArea.selectionEnd = newCursorPos;
+
+        // Trigger the input event to update React state
+        const event = new Event('input', { bubbles: true });
+        textArea.dispatchEvent(event);
+
+        // Focus the textarea to ensure the cursor is visible
+        textArea.focus();
+
+        // Scroll the textarea to the new cursor position
+        setTimeout(() => {
+            // Ensure browser performs the scroll after the DOM has been updated
+            // Adjust as necessary to ensure the cursor is visible in the textarea
+            textArea.scrollTop = textArea.scrollHeight;
+        }, 0);
     };
+
+
     const handlePaste = (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
         // Get the pasted text from the clipboard
         const pastedText = event.clipboardData.getData('text/plain');
@@ -58,17 +82,16 @@ const MessageBox = forwardRef<MessageBoxHandles, MessageBoxProps>(({loading, set
 
         // Check if there are MAX_ROWS or more newlines
         if (newlineCount >= MAX_ROWS) {
-            // Prevent the default paste behavior only if you modify the pasted text
+            // Prevent the default paste behavior
             event.preventDefault();
 
             // Add special character string '----SNIPPET----' at the beginning and end
-            const modifiedText = `${SNIPPET_MARKERS.begin}\n${pastedText}\n${SNIPPET_MARKERS.end}\n`;
+            const modifiedText = `\n${SNIPPET_MARKERS.begin}\n${pastedText}\n${SNIPPET_MARKERS.end}\n`;
 
             // Insert the modified text at the current cursor position
-            insertTextAtCursor(modifiedText);
-        } else {
-            // If the text is not modified, allow the default paste behavior to proceed
-            // which will preserve the undo stack. No need to call insertTextAtCursor.
+            if (textAreaRef.current) {
+                insertTextAtCursorPosition(textAreaRef.current, modifiedText);
+            }
         }
     };
 
