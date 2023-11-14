@@ -203,7 +203,7 @@ const MainPage: React.FC<MainPageProps> = ({isSidebarCollapsed, toggleSidebarCol
                     isNew = true;
                 }
             } catch (e) {
-                console.error('Eror getting the role')
+                console.error('Error getting the role')
                 console.error('prevMessages = '+JSON.stringify(prevMessages));
                 console.error(e);
             }
