@@ -33,7 +33,6 @@ interface MainPageProps {
 
 
 const MainPage: React.FC<MainPageProps> = ({isSidebarCollapsed, toggleSidebarCollapse}) => {
-    const [isNewCreation, setIsNewCreation] = useState(false);
     const [isNewConversation, setIsNewConversation] = useState<boolean>(false);
     const [conversationId, setConversationId] = useState(0);
     const [systemPrompt, setSystemPrompt] = useState('');
@@ -47,34 +46,37 @@ const MainPage: React.FC<MainPageProps> = ({isSidebarCollapsed, toggleSidebarCol
 
     useEffect(() => {
         const handleSelectedConversation = (id: string | null) => {
-            if (!isNewCreation) {
-                if (id && id.length > 0) {
-                    let n = Number(id);
-                    getConversationById(n).then(conversation => {
-                        if (conversation) {
-                            setConversationId(conversation.id)
-                            setSystemPrompt(conversation.systemPrompt);
-                            ChatService.setSelectedModelId(conversation.model);
-                            const messages: ChatMessage[] = JSON.parse(conversation.messages);
-                            setMessages(messages);
-                            clearTextArea();
+            if (id && id.length > 0) {
+                let n = Number(id);
+                getConversationById(n).then(conversation => {
+                    if (conversation) {
+                        setConversationId(conversation.id)
+                        setSystemPrompt(conversation.systemPrompt);
+                        ChatService.setSelectedModelId(conversation.model);
+                        const messages: ChatMessage[] = JSON.parse(conversation.messages);
+                        if (messages.length == 0) {
+                            // Race condition: the navigate to /c/id and the updating of the messages state
+                            // are happening at the same time.
+                            console.warn('possible state problem');
                         } else {
-                            console.error("Conversation not found.");
+                            setMessages(messages);
                         }
-                    });
-                } else {
-                    setIsNewConversation(true);
-                    setConversationId(0);
-                    setSystemPrompt('');
-                    // ChatService.setSelectedModelId('');
-                    setMessages([]);
-                }
-                setAllowAutoScroll(true);
-                setShowScrollButton(false)
+                        clearTextArea();
+                    } else {
+                        console.error("Conversation not found.");
+                    }
+                });
             } else {
-                setIsNewCreation(false);
+                setIsNewConversation(true);
+                setConversationId(0);
+                setSystemPrompt('');
+                clearTextArea();
+                // ChatService.setSelectedModelId('');
+                setMessages([]);
             }
-        };
+            setAllowAutoScroll(true);
+            setShowScrollButton(false)
+        }
         scrollToBottom();
         const itemId = currentPath.split('/c/')[1];
         handleSelectedConversation(itemId)
@@ -112,7 +114,6 @@ const MainPage: React.FC<MainPageProps> = ({isSidebarCollapsed, toggleSidebarCol
         };
         conversationsEmitter.emit('newConversation', conversation);
         db.conversations.add(conversation);
-        setIsNewCreation(true);
         navigate(`/c/${conversation.id}`);
     }
 
@@ -192,8 +193,19 @@ const MainPage: React.FC<MainPageProps> = ({isSidebarCollapsed, toggleSidebarCol
     function handleStreamedResponse(content: string) {
         setMessages(prevMessages => {
             let isNew: boolean = false;
-            if (prevMessages[prevMessages.length - 1].role == Role.User) {
-                isNew = true;
+            try {
+                // todo: this shouldn't be necessary
+                if (prevMessages.length == 0) {
+                    console.error('prevMessages should not be empty in handleStreamedResponse.');
+                    return [];
+                }
+                if ((prevMessages[prevMessages.length - 1].role == Role.User)) {
+                    isNew = true;
+                }
+            } catch (e) {
+                console.error('Eror getting the role')
+                console.error('prevMessages = '+JSON.stringify(prevMessages));
+                console.error(e);
             }
 
             if (isNew) {

@@ -1,5 +1,15 @@
 // MessageBox.tsx
-import React, {useState, useRef, ChangeEvent, KeyboardEvent, FormEvent, useImperativeHandle, forwardRef} from 'react';
+import React, {
+    ChangeEvent,
+    FormEvent,
+    forwardRef,
+    KeyboardEvent,
+    useCallback,
+    useEffect,
+    useImperativeHandle,
+    useRef,
+    useState
+} from 'react';
 import {MAX_ROWS, SNIPPET_MARKERS} from '../constants/appConstants';
 import {SubmitButton} from "./SubmitButton";
 
@@ -19,23 +29,18 @@ export interface MessageBoxHandles {
 
 
 const MessageBox = forwardRef<MessageBoxHandles, MessageBoxProps>(({loading, setLoading, callApp}, ref) => {
-
+    const [textValue, setTextValue] = useState('');
     const [isTextEmpty, setIsTextEmpty] = useState(true);
     const textAreaRef = useRef<HTMLTextAreaElement>(null);
+    const resizeTimeoutRef = useRef<number | null>(null);
 
     useImperativeHandle(ref, () => ({
         // Method to clear the textarea
         clearTextValue: () => {
-            if (textAreaRef.current) {
-                textAreaRef.current.value = '';
-                setIsTextEmpty(true);
-                if (textAreaRef.current) {
-                    textAreaRef.current.style.height = 'auto';
-                }
-            }
+            clearValueAndUndoHistory(textAreaRef)
         },
         getTextValue: () => {
-            return textAreaRef.current ? textAreaRef.current.value : '';
+            return textValue;
         },
         resizeTextArea: () => {
             if (textAreaRef.current) {
@@ -44,97 +49,10 @@ const MessageBox = forwardRef<MessageBoxHandles, MessageBoxProps>(({loading, set
         },
     }));
 
-    const insertTextAtCursorPosition = (textArea: HTMLTextAreaElement, textToInsert: string) => {
-        // Insert the text at the current cursor position
-        const startPos = textArea.selectionStart || 0;
-        const endPos = textArea.selectionEnd || 0;
-        textArea.value = textArea.value.substring(0, startPos) +
-            textToInsert +
-            textArea.value.substring(endPos, textArea.value.length);
-
-        // Move the cursor to the end of the inserted text
-        const newCursorPos = startPos + textToInsert.length;
-        textArea.selectionStart = newCursorPos;
-        textArea.selectionEnd = newCursorPos;
-
-        // Trigger the input event to update React state
-        const event = new Event('input', { bubbles: true });
-        textArea.dispatchEvent(event);
-
-        // Focus the textarea to ensure the cursor is visible
-        textArea.focus();
-
-        // Scroll the textarea to the new cursor position
-        setTimeout(() => {
-            // Ensure browser performs the scroll after the DOM has been updated
-            // Adjust as necessary to ensure the cursor is visible in the textarea
-            textArea.scrollTop = textArea.scrollHeight;
-        }, 0);
-    };
-
-
-    const handlePaste = (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
-        // Get the pasted text from the clipboard
-        const pastedText = event.clipboardData.getData('text/plain');
-
-        // Count the number of newlines in the pasted text
-        const newlineCount = (pastedText.match(/\n/g) || []).length;
-
-        // Check if there are MAX_ROWS or more newlines
-        if (newlineCount >= MAX_ROWS) {
-            // Prevent the default paste behavior
-            event.preventDefault();
-
-            // Add special character string '----SNIPPET----' at the beginning and end
-            const modifiedText = `\n${SNIPPET_MARKERS.begin}\n${pastedText}\n${SNIPPET_MARKERS.end}\n`;
-
-            // Insert the modified text at the current cursor position
-            if (textAreaRef.current) {
-                insertTextAtCursorPosition(textAreaRef.current, modifiedText);
-            }
-        }
-    };
-
-    const checkForSpecialKey = (e: KeyboardEvent<HTMLTextAreaElement>) => {
-        const isUndo = (e.ctrlKey || e.metaKey) && e.key === 'z';
-        const isEnter = (e.key === 'Enter');
-
-        if (isEnter) {
-            if (e.shiftKey) {
-                return;
-            } else {
-                if (!loading) {
-                    e.preventDefault();
-                    const textValue = getTextAreaValue();
-                    callApp(textValue);
-                    (e.target as HTMLTextAreaElement).style.height = 'auto'; // Revert back to original size
-                }
-            }
-        } else if (isUndo) {
-            // Capture the target element reference before the asynchronous call
-            const textarea = textAreaRef.current;
-
-            // Call handleAutoResize shortly after the undo operation to allow the DOM to update
-            setTimeout(() => {
-                if (textarea && document.body.contains(textarea)) {
-                    // const event = new Event('input', { bubbles: true });
-                    // textarea.dispatchEvent(event);
-                    // Resize the textarea after undo
-                    handleAutoResize({currentTarget: textarea} as React.FormEvent<HTMLTextAreaElement>);
-                } else {
-                    console.error('textarea && document.body.contains(textarea) is false');
-                }
-            }, 0);
-        }
-    };
-
-    const handleTextChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
-        setIsTextEmpty(event.target.value.trim() === '');
-    };
-
-    const handleAutoResize = (e: FormEvent<HTMLTextAreaElement>) => {
-        const target = e.currentTarget;
-        if (target instanceof HTMLTextAreaElement) {
+    // Function to handle auto-resizing of the textarea
+    const handleAutoResize = useCallback(() => {
+        if (textAreaRef.current) {
+            const target = textAreaRef.current;
             const maxHeight = parseInt(getComputedStyle(target).lineHeight || '0', 10) * MAX_ROWS;
 
             target.style.height = 'auto';
@@ -143,28 +61,143 @@ const MessageBox = forwardRef<MessageBoxHandles, MessageBoxProps>(({loading, set
             } else {
                 target.style.height = `${maxHeight}px`;
             }
-
-            if (target.value === '') {
-                target.style.height = 'auto';
-            }
-        } else {
-            console.error('target instanceof HTMLTextAreaElement is false');
-            console.log(JSON.stringify(target));
         }
-    };
+    }, []);
 
-    function getTextAreaValue() {
+    // Debounced resize function
+    const debouncedResize = useCallback(() => {
+        if (resizeTimeoutRef.current !== null) {
+            clearTimeout(resizeTimeoutRef.current);
+        }
+        resizeTimeoutRef.current = window.setTimeout(() => {
+            handleAutoResize();
+        }, 100); // Adjust the debounce time as needed
+    }, []);
+
+
+    useEffect(() => {
+        debouncedResize();
+
+        // After resizing, scroll the textarea to the insertion point (end of the pasted text).
         if (textAreaRef.current) {
-            return textAreaRef.current.value
-        } else {
-            return '';
+            const textarea = textAreaRef.current;
+            // Check if the pasted content goes beyond the max height (overflow scenario)
+            if (textarea.scrollHeight > textarea.clientHeight) {
+                // Scroll to the bottom of the textarea
+                textarea.scrollTop = textarea.scrollHeight;
+            }
+        }
+
+        // Cleanup function to clear the debounce timeout
+        return () => {
+            if (resizeTimeoutRef.current !== null) {
+                clearTimeout(resizeTimeoutRef.current);
+            }
+        };
+    }, [textValue, debouncedResize]);
+
+    function clearValueAndUndoHistory(textAreaRef: React.RefObject<HTMLTextAreaElement>) {
+        setTextValue('');
+        setIsTextEmpty(true);
+        // Clear the current value of the textarea
+        if (textAreaRef.current) {
+            textAreaRef.current.value = '';
         }
     }
 
+    const insertTextAtCursorPosition = (textToInsert: string) => {
+        if (textAreaRef.current) {
+            const textArea = textAreaRef.current;
+            const startPos = textArea.selectionStart || 0;
+            const endPos = textArea.selectionEnd || 0;
+            const newTextValue =
+                textValue.substring(0, startPos) +
+                textToInsert +
+                textValue.substring(endPos);
+
+            // Update the state with the new value
+            setTextValue(newTextValue);
+
+            // Set the value of the textarea directly
+            textArea.value =
+                textArea.value.substring(0, startPos) +
+                textToInsert +
+                textArea.value.substring(endPos);
+
+            // Dispatch a new InputEvent for the insertion of text
+            // This event should be undoable
+            const inputEvent = new InputEvent('input', {
+                bubbles: true,
+                cancelable: true,
+                inputType: 'insertText',
+                data: textToInsert,
+            });
+            textArea.dispatchEvent(inputEvent);
+
+            // Move the cursor to the end of the inserted text
+            const newCursorPos = startPos + textToInsert.length;
+            setTimeout(() => {
+                textArea.selectionStart = newCursorPos;
+                textArea.selectionEnd = newCursorPos;
+                // Call handleAutoResize and scroll to the insertion point after the DOM update
+                handleAutoResize();
+                if (textArea.scrollHeight > textArea.clientHeight) {
+                    textArea.scrollTop = textArea.scrollHeight;
+                }
+            }, 0);
+        }
+    };
+
+    const handlePaste = (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
+        // Get the pasted text from the clipboard
+        const pastedText = event.clipboardData.getData('text/plain');
+
+
+        // Check if the pasted text contains the snippet markers
+        const containsBeginMarker = pastedText.includes(SNIPPET_MARKERS.begin);
+        const containsEndMarker = pastedText.includes(SNIPPET_MARKERS.end);
+
+        // If either marker is found, just allow the default paste behavior
+        if (containsBeginMarker || containsEndMarker) {
+            return; // Early return if markers are present
+        }
+
+        // Count the number of newlines in the pasted text
+        const newlineCount = (pastedText.match(/\n/g) || []).length;
+
+        // Check if there are MAX_ROWS or more newlines
+        if (newlineCount >= MAX_ROWS) {
+            event.preventDefault();
+            const modifiedText = `\n${SNIPPET_MARKERS.begin}\n${pastedText}\n${SNIPPET_MARKERS.end}\n`;
+            insertTextAtCursorPosition(modifiedText);
+        } else {
+            // Allow the default paste behavior to occur
+            // The textarea value will be updated automatically
+        }
+    };
+
+    const checkForSpecialKey = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+        const isEnter = (e.key === 'Enter');
+
+        if (isEnter) {
+            if (e.shiftKey) {
+                return;
+            } else {
+                if (!loading) {
+                    e.preventDefault();
+                    callApp(textValue);
+                }
+            }
+        }
+    };
+
+    const handleTextChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+        setIsTextEmpty(event.target.value.trim() === '');
+        setTextValue(event.target.value);
+    };
 
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const textValue = getTextAreaValue();
         callApp(textValue);
         if (textAreaRef.current) {
             textAreaRef.current.style.height = 'auto';
@@ -187,9 +220,9 @@ const MessageBox = forwardRef<MessageBoxHandles, MessageBoxProps>(({loading, set
                             rows={1}
                             placeholder="Send a message..."
                             className="m-0 w-full resize-none border-0 bg-transparent p-0 pr-7 focus:ring-0 focus-visible:ring-0 outline-none shadow-none dark:bg-transparent pl-2 md:pl-0"
+                            value={textValue}
                             onKeyDown={checkForSpecialKey}
                             onChange={handleTextChange}
-                            onInput={handleAutoResize}
                             onPaste={handlePaste}
                         ></textarea>
                         <SubmitButton
