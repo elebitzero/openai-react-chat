@@ -114,7 +114,7 @@ const Chat: React.FC<Props> = ({chatBlocks, onChatScroll, allowAutoScroll}) => {
                 {chatBlocks.map((block) => (
                     <ChatBlock key={`chat-block-${block.id}`} block={block}/>
                 ))}
-                <div className="w-full h-32 flex-shrink-0"></div>
+                <div className="w-full h-24 flex-shrink-0"></div>
             </div>
         </div>
     );
