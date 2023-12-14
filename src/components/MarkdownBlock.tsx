@@ -8,6 +8,8 @@ import SyntaxHighlighter from 'react-syntax-highlighter';
 import CopyButton from "./CopyButton";
 import {docco} from "react-syntax-highlighter/dist/esm/styles/hljs";
 import {Root} from "hast";
+import "github-markdown-css/github-markdown.css";
+import gfm from "remark-gfm";
 
 interface ChatBlockProps {
     markdown: string;
@@ -74,6 +76,7 @@ const MarkdownBlock: React.FC<ChatBlockProps> = ({markdown, role}) => {
 
     return (
         <ReactMarkdown
+            remarkPlugins={[gfm]}
             components={renderers}
             rehypePlugins={[rehypeInlineCodeProperty]}
         >
