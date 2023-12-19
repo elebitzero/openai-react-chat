@@ -24,5 +24,8 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Build CSS
+        run: npm run build:css
+
       - name: Build
         run: npm run build
