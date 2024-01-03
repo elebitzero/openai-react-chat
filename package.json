@@ -66,6 +66,6 @@
     "cypress": "^13.6.2",
     "vite": "^4.4.9",
     "vite-plugin-svgr": "^3.2.0",
-    "vite-tsconfig-paths": "^4.2.1"
+    "vite-tsconfig-paths": "^4.2.3"
   }
 }
