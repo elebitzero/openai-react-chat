@@ -1,0 +1,13 @@
+{
+  "system": "System:",
+  "model": "Model: {{modelName}}",
+  "new-chat": "New chat",
+  "search": "Search…",
+  "previous-7-days": "Previous 7 days",
+  "previous-30-days": "Previous 30 days",
+  "yesterday": "Yesterday",
+  "today": "Today",
+  "close-sidebar": "Close sidebar",
+  "open-sidebar": "Open sidebar",
+  "send-message": "Send message"
+}
