@@ -12,6 +12,7 @@ import {
     XMarkIcon
 } from "@heroicons/react/24/outline";
 import {CloseSideBarIcon, iconProps} from "../svg";
+import {useTranslation} from 'react-i18next';
 import Tooltip from "./Tooltip";
 
 interface SidebarProps {
@@ -24,6 +25,7 @@ function useCurrentPath() {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({isSidebarCollapsed, toggleSidebarCollapse}) => {
+    const { t } = useTranslation();
     const acceptButtonRef = useRef<HTMLButtonElement | null>(null);
     const [conversations, setConversations] = useState<Conversation[]>([]);
     const [conversationsWithMarkers, setConversationsWithMarkers] = useState<Conversation[]>([]);
@@ -128,10 +130,10 @@ const Sidebar: React.FC<SidebarProps> = ({isSidebarCollapsed, toggleSidebarColla
         const diffTime = Math.abs(today.getTime() - date.getTime());
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-        if (diffDays === 1) return 'Today';
-        if (diffDays === 2) return 'Yesterday';
-        if (diffDays <= 7) return 'Previous 7 Days';
-        if (diffDays <= 30) return 'Previous 30 Days';
+        if (diffDays === 1) return t('today');
+        if (diffDays === 2) return t('yesterday');
+        if (diffDays <= 7) return t('previous-7-days');
+        if (diffDays <= 30) return t('previous-30-days');
 
         return date.toLocaleString('default', {month: 'long'});
     };
