@@ -261,9 +261,9 @@ const Sidebar: React.FC<SidebarProps> = ({isSidebarCollapsed, toggleSidebarColla
                                     <a className="flex px-3 min-h-[44px] py-1 items-center gap-3 transition-colors duration-200 dark:text-white cursor-pointer text-sm rounded-md border dark:border-white/20 hover:bg-gray-500/10 h-11 bg-white dark:bg-transparent flex-grow overflow-hidden"
                                        onClick={() => handleNewChat()}>
                                         <PlusIcon {...iconProps} />
-                                        <span className="truncate">New chat</span>
+                                        <span className="truncate">{t('new-chat')}</span>
                                     </a>
-                                    <Tooltip title="Close sidebar" side="right" sideOffset={10}>
+                                    <Tooltip title={t('close-sidebar')} side="right" sideOffset={10}>
                                         <a
                                             className="flex px-3 min-h-[44px] py-1 gap-3 transition-colors duration-200 dark:text-white cursor-pointer text-sm rounded-md border dark:border-white/20 hover:bg-gray-500/10 h-11 w-11 flex-shrink-0 items-center justify-center bg-white dark:bg-transparent"
                                             onClick={toggleSidebarCollapse}>
@@ -276,7 +276,7 @@ const Sidebar: React.FC<SidebarProps> = ({isSidebarCollapsed, toggleSidebarColla
                                         id="searchInput"
                                         className="flex-grow rounded-md border dark:border-white/20 px-2 py-1"
                                         type="text"
-                                        placeholder="Search..."
+                                        placeholder={t('search')}
                                         onKeyPress={(e) => {
                                             if (e.key === 'Enter') {
                                                 // Handle search logic

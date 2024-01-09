@@ -12,6 +12,7 @@ import React, {
 } from 'react';
 import {MAX_ROWS, SNIPPET_MARKERS} from '../constants/appConstants';
 import {SubmitButton} from "./SubmitButton";
+import {useTranslation} from 'react-i18next';
 
 interface MessageBoxProps {
     callApp: Function;
@@ -29,6 +30,7 @@ export interface MessageBoxHandles {
 
 
 const MessageBox = forwardRef<MessageBoxHandles, MessageBoxProps>(({loading, setLoading, callApp}, ref) => {
+    const { t } = useTranslation();
     const [textValue, setTextValue] = useState('');
     const [isTextEmpty, setIsTextEmpty] = useState(true);
     const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -218,7 +220,7 @@ const MessageBox = forwardRef<MessageBoxHandles, MessageBoxProps>(({loading, set
                             ref={textAreaRef}
                             style={{maxHeight: "200px", overflowY: "auto"}}
                             rows={1}
-                            placeholder="Send a message..."
+                            placeholder={t('send-a-message')}
                             className="m-0 w-full resize-none border-0 bg-transparent p-0 pr-7 focus:ring-0 focus-visible:ring-0 outline-none shadow-none dark:bg-transparent pl-2 md:pl-0"
                             value={textValue}
                             onKeyDown={checkForSpecialKey}

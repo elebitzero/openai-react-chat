@@ -1,12 +1,14 @@
 import React, {CSSProperties, useState} from 'react';
 import {SNIPPET_MARKERS} from "../constants/appConstants";
 import {ChevronDownIcon, ChevronUpIcon} from "@heroicons/react/24/outline";
+import {useTranslation} from 'react-i18next';
 
 interface FoldableTextSectionProps {
     content: string;
 }
 
 const FoldableTextSection: React.FC<FoldableTextSectionProps> = ({ content }) => {
+    const { t } = useTranslation();
     const [isExpanded, setIsExpanded] = useState(false);
 
     const toggleSection = () => {
@@ -47,12 +49,12 @@ const FoldableTextSection: React.FC<FoldableTextSectionProps> = ({ content }) =>
                 {isExpanded ? (
                     <>
                         <ChevronUpIcon style={iconStyles} />
-                        Collapse
+                        {t('collapse')}
                     </>
                 ) : (
                     <>
                         <ChevronDownIcon style={iconStyles} />
-                        Expand
+                        {t('expand')}
                     </>
                 )}
             </button>

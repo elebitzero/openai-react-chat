@@ -11,6 +11,7 @@ import {conversationsEmitter} from "../service/EventEmitter";
 import {OpenSideBarIcon} from "../svg";
 import Tooltip from "./Tooltip";
 import {useLocation, useNavigate} from "react-router-dom";
+import {useTranslation} from 'react-i18next';
 import MessageBox, {MessageBoxHandles} from "./MessageBox";
 
 export const updateConversationMessages = async (id: number, updatedMessages: any[]) => {
@@ -33,6 +34,7 @@ interface MainPageProps {
 
 
 const MainPage: React.FC<MainPageProps> = ({isSidebarCollapsed, toggleSidebarCollapse}) => {
+    const { t } = useTranslation();
     const [isNewConversation, setIsNewConversation] = useState<boolean>(false);
     const [conversationId, setConversationId] = useState(0);
     const [systemPrompt, setSystemPrompt] = useState('');
@@ -252,7 +254,7 @@ const MainPage: React.FC<MainPageProps> = ({isSidebarCollapsed, toggleSidebarCol
         <div className="overflow-hidden w-full h-full relative flex z-0">
             <div className="sidebar-button">
                 {isSidebarCollapsed && (
-                    <Tooltip title="Open sidebar" side="right" sideOffset={10}>
+                    <Tooltip title={t('open-sidebar')} side="right" sideOffset={10}>
                         <a
                             className="flex px-3 min-h-[44px] py-1 gap-3 transition-colors duration-200 dark:text-black cursor-pointer text-sm rounded-md hover:bg-gray-500/10 h-11 w-11 flex-shrink-0 items-center justify-center bg-white"
                             onClick={toggleSidebarCollapse}>
@@ -270,7 +272,7 @@ const MainPage: React.FC<MainPageProps> = ({isSidebarCollapsed, toggleSidebarCol
                         <div
                             className="text-input-with-header chat-pg-instructions flex items-center justify-center m-5">
                             <div className="text-input-header-subheading subheading"
-                                 style={{marginLeft: isSidebarCollapsed ? '4em' : '0'}}>System:
+                                 style={{marginLeft: isSidebarCollapsed ? '4em' : '0'}}>{t('system')}
                             </div>
                             <div
                                 className="text-input-header-wrapper overflow-wrapper text-input flex items-center justify-center w-3/5">

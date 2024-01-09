@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {CheckIcon, ClipboardIcon} from "@heroicons/react/24/outline";
 import {iconProps} from "../svg";
+import {useTranslation} from 'react-i18next';
 
 export enum CopyButtonMode {
     Normal = "normal",
@@ -13,6 +14,7 @@ interface CopyButtonProps {
 }
 
 const CopyButton = ({text, mode = CopyButtonMode.Normal}: CopyButtonProps) => {
+    const { t } = useTranslation();
     const [isCopied, setIsCopied] = useState(false);
 
     useEffect(() => {
@@ -47,12 +49,12 @@ const CopyButton = ({text, mode = CopyButtonMode.Normal}: CopyButtonProps) => {
             {isCopied ? (
                 <>
                     <CheckIcon {...iconProps} />
-                    {mode === CopyButtonMode.Normal ? <span>Copied!</span> : null}
+                    {mode === CopyButtonMode.Normal ? <span>{t('copied')}</span> : null}
                 </>
             ) : (
                 <>
                     <ClipboardIcon {...iconProps} />
-                    {mode === CopyButtonMode.Normal ? <span>Copy code</span> : null}
+                    {mode === CopyButtonMode.Normal ? <span>{t('copy-code')}</span> : null}
                 </>
             )}
         </button>

@@ -6,6 +6,7 @@ import {ChatService} from "../service/ChatService";
 import {OPENAI_MODEL_LIST} from "../config";
 import {toast} from "react-toastify";
 import {ChatMessage} from "../models/ChatCompletion";
+import {useTranslation} from 'react-i18next';
 
 interface Props {
     chatBlocks: ChatMessage[];
@@ -14,6 +15,7 @@ interface Props {
 }
 
 const Chat: React.FC<Props> = ({chatBlocks, onChatScroll, allowAutoScroll}) => {
+    const { t } = useTranslation();
     const [isNewConversation, setIsNewConversation] = useState<boolean>(false);
     const [models, setModels] = useState<OpenAIModel[]>([]);
     const [error, setError] = useState<string | null>(null);
@@ -103,7 +105,7 @@ const Chat: React.FC<Props> = ({chatBlocks, onChatScroll, allowAutoScroll}) => {
                 <div
                     className={`flex w-full items-center justify-center gap-1 p-3 text-gray-500 dark:border-gray-900/50 dark:bg-gray-700 dark:text-gray-300 ${!isNewConversation ? 'border-b border-black/10' : ''}`}>
                     <div className="flex items-center flex-row gap-1" style={{width: '50ch'}}>
-                        <span>Model: {isNewConversation ? '' : ChatService.getSelectedModelId()}</span>
+                        <span>{t('model')} {isNewConversation ? '' : ChatService.getSelectedModelId()}</span>
                         <span className="flex-grow">
                           <div style={{display: isNewConversation ? 'block' : 'none'}}>
                             <ModelSelect models={models}/>

@@ -1,6 +1,6 @@
 {
   "system": "System:",
-  "model": "Model: {{modelName}}",
+  "model": "Model:",
   "new-chat": "New chat",
   "search": "Search…",
   "send-a-message": "Send a message…",
@@ -8,6 +8,10 @@
   "previous-30-days": "Previous 30 days",
   "yesterday": "Yesterday",
   "today": "Today",
+  "copy-code": "Copy code",
+  "copied": "Copied!",
+  "expand": "Expand",
+  "collapse": "Collapse",
   "close-sidebar": "Close sidebar",
   "open-sidebar": "Open sidebar",
   "send-message": "Send message"

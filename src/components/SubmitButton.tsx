@@ -2,6 +2,7 @@ import React, {CSSProperties} from 'react';
 import {EllipsisHorizontalIcon, PaperAirplaneIcon} from '@heroicons/react/24/outline';
 import './SubmitButton.css';
 import Tooltip from "./Tooltip";
+import {useTranslation} from 'react-i18next';
 
 interface SubmitButtonProps {
     loading: boolean;
@@ -9,10 +10,11 @@ interface SubmitButtonProps {
 }
 
 export const SubmitButton: React.FC<SubmitButtonProps> = ({loading, disabled}) => {
+    const { t } = useTranslation();
     const strokeColor = disabled ? 'currentColor' : 'white';
 
     return (
-        <Tooltip title="Send message" side="top" sideOffset={0}>
+        <Tooltip title={t('send-message')} side="top" sideOffset={0}>
             <button
                 type="submit"
                 disabled={loading || disabled}
