@@ -1,0 +1,18 @@
+{
+  "system": "システム:",
+  "model": "モデル:",
+  "new-chat": "新しいチャット",
+  "search": "検索…",
+  "send-a-message": "メッセージを送る…",
+  "previous-7-days": "過去7日間",
+  "previous-30-days": "過去30日間",
+  "yesterday": "昨日",
+  "today": "今日",
+  "copy-code": "コードをコピー",
+  "copied": "コピーしました！",
+  "expand": "展開",
+  "collapse": "折りたたむ",
+  "close-sidebar": "サイドバーを閉じる",
+  "open-sidebar": "サイドバーを開く",
+  "send-message": "メッセージを送信"
+}

@@ -135,7 +135,7 @@ const Sidebar: React.FC<SidebarProps> = ({isSidebarCollapsed, toggleSidebarColla
         if (diffDays <= 7) return t('previous-7-days');
         if (diffDays <= 30) return t('previous-30-days');
 
-        return date.toLocaleString('default', {month: 'long'});
+        return date.toLocaleString(navigator.language, {month: 'long'});
     };
 
     const handleTitleInputKeyPress = (e: React.KeyboardEvent<HTMLInputElement>, conversation: Conversation) => {

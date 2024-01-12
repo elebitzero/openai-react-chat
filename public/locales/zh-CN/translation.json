@@ -1,0 +1,18 @@
+{
+  "system": "系统：",
+  "model": "模型：",
+  "new-chat": "新聊天",
+  "search": "搜索…",
+  "send-a-message": "发送消息…",
+  "previous-7-days": "过去7天",
+  "previous-30-days": "过去30天",
+  "yesterday": "昨天",
+  "today": "今天",
+  "copy-code": "复制代码",
+  "copied": "已复制！",
+  "expand": "展开",
+  "collapse": "折叠",
+  "close-sidebar": "关闭侧边栏",
+  "open-sidebar": "打开侧边栏",
+  "send-message": "发送消息"
+}

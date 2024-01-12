@@ -1,0 +1,18 @@
+{
+  "system": "System:",
+  "model": "Modell:",
+  "new-chat": "Neuer Chat",
+  "search": "Suchen…",
+  "send-a-message": "Nachricht senden…",
+  "previous-7-days": "Vorherige 7 Tage",
+  "previous-30-days": "Vorherige 30 Tage",
+  "yesterday": "Gestern",
+  "today": "Heute",
+  "copy-code": "Code kopieren",
+  "copied": "Kopiert!",
+  "expand": "Erweitern",
+  "collapse": "Einklappen",
+  "close-sidebar": "Seitenleiste schließen",
+  "open-sidebar": "Seitenleiste öffnen",
+  "send-message": "Nachricht senden"
+}
