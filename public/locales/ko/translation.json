@@ -1,0 +1,18 @@
+{
+  "system": "시스템:",
+  "model": "모델:",
+  "new-chat": "새로운 채팅",
+  "search": "검색…",
+  "send-a-message": "메시지 보내기…",
+  "previous-7-days": "지난 7일",
+  "previous-30-days": "지난 30일",
+  "yesterday": "어제",
+  "today": "오늘",
+  "copy-code": "코드 복사",
+  "copied": "복사됨!",
+  "expand": "확장",
+  "collapse": "축소",
+  "close-sidebar": "사이드바 닫기",
+  "open-sidebar": "사이드바 열기",
+  "send-message": "메시지 보내기"
+}
