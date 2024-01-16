@@ -1,0 +1,18 @@
+{
+  "system": "ระบบ:",
+  "model": "โมเดล:",
+  "new-chat": "แชทใหม่",
+  "search": "ค้นหา…",
+  "send-a-message": "ส่งข้อความ…",
+  "previous-7-days": "ย้อนหลัง 7 วัน",
+  "previous-30-days": "ย้อนหลัง 30 วัน",
+  "yesterday": "เมื่อวาน",
+  "today": "วันนี้",
+  "copy-code": "คัดลอกรหัส",
+  "copied": "คัดลอกแล้ว!",
+  "expand": "ขยาย",
+  "collapse": "ย่อ",
+  "close-sidebar": "ปิดแถบข้าง",
+  "open-sidebar": "เปิดแถบข้าง",
+  "send-message": "ส่งข้อความ"
+}

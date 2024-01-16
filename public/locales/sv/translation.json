@@ -1,0 +1,18 @@
+{
+  "system": "System:",
+  "model": "Modell:",
+  "new-chat": "Ny chatt",
+  "search": "Sök…",
+  "send-a-message": "Skicka ett meddelande…",
+  "previous-7-days": "Senaste 7 dagarna",
+  "previous-30-days": "Senaste 30 dagarna",
+  "yesterday": "Igår",
+  "today": "Idag",
+  "copy-code": "Kopiera kod",
+  "copied": "Kopierat!",
+  "expand": "Expandera",
+  "collapse": "Kollapsa",
+  "close-sidebar": "Stäng sidofältet",
+  "open-sidebar": "Öppna sidofältet",
+  "send-message": "Skicka meddelande"
+}
