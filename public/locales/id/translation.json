@@ -1,6 +1,8 @@
 {
   "system": "Sistem:",
   "model": "Model:",
+  "show-more-models": "Tampilkan lebih banyak model",
+  "show-fewer-models": "Tampilkan lebih sedikit model",
   "new-chat": "Obrolan baru",
   "search": "Cari…",
   "send-a-message": "Kirim pesan…",

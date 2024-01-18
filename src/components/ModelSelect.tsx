@@ -11,6 +11,7 @@ import Select, {
 import {OpenAIModel} from '../models/model';
 import {ChatService} from '../service/ChatService';
 import {OPENAI_DEFAULT_MODEL} from "../config";
+import {useTranslation} from 'react-i18next';
 
 interface ModelSelectProps {
     onModelSelect?: (modelId: string) => void;
@@ -25,14 +26,15 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
                                                      models, // Use models from props
                                                      className,
                                                  }) => {
+    const { t } = useTranslation();
     const [options, setOptions] = useState<SelectOption[]>([]);
     const [selectedOption, setSelectedOption] = useState<SelectOption>({
         value: 'model-not-set',
         label: ''
     });
     const [loading, setLoading] = useState<boolean>(true);
-    const SHOW_MORE_MODELS = "Show more models";
-    const SHOW_FEWER_MODELS = "Show fewer models";
+    const SHOW_MORE_MODELS = t('show-more-models');
+    const SHOW_FEWER_MODELS = t('show-fewer-models');
 
     const customStyles: StylesConfig<SelectOption, false> = {
         option: (provided: CSSObjectWithLabel, state: OptionProps<SelectOption, false, GroupBase<SelectOption>>) => ({
