@@ -1,6 +1,7 @@
 {
   "system": "系统：",
   "model": "模型：",
+  "select-a-model": "选择一个模型",
   "show-more-models": "显示更多模型",
   "show-fewer-models": "显示较少模型",
   "new-chat": "新聊天",

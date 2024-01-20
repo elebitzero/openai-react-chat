@@ -1,6 +1,7 @@
 {
   "system": "Система:",
   "model": "Модель:",
+  "select-a-model": "Выберите модель",
   "show-more-models": "Показать больше моделей",
   "show-fewer-models": "Показать меньше моделей",
   "new-chat": "Новый чат",

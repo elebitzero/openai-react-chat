@@ -141,7 +141,7 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
                 value={selectedOption}
                 onChange={handleModelChange}
                 isSearchable={true}
-                placeholder='Select a model'
+                placeholder={t('select-a-model')}
                 isLoading={loading}
                 styles={customStyles}
             />

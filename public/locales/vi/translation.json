@@ -1,6 +1,7 @@
 {
   "system": "Hệ thống:",
   "model": "Mô hình:",
+  "select-a-model": "Chọn một mô hình",
   "show-more-models": "Hiển thị thêm mô hình",
   "show-fewer-models": "Hiển thị ít mô hình hơn",
   "new-chat": "Cuộc trò chuyện mới",
