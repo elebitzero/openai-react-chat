@@ -104,10 +104,10 @@ const Chat: React.FC<Props> = ({chatBlocks, onChatScroll, allowAutoScroll}) => {
             <div className="flex flex-col items-center text-sm dark:bg-gray-800">
                 <div
                     className={`flex w-full items-center justify-center gap-1 p-3 text-gray-500 dark:border-gray-900/50 dark:bg-gray-700 dark:text-gray-300 ${!isNewConversation ? 'border-b border-black/10' : ''}`}>
-                    <div className="flex items-center flex-row gap-1" style={{width: '50ch'}}>
+                    <div className="flex items-center flex-row gap-1">
                         <span>{t('model')} {isNewConversation ? '' : ChatService.getSelectedModelId()}</span>
                         <span className="flex-grow">
-                          <div style={{display: isNewConversation ? 'block' : 'none'}}>
+                          <div style={{display: isNewConversation ? 'block' : 'none', width: '50ch'}}>
                             <ModelSelect models={models}/>
                           </div>
                       </span>
