@@ -233,7 +233,10 @@ const MainPage: React.FC<MainPageProps> = ({isSidebarCollapsed, toggleSidebarCol
     const scrollToBottom = () => {
         const chatContainer = document.getElementById('chat-container'); // Replace with your chat container's actual ID
         if (chatContainer) {
-            chatContainer.scrollTop = chatContainer.scrollHeight;
+            chatContainer.scroll({
+                top: chatContainer.scrollHeight,
+                behavior: 'smooth'
+            });
         }
     };
 
