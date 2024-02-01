@@ -79,7 +79,6 @@ const MainPage: React.FC<MainPageProps> = ({isSidebarCollapsed, toggleSidebarCol
             setAllowAutoScroll(true);
             setShowScrollButton(false)
         }
-        scrollToBottom();
         const itemId = currentPath.split('/c/')[1];
         handleSelectedConversation(itemId)
     }, [currentPath]);
