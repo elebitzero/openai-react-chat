@@ -1,4 +1,4 @@
-import {OpenAIModel} from "../models/model";
+import {contextWindowSizes, OpenAIModel} from "../models/model";
 import {ChatCompletion, ChatMessage} from "../models/ChatCompletion";
 import {CHAT_PARAMETERS, OPENAI_API_KEY} from "../config";
 import {CustomError} from "./CustomError";
@@ -178,12 +178,17 @@ export class ChatService {
             .catch(err => {
                 throw new Error(err.message || err);
             })
-            .then(data => {
-                const models: OpenAIModel[] = data.data;
-                let filteredModels: OpenAIModel[] = models.filter(model => model.id.startsWith("gpt-"));
-                const sortedModels = [...filteredModels].sort((a, b) => a.id.localeCompare(b.id));
-                return sortedModels;
-            });
+          .then(data => {
+              const models: OpenAIModel[] = data.data;
+              // Filter, enrich with contextWindow from the imported constant, and sort
+              return models
+                .filter(model => model.id.startsWith("gpt-"))
+                .map(model => ({
+                    ...model,
+                    context_window: contextWindowSizes[model.id] || 0 // Use the imported constant
+                }))
+                .sort((a, b) => a.id.localeCompare(b.id));
+          });
 
         return this.models;
     };

@@ -4,6 +4,7 @@
   "select-a-model": "모델 선택",
   "show-more-models": "더 많은 모델 표시",
   "show-fewer-models": "더 적은 모델 표시",
+  "context-window": "컨텍스트 창",
   "new-chat": "새로운 채팅",
   "search": "검색…",
   "send-a-message": "메시지 보내기…",

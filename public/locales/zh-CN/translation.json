@@ -4,6 +4,7 @@
   "select-a-model": "选择一个模型",
   "show-more-models": "显示更多模型",
   "show-fewer-models": "显示较少模型",
+  "context-window": "上下文窗口",
   "new-chat": "新聊天",
   "search": "搜索…",
   "send-a-message": "发送消息…",
