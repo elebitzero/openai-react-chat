@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import Select, {
+    ActionMeta,
     components,
     ControlProps,
     CSSObjectWithLabel,
-    GroupBase,
+    GroupBase, MultiValue,
     OptionProps,
     SingleValue,
     SingleValueProps,
@@ -113,7 +114,14 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
         return Math.round(context_window / 1000)+'k';
     }
 
-    const handleModelChange = (option: SingleValue<SelectOption>) => {
+    const handleModelChange = (option: SingleValue<SelectOption> | MultiValue<SelectOption>,
+                               actionMeta: ActionMeta<SelectOption>) => {
+        if (Array.isArray(option)) {
+            console.error("Unexpected MultiValue in single-select component", option);
+            return;
+        }
+        option = option as SingleValue<SelectOption>;
+
         if (option) {
             if (option.value === "more") {
                 setOptions([
@@ -148,6 +156,17 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
         }
     };
 
+    const customSingleValue: React.FC<SingleValueProps<SelectOption>> = ({ children, ...props }) => (
+      <components.SingleValue {...props}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span>{props.data.label}</span>
+              <Tooltip title={t('context-window')} side="right" sideOffset={10}>
+                  <span style={{marginLeft: '10px', fontSize: '0.85rem', color: '#6b7280'}}>{props.data.info}</span>
+              </Tooltip>
+          </div>
+      </components.SingleValue>
+    );
+
     const customOption: React.FC<OptionProps<SelectOption, false>> = (props) => (
       <components.Option {...props}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -172,7 +191,7 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
                 styles={customStyles}
                 components={{
                     Option: customOption,
-
+                    SingleValue: customSingleValue,
                 }}
                 menuIsOpen={menuIsOpen}
                 onMenuClose={() => setMenuIsOpen(false)}
