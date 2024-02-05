@@ -29,6 +29,7 @@ const Chat: React.FC<Props> = ({chatBlocks, onChatScroll, allowAutoScroll}) => {
                         id: id,
                         object: 'model',
                         context_window: 0,
+                        knowledge_cutoff: '',
                         owned_by: 'not-set',
                         permission: []
                     } as OpenAIModel;

@@ -1,4 +1,4 @@
-import {contextWindowSizes, OpenAIModel} from "../models/model";
+import {modelDetails, OpenAIModel} from "../models/model";
 import {ChatCompletion, ChatMessage} from "../models/ChatCompletion";
 import {CHAT_PARAMETERS, OPENAI_API_KEY} from "../config";
 import {CustomError} from "./CustomError";
@@ -185,7 +185,8 @@ export class ChatService {
                 .filter(model => model.id.startsWith("gpt-"))
                 .map(model => ({
                     ...model,
-                    context_window: contextWindowSizes[model.id] || 0 // Use the imported constant
+                    context_window: modelDetails[model.id].contextWindowSize || 0,// Use the imported constant
+                    knowledge_cutoff: modelDetails[model.id].knowledgeCutoffDate || '' // Use the imported constant
                 }))
                 .sort((a, b) => b.id.localeCompare(a.id));
           });
