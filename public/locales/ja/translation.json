@@ -5,6 +5,7 @@
   "show-more-models": "モデルをさらに表示",
   "show-fewer-models": "モデルを減らす",
   "context-window": "コンテキストウィンドウ",
+  "knowledge-cutoff": "知識カットオフ日",
   "new-chat": "新しいチャット",
   "search": "検索…",
   "send-a-message": "メッセージを送る…",
