@@ -187,7 +187,7 @@ export class ChatService {
                     ...model,
                     context_window: contextWindowSizes[model.id] || 0 // Use the imported constant
                 }))
-                .sort((a, b) => a.id.localeCompare(b.id));
+                .sort((a, b) => b.id.localeCompare(a.id));
           });
 
         return this.models;

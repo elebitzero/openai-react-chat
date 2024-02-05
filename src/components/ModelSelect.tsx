@@ -15,7 +15,6 @@ import {ChatService} from '../service/ChatService';
 import {OPENAI_DEFAULT_MODEL} from "../config";
 import {useTranslation} from 'react-i18next';
 import Tooltip from "./Tooltip";
-import {OpenSideBarIcon} from "../svg";
 
 interface ModelSelectProps {
     onModelSelect?: (modelId: string) => void;
@@ -72,7 +71,8 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
 
     useEffect(() => {
         if (models && models.length > 0) {
-            const defaultOptions = models.filter(model => !/-\d{4}$/.test(model.id));
+            const defaultOptions = models.filter(model => !/-\d{4}$/.test(model.id)).
+              filter(model => !/-\d{4}-preview$/.test(model.id));
 
             setOptions([
                 ...defaultOptions.map((model) => ({value: model.id, label: model.id, info: formatContextWindow(model.context_window)})),
