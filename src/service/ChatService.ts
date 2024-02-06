@@ -111,13 +111,18 @@ export class ChatService {
                 let decodedChunk = decoder.decode(value);
                 if (partialDecodedChunk) {
                     decodedChunk = "data: "+partialDecodedChunk+decodedChunk;
+                    partialDecodedChunk = undefined;
                 }
                 const rawData = decodedChunk.split("data: ").filter(Boolean);  // Split on "data: " and remove any empty strings
                 const chunks: CompletionChunk[] = rawData.map((chunk, index) => {
                     partialDecodedChunk = undefined;
-                    if (chunk.trim() === '[DONE]') {
+                    chunk = chunk.trim();
+                    if (chunk.length == 0) {
+                        return;
+                    }
+                    if (chunk === '[DONE]') {
                         DONE = true;
-                        return; // Skip parsing this term and continue with the next
+                        return;
                     }
                     let o;
                     try {
