@@ -41,14 +41,19 @@ const MarkdownBlock: React.FC<ChatBlockProps> = ({markdown, role}) => {
     }
 
     function codeBlock({node, className, children, ...props}: any) {
+        if (!children) {
+            return null;
+        }
+        const value = String(children).replace(/\n$/, '');
+        if (!value) {
+            return null;
+        }
         // Note: OpenAI does not always annotate the Markdown code block with the language
         // Note: In this case, we will fall back to plaintext
         const match = /language-(\w+)/.exec(className || '');
-        let language: string | undefined = match ? match[1] : 'plaintext';
-
-        const value = String(children).replace(/\n$/, '');
+        let language: string = match ? match[1] : 'plaintext';
         const isInline = node.properties.dataInline;
-
+        
         return isInline ? (
             inlineCodeBlock({value: value, language})
         ) : (
