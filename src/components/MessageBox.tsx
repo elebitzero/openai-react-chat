@@ -14,7 +14,7 @@ import {MAX_ROWS, SNIPPET_MARKERS} from '../constants/appConstants';
 import {SubmitButton} from "./SubmitButton";
 import {useTranslation} from 'react-i18next';
 import {ChatService} from "../service/ChatService";
-import {StopCircleIcon} from "@heroicons/react/24/solid";
+import {StopCircleIcon} from "@heroicons/react/24/outline";
 import Tooltip from "./Tooltip";
 interface MessageBoxProps {
     callApp: Function;
