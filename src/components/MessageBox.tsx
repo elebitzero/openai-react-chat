@@ -13,7 +13,9 @@ import React, {
 import {MAX_ROWS, SNIPPET_MARKERS} from '../constants/appConstants';
 import {SubmitButton} from "./SubmitButton";
 import {useTranslation} from 'react-i18next';
-
+import {ChatService} from "../service/ChatService";
+import {StopCircleIcon} from "@heroicons/react/24/solid";
+import Tooltip from "./Tooltip";
 interface MessageBoxProps {
     callApp: Function;
     loading: boolean;
@@ -205,6 +207,10 @@ const MessageBox = forwardRef<MessageBoxHandles, MessageBoxProps>(({loading, set
             textAreaRef.current.style.height = 'auto';
         }
     };
+    const handleCancel = () => {
+        ChatService.cancelStream();
+        setLoading(false);
+    };
 
     return (
         <div
@@ -227,10 +233,18 @@ const MessageBox = forwardRef<MessageBoxHandles, MessageBoxProps>(({loading, set
                             onChange={handleTextChange}
                             onPaste={handlePaste}
                         ></textarea>
-                        <SubmitButton
+                        {loading ? (
+                          <Tooltip title={t('cancel-output')} side="top" sideOffset={0}>
+                              <button onClick={handleCancel} className="absolute p-1 top-0 right-2">
+                                  <StopCircleIcon className="h-9 w-9"/>
+                              </button>
+                          </Tooltip>
+                        ) : (
+                          <SubmitButton
                             disabled={isTextEmpty || loading}
                             loading={loading}
-                        />
+                          />
+                        )}
                     </div>
                 </div>
             </form>

@@ -19,5 +19,6 @@
   "collapse": "축소",
   "close-sidebar": "사이드바 닫기",
   "open-sidebar": "사이드바 열기",
-  "send-message": "메시지 보내기"
+  "send-message": "메시지 보내기",
+  "cancel-output": "취소"
 }

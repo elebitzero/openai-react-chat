@@ -19,5 +19,6 @@
   "collapse": "Свернуть",
   "close-sidebar": "Закрыть боковую панель",
   "open-sidebar": "Открыть боковую панель",
-  "send-message": "Отправить сообщение"
+  "send-message": "Отправить сообщение",
+  "cancel-output": "Отмена"
 }

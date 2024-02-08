@@ -19,5 +19,6 @@
   "collapse": "Réduire",
   "close-sidebar": "Fermer la barre latérale",
   "open-sidebar": "Ouvrir la barre latérale",
-  "send-message": "Envoyer un message"
+  "send-message": "Envoyer un message",
+  "cancel-output": "Annuler"
 }

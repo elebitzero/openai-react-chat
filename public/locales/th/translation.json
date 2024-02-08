@@ -19,5 +19,6 @@
   "collapse": "ย่อ",
   "close-sidebar": "ปิดแถบข้าง",
   "open-sidebar": "เปิดแถบข้าง",
-  "send-message": "ส่งข้อความ"
+  "send-message": "ส่งข้อความ",
+  "cancel-output": "ยกเลิก"
 }

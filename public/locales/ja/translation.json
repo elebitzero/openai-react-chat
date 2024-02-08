@@ -19,5 +19,6 @@
   "collapse": "折りたたむ",
   "close-sidebar": "サイドバーを閉じる",
   "open-sidebar": "サイドバーを開く",
-  "send-message": "メッセージを送信"
+  "send-message": "メッセージを送信",
+  "cancel-output": "キャンセル"
 }

@@ -19,5 +19,6 @@
   "collapse": "折叠",
   "close-sidebar": "关闭侧边栏",
   "open-sidebar": "打开侧边栏",
-  "send-message": "发送消息"
+  "send-message": "发送消息",
+  "cancel-output": "取消"
 }
