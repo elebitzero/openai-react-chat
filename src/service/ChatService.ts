@@ -44,12 +44,13 @@ export class ChatService {
         const messagesWithoutMessageType =
             messages.map(({messageType, id: number, ...rest}) => rest);
 
-        const requestBody = {
+        const requestBody: any = {
             model: modelId,
             messages: messagesWithoutMessageType,
-            temperature: CHAT_PARAMETERS.temperature
         };
-
+        if (CHAT_PARAMETERS.temperature) {
+            requestBody.temperature = CHAT_PARAMETERS.temperature
+        }
         const response = await fetch(endpoint, {
             method: "POST",
             headers: headers,
@@ -77,12 +78,14 @@ export class ChatService {
         const messagesWithoutMessageType =
             messages.map(({messageType, id: number, ...rest}) => rest);
 
-        const requestBody = {
+        const requestBody: any = {
             model: modelId,
             messages: messagesWithoutMessageType,
             stream: true,
-            temperature: CHAT_PARAMETERS.temperature
         };
+        if (CHAT_PARAMETERS.temperature) {
+            requestBody.temperature = CHAT_PARAMETERS.temperature
+        }
 
         let response: Response;
         try {
