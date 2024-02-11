@@ -97,15 +97,12 @@ const MainPage: React.FC<MainPageProps> = ({isSidebarCollapsed, toggleSidebarCol
         const handleKeyDown = (event: KeyboardEvent) => {
             if (event.key === 'Escape') {
                 ChatService.cancelStream();
-                setLoading(false);
             }
         };
 
-        // Add keydown event listener to the whole document
-        document.addEventListener('keydown', handleKeyDown);
+        window.addEventListener('keydown', handleKeyDown);
 
-        // Remove event listener on cleanup
-        return () => document.removeEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
     }, []);
 
     const handleSystemPromptChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
