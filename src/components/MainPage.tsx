@@ -308,11 +308,11 @@ const MainPage: React.FC<MainPageProps> = ({isSidebarCollapsed, toggleSidebarCol
                     <Chat chatBlocks={messages} onChatScroll={handleUserScroll} allowAutoScroll={allowAutoScroll}/>
                     {/*</div>*/}
                     {/* Absolute container for the ScrollToBottomButton */}
-                    {showScrollButton && (
-                        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 mb-10 z-10">
-                            <ScrollToBottomButton onClick={scrollToBottom}/>
-                        </div>
-                    )}
+                    <div
+                        className={`absolute bottom-0 left-1/2 transform -translate-x-1/2 mb-10 z-10 ${showScrollButton ? '' : 'hidden'}`}
+                    >
+                        <ScrollToBottomButton onClick={scrollToBottom} />
+                    </div>
 
                     {/* MessageBox remains at the bottom */}
                     <MessageBox ref={messageBoxRef} callApp={callApp} loading={loading} setLoading={setLoading}/>
