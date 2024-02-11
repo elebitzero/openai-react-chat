@@ -93,6 +93,21 @@ const MainPage: React.FC<MainPageProps> = ({isSidebarCollapsed, toggleSidebarCol
         }
     }, [messages]);
 
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                ChatService.cancelStream();
+                setLoading(false);
+            }
+        };
+
+        // Add keydown event listener to the whole document
+        document.addEventListener('keydown', handleKeyDown);
+
+        // Remove event listener on cleanup
+        return () => document.removeEventListener('keydown', handleKeyDown);
+    }, []);
+
     const handleSystemPromptChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
         const newSystemPrompt = event.target.value;
         setSystemPrompt(newSystemPrompt);
@@ -136,8 +151,7 @@ const MainPage: React.FC<MainPageProps> = ({isSidebarCollapsed, toggleSidebarCol
                 messageType: messageType,
                 content: content
             };
-            const updatedMessages = [...prevMessages, message];
-            return updatedMessages;
+            return [...prevMessages, message];
         });
 
         const newMessage: ChatMessage = {
