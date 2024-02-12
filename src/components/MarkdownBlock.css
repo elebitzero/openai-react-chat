@@ -612,3 +612,10 @@
     --tw-prose-th-borders: var(--tw-prose-invert-th-borders);
     --tw-prose-td-borders: var(--tw-prose-invert-td-borders)
 }
+
+/* MarkdownBlock.css */
+.codeBlockContainer pre {
+    white-space: pre-wrap !important; /* Allow the text to wrap */
+    word-break: break-word !important;; /* Break the word to prevent overflow */
+    overflow-wrap: break-word !important;; /* Ensure long words do not cause overflow */
+}

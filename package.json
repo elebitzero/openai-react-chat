@@ -40,7 +40,7 @@
   "scripts": {
     "build:css": "postcss src/index.css -o src/tailwind.css",
     "start": "npm run build:css && vite",
-    "build": "tsc && vite build",
+    "build": "npm run build:css && tsc && vite build",
     "serve": "vite preview"
   },
   "eslintConfig": {

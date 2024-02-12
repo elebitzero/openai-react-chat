@@ -57,7 +57,7 @@ const MarkdownBlock: React.FC<ChatBlockProps> = ({markdown, role}) => {
         return isInline ? (
             inlineCodeBlock({value: value, language})
         ) : (
-            <div className="border-black border rounded-md">
+            <div className="border-black border rounded-md codeBlockContainer dark:bg-gray-850">
                 <div
                     className="flex items-center relative text-gray-200 bg-gray-800 px-4 py-2 text-xs font-sans justify-between rounded-t-md">
                     <span>{language}</span>

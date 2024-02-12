@@ -1,3 +1,4 @@
+
 .App {
     text-align: center;
 }
@@ -130,6 +131,10 @@ textarea:focus-visible {
 
 .copy-button:hover svg path {
     stroke: black;
+}
+
+.dark .copy-button:hover svg path {
+    stroke: white;
 }
 
 .text-input-full {
@@ -1407,6 +1412,11 @@ pre[class*=language-] {
 
 .dark .dark\:bg-gray-800\/90 {
     background-color: rgba(52, 53, 65, .9)
+}
+
+.dark .dark\:bg-gray-850 {
+    --tw-bg-opacity: 1;
+    background-color: rgb(34 38 52 / var(--tw-bg-opacity))
 }
 
 .dark .dark\:bg-gray-900 {

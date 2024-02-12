@@ -264,7 +264,7 @@ const MainPage: React.FC<MainPageProps> = ({isSidebarCollapsed, toggleSidebarCol
     };
 
     return (
-        <div className="overflow-hidden w-full h-full relative flex z-0">
+        <div className="overflow-hidden w-full h-full relative flex z-0 dark:bg-gray-900">
             <div className="sidebar-button">
                 {isSidebarCollapsed && (
                     <Tooltip title={t('open-sidebar')} side="right" sideOffset={10}>
@@ -283,15 +283,15 @@ const MainPage: React.FC<MainPageProps> = ({isSidebarCollapsed, toggleSidebarCol
                     {isNewConversation ? (
                         // Render the "System" part for new conversations
                         <div
-                            className="text-input-with-header chat-pg-instructions flex items-center justify-center m-5">
-                            <div className="text-input-header-subheading subheading"
+                            className="text-input-with-header chat-pg-instructions flex items-center justify-center m-5 dark:bg-gray-900">
+                            <div className="text-input-header-subheading subheading dark:text-gray-100"
                                  style={{marginLeft: isSidebarCollapsed ? '4em' : '0'}}>{t('system')}
                             </div>
                             <div
                                 className="text-input-header-wrapper overflow-wrapper text-input flex items-center justify-center w-3/5">
                                 <textarea aria-label="Input"
                                           style={{maxHeight: "200px", overflowY: "auto"}}
-                                          className="focus:ring-0 focus-visible:ring-0 outline-none shadow-none text-input text-input-lg text-input-full text-input-header-buffer"
+                                          className="focus:ring-0 focus-visible:ring-0 outline-none shadow-none text-input text-input-lg text-input-full text-input-header-buffer dark:placeholder-gray-100 dark:text-gray-100 dark:bg-gray-850"
                                           placeholder={OPENAI_DEFAULT_SYSTEM_PROMPT}
                                           value={systemPrompt}
                                           onChange={handleSystemPromptChange}
@@ -308,11 +308,11 @@ const MainPage: React.FC<MainPageProps> = ({isSidebarCollapsed, toggleSidebarCol
                     <Chat chatBlocks={messages} onChatScroll={handleUserScroll} allowAutoScroll={allowAutoScroll}/>
                     {/*</div>*/}
                     {/* Absolute container for the ScrollToBottomButton */}
-                    <div
-                        className={`absolute bottom-0 left-1/2 transform -translate-x-1/2 mb-10 z-10 ${showScrollButton ? '' : 'hidden'}`}
-                    >
+                    {showScrollButton && (
+                        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 mb-10 z-10">
                         <ScrollToBottomButton onClick={scrollToBottom} />
                     </div>
+                    )}
 
                     {/* MessageBox remains at the bottom */}
                     <MessageBox ref={messageBoxRef} callApp={callApp} loading={loading} setLoading={setLoading}/>

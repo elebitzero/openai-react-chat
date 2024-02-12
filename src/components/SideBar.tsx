@@ -4,7 +4,7 @@ import db, {Conversation, getConversationById, searchConversationsByTitle} from 
 import {conversationsEmitter} from '../service/EventEmitter';
 import {
     ChatBubbleLeftIcon,
-    CheckIcon,
+    CheckIcon, Cog8ToothIcon,
     MagnifyingGlassIcon,
     PencilSquareIcon,
     PlusIcon,
@@ -14,6 +14,7 @@ import {
 import {CloseSideBarIcon, iconProps} from "../svg";
 import {useTranslation} from 'react-i18next';
 import Tooltip from "./Tooltip";
+import SettingsModal from './SettingsModel';
 
 interface SidebarProps {
     isSidebarCollapsed: boolean;
@@ -35,6 +36,7 @@ const Sidebar: React.FC<SidebarProps> = ({isSidebarCollapsed, toggleSidebarColla
     const NUM_INITIAL_CONVERSATIONS = 200;
     const navigate = useNavigate();
     const currentPath = useCurrentPath();
+    const [isSettingsModalVisible, setSettingsModalVisible] = useState(false);
 
     useEffect(() => {
         const handleSelectedConversation = (id: string | null) => {
@@ -91,6 +93,10 @@ const Sidebar: React.FC<SidebarProps> = ({isSidebarCollapsed, toggleSidebarColla
                 }));
                 setConversations(modifiedConversations);
             });
+    }
+
+    const openSettingsDialog = () => {
+        setSettingsModalVisible(true);
     }
 
     const handleNewChat = () => {
@@ -236,8 +242,9 @@ const Sidebar: React.FC<SidebarProps> = ({isSidebarCollapsed, toggleSidebarColla
 
 
     return (
-        <div className="sidebar-container">
-            <div className="sidebar duration-500 transition-all h-full flex-shrink-0 overflow-x-hidden dark bg-gray-900"
+        // sidebar is always dark mode
+        <div className="sidebar-container dark">
+            <div className="sidebar duration-500 transition-all h-full flex-shrink-0 overflow-x-hidden bg-gray-900"
                  style={{width: isSidebarCollapsed ? "0px" : "260px"}}>
                 <div className="h-full w-[260px]">
                     <div className="flex h-full min-h-0 flex-col ">
@@ -258,6 +265,13 @@ const Sidebar: React.FC<SidebarProps> = ({isSidebarCollapsed, toggleSidebarColla
                             </h2>
                             <nav className="flex h-full w-full flex-col p-2" aria-label="Chat history">
                                 <div className="mb-1 flex flex-row gap-2">
+                                  {/*  <Tooltip title={t('open-settings')} side="right" sideOffset={10}>
+                                        <a
+                                          className="flex px-3 min-h-[44px] py-1 gap-3 transition-colors duration-200 dark:text-white cursor-pointer text-sm rounded-md border dark:border-white/20 hover:bg-gray-500/10 h-11 w-11 flex-shrink-0 items-center justify-center bg-white dark:bg-transparent"
+                                          onClick={() => openSettingsDialog()}>
+                                            <Cog8ToothIcon/>
+                                        </a>
+                                    </Tooltip>*/}
                                     <a className="flex px-3 min-h-[44px] py-1 items-center gap-3 transition-colors duration-200 dark:text-white cursor-pointer text-sm rounded-md border dark:border-white/20 hover:bg-gray-500/10 h-11 bg-white dark:bg-transparent flex-grow overflow-hidden"
                                        onClick={() => handleNewChat()}>
                                         <PlusIcon {...iconProps} />
@@ -271,10 +285,14 @@ const Sidebar: React.FC<SidebarProps> = ({isSidebarCollapsed, toggleSidebarColla
                                         </a>
                                     </Tooltip>
                                 </div>
+                                <SettingsModal
+                                  isVisible={isSettingsModalVisible}
+                                  onClose={() => setSettingsModalVisible(false)}
+                                />
                                 <div className="flex flex-row items-center mb-2">
                                     <input
                                         id="searchInput"
-                                        className="flex-grow rounded-md border dark:border-white/20 px-2 py-1"
+                                        className="flex-grow rounded-md border dark:bg-gray-850 dark:border-white/20 px-2 py-1"
                                         type="text"
                                         placeholder={t('search')}
                                         onKeyPress={(e) => {
@@ -326,7 +344,7 @@ const Sidebar: React.FC<SidebarProps> = ({isSidebarCollapsed, toggleSidebarColla
                                                                             data-projection-id="5"
                                                                             style={{opacity: 1, height: "auto"}}>
                                                                             <a
-                                                                                className={`flex py-3 px-3 items-center gap-3 relative rounded-md hover:bg-gray-100 cursor-pointer break-all bg-gray-100 dark:bg-gray-800 pr-14 dark:hover:bg-gray-800 group`}
+                                                                                className={`flex py-3 px-3 items-center gap-3 relative rounded-md hover:bg-gray-100 cursor-pointer break-all bg-gray-100 dark:bg-gray-900 pr-14 dark:hover:bg-gray-850 group`}
                                                                             >
                                                                                 <ChatBubbleLeftIcon {...iconProps} />
                                                                                 {isEditingTitle ? (
