@@ -13,6 +13,7 @@ import Tooltip from "./Tooltip";
 import {useLocation, useNavigate} from "react-router-dom";
 import {useTranslation} from 'react-i18next';
 import MessageBox, {MessageBoxHandles} from "./MessageBox";
+import {MAX_TITLE_LENGTH} from "../constants/appConstants";
 
 export const updateConversationMessages = async (id: number, updatedMessages: any[]) => {
     const conversation = await db.conversations.get(id);
@@ -116,7 +117,7 @@ const MainPage: React.FC<MainPageProps> = ({isSidebarCollapsed, toggleSidebarCol
         const id = Date.now();
         const timestamp = Date.now();
         setConversationId(id);
-        let shortenedText = message.substring(0, 25);
+        let shortenedText = message.substring(0, MAX_TITLE_LENGTH);
         const conversation = {
             id: id,
             timestamp: timestamp,

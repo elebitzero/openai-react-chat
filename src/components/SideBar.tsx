@@ -243,8 +243,12 @@ const Sidebar: React.FC<SidebarProps> = ({isSidebarCollapsed, toggleSidebarColla
 
     return (
         // sidebar is always dark mode
-        <div className="sidebar-container dark">
-            <div className="sidebar duration-500 transition-all h-full flex-shrink-0 overflow-x-hidden bg-gray-900"
+        <div className="sidebar-container">
+            <SettingsModal
+              isVisible={isSettingsModalVisible}
+              onClose={() => setSettingsModalVisible(false)}
+            />
+            <div className="sidebar dark duration-500 transition-all h-full flex-shrink-0 overflow-x-hidden bg-gray-900"
                  style={{width: isSidebarCollapsed ? "0px" : "260px"}}>
                 <div className="h-full w-[260px]">
                     <div className="flex h-full min-h-0 flex-col ">
@@ -265,7 +269,7 @@ const Sidebar: React.FC<SidebarProps> = ({isSidebarCollapsed, toggleSidebarColla
                             </h2>
                             <nav className="flex h-full w-full flex-col p-2" aria-label="Chat history">
                                 <div className="mb-1 flex flex-row gap-2">
-                                  {/*  <Tooltip title={t('open-settings')} side="right" sideOffset={10}>
+                         {/*           <Tooltip title={t('open-settings')} side="right" sideOffset={10}>
                                         <a
                                           className="flex px-3 min-h-[44px] py-1 gap-3 transition-colors duration-200 dark:text-white cursor-pointer text-sm rounded-md border dark:border-white/20 hover:bg-gray-500/10 h-11 w-11 flex-shrink-0 items-center justify-center bg-white dark:bg-transparent"
                                           onClick={() => openSettingsDialog()}>
@@ -285,10 +289,6 @@ const Sidebar: React.FC<SidebarProps> = ({isSidebarCollapsed, toggleSidebarColla
                                         </a>
                                     </Tooltip>
                                 </div>
-                                <SettingsModal
-                                  isVisible={isSettingsModalVisible}
-                                  onClose={() => setSettingsModalVisible(false)}
-                                />
                                 <div className="flex flex-row items-center mb-2">
                                     <input
                                         id="searchInput"
@@ -344,7 +344,7 @@ const Sidebar: React.FC<SidebarProps> = ({isSidebarCollapsed, toggleSidebarColla
                                                                             data-projection-id="5"
                                                                             style={{opacity: 1, height: "auto"}}>
                                                                             <a
-                                                                                className={`flex py-3 px-3 items-center gap-3 relative rounded-md hover:bg-gray-100 cursor-pointer break-all bg-gray-100 dark:bg-gray-900 pr-14 dark:hover:bg-gray-850 group`}
+                                                                                className={`flex py-3 px-3 items-center gap-3 relative rounded-md hover:bg-gray-100 cursor-pointer break-all bg-gray-100 dark:bg-gray-800 pr-14  group`}
                                                                             >
                                                                                 <ChatBubbleLeftIcon {...iconProps} />
                                                                                 {isEditingTitle ? (
@@ -367,16 +367,14 @@ const Sidebar: React.FC<SidebarProps> = ({isSidebarCollapsed, toggleSidebarColla
                                                                                         />
                                                                                     </div>
                                                                                 ) : (
-                                                                                    <div
-                                                                                        className="flex-1 text-ellipsis max-h-5 overflow-hidden break-all relative">
-                                                                                        {convo.title}
-                                                                                        <div
-                                                                                            className="absolute inset-y-0 right-0 w-8 z-10 bg-gradient-to-l dark:from-gray-800 from-gray-100"></div>
-                                                                                    </div>
+                                                                                  <div
+                                                                                    className="flex-1 overflow-hidden whitespace-nowrap overflow-ellipsis max-h-5 break-all relative">
+                                                                                      {convo.title}
+                                                                                  </div>
                                                                                 )}
                                                                                 <div
-                                                                                    className="absolute flex right-1 z-10 dark:text-gray-300 text-gray-800">
-                                                                                    {isEditingTitle ? (
+                                                                                  className="absolute flex right-1 z-10 dark:text-gray-300 text-gray-800">
+                                                                                {isEditingTitle ? (
                                                                                         <>
                                                                                             <button
                                                                                                 ref={acceptButtonRef}
@@ -429,10 +427,8 @@ const Sidebar: React.FC<SidebarProps> = ({isSidebarCollapsed, toggleSidebarColla
                                                                             >
                                                                                 <ChatBubbleLeftIcon {...iconProps} />
                                                                                 <div
-                                                                                    className="flex-1 text-ellipsis max-h-5 overflow-hidden break-all relative">
+                                                                                    className="flex-1 overflow-hidden whitespace-nowrap overflow-ellipsis max-h-5 break-all relative">
                                                                                     {convo.title}
-                                                                                    <div
-                                                                                        className="absolute inset-y-0 right-0 w-8 z-10 bg-gradient-to-l dark:from-gray-900 from-gray-50 group-hover:from-gray-100 dark:group-hover:from-[#2A2B32]"></div>
                                                                                 </div>
                                                                             </a>
                                                                         </li>

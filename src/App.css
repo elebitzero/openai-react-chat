@@ -1563,6 +1563,11 @@ pre[class*=language-] {
     background-color: rgba(52, 53, 65, var(--tw-bg-opacity))
 }
 
+.dark .dark\:hover\:bg-gray-850:hover {
+    --tw-bg-opacity: 1;
+    background-color: rgba(42, 43, 50, var(--tw-bg-opacity))
+}
+
 .dark .dark\:hover\:bg-gray-900:hover {
     --tw-bg-opacity: 1;
     background-color: rgba(32, 33, 35, var(--tw-bg-opacity))
