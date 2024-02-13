@@ -8,8 +8,11 @@ import SyntaxHighlighter from 'react-syntax-highlighter';
 import CopyButton from "./CopyButton";
 import {docco} from "react-syntax-highlighter/dist/esm/styles/hljs";
 import {Root} from "hast";
-import "github-markdown-css/github-markdown.css";
 import gfm from "remark-gfm";
+import "github-markdown-css/github-markdown.css";
+import remarkMath from 'remark-math'
+import rehypeKatex from 'rehype-katex'
+import 'katex/dist/katex.min.css'
 
 interface ChatBlockProps {
     markdown: string;
@@ -81,9 +84,9 @@ const MarkdownBlock: React.FC<ChatBlockProps> = ({markdown, role}) => {
 
     return (
         <ReactMarkdown
-            remarkPlugins={[gfm]}
+            remarkPlugins={[gfm,remarkMath]}
             components={renderers}
-            rehypePlugins={[rehypeInlineCodeProperty]}
+            rehypePlugins={[rehypeKatex,rehypeInlineCodeProperty]}
         >
             {markdown}
         </ReactMarkdown>
