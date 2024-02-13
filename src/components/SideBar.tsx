@@ -292,7 +292,7 @@ const Sidebar: React.FC<SidebarProps> = ({isSidebarCollapsed, toggleSidebarColla
                                 <div className="flex flex-row items-center mb-2">
                                     <input
                                         id="searchInput"
-                                        className="flex-grow rounded-md border dark:bg-gray-850 dark:border-white/20 px-2 py-1"
+                                        className="flex-grow rounded-md border dark:text-gray-100 dark:bg-gray-850 dark:border-white/20 px-2 py-1"
                                         type="text"
                                         placeholder={t('search')}
                                         onKeyPress={(e) => {
