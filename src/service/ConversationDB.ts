@@ -34,6 +34,14 @@ export async function searchConversationsByTitle(searchString: string): Promise<
     return results;
 }
 
+export async function searchWithinConversations(searchString: string): Promise<Conversation[]> {
+    return db.conversations
+
+        // Filtering is done after fetching all conversations due to the need to parse the JSON "messages"
+        .filter(conversation => conversation.messages.includes(searchString))
+        .toArray();
+}
+
 
 const db = new ConversationDB();
 

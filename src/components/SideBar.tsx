@@ -1,6 +1,11 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
-import db, {Conversation, getConversationById, searchConversationsByTitle} from "../service/ConversationDB";
+import db, {
+    Conversation,
+    getConversationById,
+    searchConversationsByTitle,
+    searchWithinConversations
+} from "../service/ConversationDB";
 import {conversationsEmitter} from '../service/EventEmitter';
 import {
     ChatBubbleLeftIcon,
@@ -228,15 +233,34 @@ const Sidebar: React.FC<SidebarProps> = ({isSidebarCollapsed, toggleSidebarColla
             return;
         }
 
-        try {
-            const foundConversations = await searchConversationsByTitle(searchString);
-            const modifiedConversations = foundConversations.map(conversation => ({
-                ...conversation,
-                messages: "[]"
-            }));
-            setConversations(modifiedConversations);
-        } catch (error) {
-            console.error("Error during search:", error);
+        searchString = searchString.trim();
+        // Check if searchString starts with 'in:convo'
+        if (searchString.toLowerCase().startsWith('in:convo')) {
+            const actualSearchString = searchString.substring('in:convo'.length).trim();
+            if (actualSearchString === '') {
+                // Handle the case where there might be no actual search term provided after 'in:convo'
+                setConversations([]); // or however you wish to handle this case.
+                return;
+            }
+            try {
+                const foundConversations = await searchWithinConversations(actualSearchString);
+                // Assuming you do NOT want to modify the messages in this case, as you're searching within them
+                setConversations(foundConversations);
+            } catch (error) {
+                console.error("Error during search within conversations:", error);
+            }
+        } else {
+            // Original search logic for searching by conversation title
+            try {
+                const foundConversations = await searchConversationsByTitle(searchString);
+                const modifiedConversations = foundConversations.map(conversation => ({
+                    ...conversation,
+                    messages: "[]" // Assuming overwriting messages or handling differently was intentional
+                }));
+                setConversations(modifiedConversations);
+            } catch (error) {
+                console.error("Error during title search:", error);
+            }
         }
     };
 
