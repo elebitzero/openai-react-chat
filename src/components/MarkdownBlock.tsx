@@ -70,7 +70,7 @@ const MarkdownBlock: React.FC<ChatBlockProps> = ({markdown, role}) => {
                     <CopyButton text={children}/>
                 </div>
                 <div className="overflow-y-auto">
-                    <SyntaxHighlighter language={language} wrapLongLines={true}
+                    <SyntaxHighlighter language={language}
                                        style={theme === 'dark' ? coldarkDark : oneLight}
                                        customStyle={{backgroundColor: theme === 'dark' ? 'initial' : '#F1F1F2'}}
                     >
