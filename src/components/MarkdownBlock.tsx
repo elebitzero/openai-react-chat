@@ -1,18 +1,20 @@
-import React from 'react';
-import 'highlight.js/styles/github.css';
+import React, {useContext} from 'react';
+// import 'highlight.js/styles/github.css';
 import ReactMarkdown from 'react-markdown';
 import {visit} from 'unist-util-visit';
 import "./MarkdownBlock.css";
 
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import CopyButton from "./CopyButton";
-import {docco} from "react-syntax-highlighter/dist/esm/styles/hljs";
 import {Root} from "hast";
 import gfm from "remark-gfm";
 import "github-markdown-css/github-markdown.css";
 import remarkMath from 'remark-math'
 import rehypeKatex from 'rehype-katex'
 import 'katex/dist/katex.min.css'
+import {ThemeContext} from "../ThemeContext";
+import {docco} from "react-syntax-highlighter/dist/esm/styles/hljs";
+import { coldarkDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
 
 interface ChatBlockProps {
     markdown: string;
@@ -34,6 +36,7 @@ function rehypeInlineCodeProperty() {
 }
 
 const MarkdownBlock: React.FC<ChatBlockProps> = ({markdown, role}) => {
+    const { theme } = useContext(ThemeContext);
 
     function inlineCodeBlock({value, language}: { value: string; language: string | undefined }) {
         return (
@@ -66,8 +69,11 @@ const MarkdownBlock: React.FC<ChatBlockProps> = ({markdown, role}) => {
                     <span>{language}</span>
                     <CopyButton text={children}/>
                 </div>
-                <div className="p-4 overflow-y-auto">
-                    <SyntaxHighlighter language={language} style={docco}>
+                <div className="overflow-y-auto">
+                    <SyntaxHighlighter language={language} showLineNumbers={true} wrapLongLines={true}
+                                       style={theme === 'dark' ? coldarkDark : docco}
+                                       customStyle={{backgroundColor: theme === 'dark' ? 'initial' : '#F1F1F2'}}
+                    >
                         {value}
                     </SyntaxHighlighter>
                     {/* <code {...props} className={className}>

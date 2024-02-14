@@ -8,8 +8,8 @@ interface SettingsModalProps {
 }
 
 const SettingsModal: React.FC<SettingsModalProps> = ({ isVisible, onClose }) => {
-  const { theme, setTheme } = useContext(ThemeContext);
-  const [themeSelection, setThemeSelection] = useState(theme);
+  const { themePreference, setThemePreference } = useContext(ThemeContext);
+  const [themeSelection, setThemeSelection] = useState(themePreference);
   const [activeTab, setActiveTab] = useState<'General' | 'Storage'>('General');
 
   // Storage estimation state keeps as potentially undefined
@@ -24,8 +24,8 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isVisible, onClose }) => 
   };
 
   useEffect(() => {
-    setTheme(themeSelection);
-  }, [themeSelection, setTheme]);
+    setThemePreference(themeSelection);
+  }, [themeSelection, setThemePreference]);
 
   useEffect(() => {
     if ('storage' in navigator && 'estimate' in navigator.storage) {
