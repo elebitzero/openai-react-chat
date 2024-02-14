@@ -19,7 +19,7 @@ import {
 import {CloseSideBarIcon, iconProps} from "../svg";
 import {useTranslation} from 'react-i18next';
 import Tooltip from "./Tooltip";
-import SettingsModal from './SettingsModel';
+import SettingsModal from './SettingsModal';
 
 interface SidebarProps {
     isSidebarCollapsed: boolean;
