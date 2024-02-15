@@ -1,3 +1,36 @@
+
+// Ref: https://platform.openai.com/docs/api-reference/chat/create
+export interface ChatCompletionRequest {
+    messages: {
+        role: string;
+        content: string;
+    }[];
+    model: string;
+    frequency_penalty?: number | null;
+    presence_penalty?: number | null;
+    logit_bias?: { [token: string]: number } | null;
+    logprobs?: boolean | null;
+    top_logprobs?: number | null;
+    max_tokens?: number | null;
+    n?: number | null;
+    response_format?: {
+        type: 'json_object';
+    } | null;
+    seed?: number | null;
+    stop?: string | string[] | null;
+    stream?: boolean | null;
+    temperature?: number | null;
+    top_p?: number | null;
+    tools?: any[];
+    tool_choice?: 'none' | 'auto' | {
+        type: 'function';
+        function: {
+            name: string;
+        };
+    } | null;
+    user?: string;
+}
+
 export interface ChatCompletion {
     id: string;
     object: string;
@@ -9,6 +42,20 @@ export interface ChatCompletion {
         total_tokens: number;
     };
     choices: ChatCompletionChoice[];
+}
+
+export interface ChatMessage {
+    id?: number;
+    role: Role;
+    messageType: MessageType;
+    content: string;
+    name?: string;
+}
+
+export interface ChatCompletionChoice {
+    message: ChatMessage;
+    finish_reason: string;
+    index: number;
 }
 
 export enum Role {
@@ -28,18 +75,4 @@ export enum MessageType {
 
 export function getMessageType(messageTypeString: string): MessageType {
     return MessageType[messageTypeString as keyof typeof MessageType];
-}
-
-export interface ChatMessage {
-    id?: number;
-    role: Role;
-    messageType: MessageType;
-    content: string;
-    name?: string;
-}
-
-export interface ChatCompletionChoice {
-    message: ChatMessage;
-    finish_reason: string;
-    index: number;
 }

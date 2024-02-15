@@ -1,5 +1,5 @@
 import {modelDetails, OpenAIModel} from "../models/model";
-import {ChatCompletion, ChatMessage} from "../models/ChatCompletion";
+import {ChatCompletionRequest, ChatCompletion, ChatMessage} from "../models/ChatCompletion";
 import {CHAT_PARAMETERS, OPENAI_API_KEY} from "../config";
 import {CustomError} from "./CustomError";
 import {CHAT_COMPLETIONS_ENDPOINT, MODELS_ENDPOINT} from "../constants/apiEndpoints";
@@ -44,7 +44,7 @@ export class ChatService {
         const messagesWithoutMessageType =
             messages.map(({messageType, id: number, ...rest}) => rest);
 
-        const requestBody: any = {
+        const requestBody: ChatCompletionRequest = {
             model: modelId,
             messages: messagesWithoutMessageType,
         };
@@ -78,7 +78,7 @@ export class ChatService {
         const messagesWithoutMessageType =
             messages.map(({messageType, id: number, ...rest}) => rest);
 
-        const requestBody: any = {
+        const requestBody: ChatCompletionRequest = {
             model: modelId,
             messages: messagesWithoutMessageType,
             stream: true,
