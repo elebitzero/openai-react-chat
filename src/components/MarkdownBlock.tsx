@@ -72,7 +72,6 @@ const MarkdownBlock: React.FC<ChatBlockProps> = ({markdown, role}) => {
                 <div className="overflow-y-auto">
                     <SyntaxHighlighter language={language}
                                        style={theme === 'dark' ? coldarkDark : oneLight}
-                                       customStyle={{backgroundColor: theme === 'dark' ? 'initial' : '#F1F1F2'}}
                     >
                         {value}
                     </SyntaxHighlighter>
