@@ -17,7 +17,7 @@ class ConversationDB extends Dexie {
     constructor() {
         super("conversationsDB");
         this.version(1).stores({
-            conversations: 'id, timestamp, title, model, systemPrompt, messages'
+            conversations: '&id, timestamp, title, model, systemPrompt, messages'
         });
         this.conversations = this.table("conversations");
     }

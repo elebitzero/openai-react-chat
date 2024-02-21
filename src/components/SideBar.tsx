@@ -9,7 +9,8 @@ import db, {
 import {conversationsEmitter} from '../service/EventEmitter';
 import {
   ChatBubbleLeftIcon,
-  CheckIcon, Cog8ToothIcon,
+  CheckIcon,
+  Cog8ToothIcon,
   MagnifyingGlassIcon,
   PencilSquareIcon,
   PlusIcon,
@@ -119,7 +120,6 @@ const Sidebar: React.FC<SidebarProps> = ({className, isSidebarCollapsed, toggleS
   }
 
   const handleShowChatSettings = (readOnly: boolean) => {
-    console.log('show chat settings');
     navigate('/chatsettings?'+readOnly);
   }
 
@@ -328,13 +328,13 @@ const Sidebar: React.FC<SidebarProps> = ({className, isSidebarCollapsed, toggleS
               </h2>
               <nav className="flex h-full flex-col p-2" aria-label="Chat history">
                 <div className="mb-1 flex flex-row gap-2">
-                  {/*           <Tooltip title={t('open-settings')} side="right" sideOffset={10}>
-                                        <a
-                                          className="flex px-3 min-h-[44px] py-1 gap-3 transition-colors duration-200 dark:text-white cursor-pointer text-sm rounded-md border dark:border-white/20 hover:bg-gray-500/10 h-11 w-11 flex-shrink-0 items-center justify-center bg-white dark:bg-transparent"
-                                          onClick={() => openSettingsDialog()}>
-                                            <Cog8ToothIcon/>
-                                        </a>
-                                    </Tooltip>*/}
+{/*                  <Tooltip title={t('open-settings')} side="right" sideOffset={10}>
+                    <a
+                      className="flex px-3 min-h-[44px] py-1 gap-3 transition-colors duration-200 dark:text-white cursor-pointer text-sm rounded-md border dark:border-white/20 hover:bg-gray-500/10 h-11 w-11 flex-shrink-0 items-center justify-center bg-white dark:bg-transparent"
+                      onClick={() => openSettingsDialog()}>
+                      <Cog8ToothIcon/>
+                    </a>
+                  </Tooltip>*/}
                   <a
                     className="flex px-3 min-h-[44px] py-1 items-center gap-3 transition-colors duration-200 dark:text-white cursor-pointer text-sm rounded-md border dark:border-white/20 hover:bg-gray-500/10 h-11 bg-white dark:bg-transparent flex-grow overflow-hidden"
                     onClick={() => handleNewChat()}>

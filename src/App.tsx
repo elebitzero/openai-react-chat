@@ -6,6 +6,7 @@ import Sidebar from "./components/SideBar";
 import MainPage from "./components/MainPage";
 import ChatSettingsForm from './components/ChatSettingsForm';
 import './App.css';
+import {ToastContainer} from "react-toastify";
 
 const App = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -18,13 +19,28 @@ const App = () => {
   const ChatSettingsFormRoute = () => {
     const [searchParams] = useSearchParams();
     const readOnly = searchParams.get('readOnly') === 'true';
-    return <ChatSettingsForm readOnly={readOnly} />;
+    return <ChatSettingsForm readOnly={readOnly}/>;
   };
 
+  interface MainPageProps {
+    className: string;
+    isSidebarCollapsed: boolean;
+    toggleSidebarCollapse: () => void;
+  }
+
+  const MainPageWithProps: React.FC<Partial<MainPageProps>> = (props) => (
+    <MainPage
+      className={'main-content'}
+      isSidebarCollapsed={isSidebarCollapsed}
+      toggleSidebarCollapse={toggleSidebarCollapse}
+      {...props}
+    />
+  );
   return (
     <BrowserRouter>
       <I18nextProvider i18n={i18n}>
         <div className="App">
+          <ToastContainer/>
           <div className="flex overflow-hidden w-full h-full relative z-0">
             <Sidebar
               className="sidebar-container flex-shrink-0"
@@ -33,13 +49,12 @@ const App = () => {
             />
             <div className="flex-grow h-full overflow-hidden">
               <Routes>
-                <Route path="/" element={<MainPage className={'main-content'} isSidebarCollapsed={isSidebarCollapsed}
-                                                   toggleSidebarCollapse={toggleSidebarCollapse}/>}/>
-                <Route path="/c/:id"
-                       element={<MainPage className={'main-content'} isSidebarCollapsed={isSidebarCollapsed}
-                                          toggleSidebarCollapse={toggleSidebarCollapse}/>}/>
+                <Route path="/" element={<MainPageWithProps />} />
+                <Route path="/c/:id" element={<MainPageWithProps />} />
                 <Route path="/chatsettings" element={<ChatSettingsFormRoute />} />
-                {/* Catch-all route redirects to main page */}
+                // Use the wrapper for new routes
+                <Route path="/g/:gid" element={<MainPageWithProps />} />
+                <Route path="/g/:gid/c/:id" element={<MainPageWithProps />} />
                 <Route path="*" element={<Navigate to="/" replace/>}/>
               </Routes>
             </div>

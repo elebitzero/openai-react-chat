@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 export interface ImageSource {
   data: string | null;
-  type: 'svg' | 'raster' | null;
+  type: string; // 'svg' | 'raster'
 }
 
 interface AvatarFieldEditorProps {
@@ -21,14 +21,16 @@ const AvatarFieldEditor: React.FC<AvatarFieldEditorProps> = ({
   const [imageSrc, setImageSrc] = useState<ImageSource>(image);
 
   useEffect(() => {
-    setImageSrc(image);
-  }, [image]);
+    // Only sync the prop with the state if the component is in read-only mode
+    if (readOnly) {
+      setImageSrc(image);
+    }
+  }, [image, readOnly]);
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (readOnly) {
       return;
     }
-
     const file = event.target.files ? event.target.files[0] : null;
     if (file) {
       const reader = new FileReader();

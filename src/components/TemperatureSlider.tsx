@@ -38,12 +38,14 @@ const TemperatureSlider: React.FC<TemperatureSliderProps> = ({ value, onValueCha
 
   return (
     <div>
+      <p className='mb-2'>Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
+        We recommend altering this or top_p but not both.</p>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2px' }}>
         <span className='text-gray-600' style={{ alignSelf: 'flex-start', fontSize: '12px' }}>Deterministic</span>
         <span className='text-gray-600'  style={{ alignSelf: 'flex-end', fontSize: '12px' }}>Creative</span>
       </div>
       <Slider
-        className={'mr-2 ml-2 mb-6'}
+        className={'w-auto mr-2 ml-2 mb-6'}
         min={0}
         max={2}
         step={0.1}

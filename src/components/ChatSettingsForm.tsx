@@ -1,5 +1,5 @@
 import React, {useState, ChangeEvent, useEffect} from 'react';
-import AvatarFieldEditor, { ImageSource } from "./AvatarFieldEditor";
+import AvatarFieldEditor, {ImageSource} from "./AvatarFieldEditor";
 import 'rc-slider/assets/index.css';
 import {OpenAIModel} from '../models/model';
 import ModelSelect from './ModelSelect';
@@ -8,18 +8,25 @@ import {toast} from "react-toastify";
 import EditableField from './EditableField';
 import TemperatureSlider from './TemperatureSlider'
 import TopPSlider from './TopPSlider';
+import { ChatSettings } from '../models/ChatSettings';
 
 interface ChatSettingsFormProps {
   readOnly?: boolean;
 }
 
-const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({ readOnly = false }) => {
+const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({readOnly = false}) => {
   const [models, setModels] = useState<OpenAIModel[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState<ChatSettings>({
+    id: Date.now(),
+    icon: null,
     name: '',
-    model: 'default',
-    pageSetup: 'normal',
+    description: '',
+    instructions: 'You are a helpful assistant.',
+    model: null,
+    seed: null,
+    temperature: null,
+    top_p: null
   });
 
   useEffect(() => {
@@ -52,28 +59,35 @@ const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({ readOnly = false })
   const onImageChange = (
     image: ImageSource,
   ) => {
+    setFormData({...formData, icon: image});
   }
 
   const handleInputChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const {name, value, type} = event.target;
-    if (type === 'file') {
-      setFormData({...formData, icon: null});
-    } else if (type === 'number') {
+    if (type === 'number') {
       setFormData({...formData, [name]: value ? parseFloat(value) : null});
     } else {
       setFormData({...formData, [name]: value});
     }
   };
 
-  const handleTemperatureChange = (newTemperature: number) => {
-    setFormData({...formData, temperature: newTemperature});
-  };
-
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     console.log(formData);
+
+    // Providing feedback or further actions here
+    toast.success('Form submitted successfully.', {
+      position: "top-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
   };
 
   return (
@@ -83,7 +97,7 @@ const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({ readOnly = false })
           <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="icon">
             Icon
           </label>
-          <AvatarFieldEditor readOnly={readOnly} image={{data:null, type:'raster'}} onImageChange={onImageChange}/>
+          <AvatarFieldEditor readOnly={readOnly} image={{data: null, type: 'raster'}} onImageChange={onImageChange}/>
         </div>
         <div className="mb-4">
           <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
@@ -132,7 +146,7 @@ const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({ readOnly = false })
             defaultValue={null}
             defaultValueLabel={'gpt-4-turbo-preview'}
             editorComponent={(props) =>
-              <ModelSelect value={'gpt-4-turbo-preview'}
+              <ModelSelect value={formData.model || 'gpt-4-turbo-preview'}
                            onModelSelect={props.onValueChange}
                            models={models} allowNone={true}
                            allowNoneLabel="Default"/>}
@@ -173,13 +187,15 @@ const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({ readOnly = false })
           defaultValueLabel="1.0"
           editorComponent={TopPSlider}
           onValueChange={(value: number | null) => {
-            setFormData({...formData, temperature: value});
+            setFormData({...formData, top_p: value});
           }}
         />
         <div className="flex items-center justify-between">
           <button
             type="submit"
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            disabled={!formData.name}
+            className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline
+            ${!formData.name ? 'bg-gray-400 hover:bg-gray-400 cursor-not-allowed' : ''}`}
           >
             Save
           </button>

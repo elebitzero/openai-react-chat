@@ -1,14 +1,14 @@
 // MessageBox.tsx
 import React, {
-    ChangeEvent,
-    FormEvent,
-    forwardRef,
-    KeyboardEvent,
-    useCallback,
-    useEffect,
-    useImperativeHandle,
-    useRef,
-    useState
+  ChangeEvent,
+  FormEvent,
+  forwardRef,
+  KeyboardEvent,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState
 } from 'react';
 import {MAX_ROWS, SNIPPET_MARKERS} from '../constants/appConstants';
 import {SubmitButton} from "./SubmitButton";
@@ -16,6 +16,7 @@ import {useTranslation} from 'react-i18next';
 import {ChatService} from "../service/ChatService";
 import {StopCircleIcon} from "@heroicons/react/24/outline";
 import Tooltip from "./Tooltip";
+
 interface MessageBoxProps {
     callApp: Function;
     loading: boolean;
@@ -170,7 +171,7 @@ const MessageBox = forwardRef<MessageBoxHandles, MessageBoxProps>(({loading, set
         const newlineCount = (pastedText.match(/\n/g) || []).length;
 
         // Check if there are MAX_ROWS or more newlines
-        if (newlineCount >= MAX_ROWS) {
+        if (newlineCount >= MAX_ROWS || pastedText.length > 80*MAX_ROWS) {
             event.preventDefault();
             const modifiedText = `\n${SNIPPET_MARKERS.begin}\n${pastedText}\n${SNIPPET_MARKERS.end}\n`;
             insertTextAtCursorPosition(modifiedText);
