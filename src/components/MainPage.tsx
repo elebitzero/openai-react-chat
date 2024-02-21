@@ -27,14 +27,13 @@ function useCurrentPath() {
     return useLocation().pathname;
 }
 
-
 interface MainPageProps {
+    className: string;
     isSidebarCollapsed: boolean;
     toggleSidebarCollapse: () => void;
 }
 
-
-const MainPage: React.FC<MainPageProps> = ({isSidebarCollapsed, toggleSidebarCollapse}) => {
+const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggleSidebarCollapse}) => {
     const { t } = useTranslation();
     const [isNewConversation, setIsNewConversation] = useState<boolean>(false);
     const [conversationId, setConversationId] = useState(0);
@@ -117,7 +116,12 @@ const MainPage: React.FC<MainPageProps> = ({isSidebarCollapsed, toggleSidebarCol
         const id = Date.now();
         const timestamp = Date.now();
         setConversationId(id);
-        let shortenedText = message.substring(0, MAX_TITLE_LENGTH);
+        let title = message.trimStart(); // Remove leading newlines
+        let firstNewLineIndex = title.indexOf('\n');
+        if (firstNewLineIndex === -1) {
+            firstNewLineIndex = title.length;
+        }
+        let shortenedText = title.substring(0, Math.min(firstNewLineIndex, MAX_TITLE_LENGTH));
         const conversation = {
             id: id,
             timestamp: timestamp,
@@ -265,7 +269,7 @@ const MainPage: React.FC<MainPageProps> = ({isSidebarCollapsed, toggleSidebarCol
     };
 
     return (
-        <div className="overflow-hidden w-full h-full relative flex z-0 dark:bg-gray-900">
+        <div className={`${className} overflow-hidden w-full h-full relative flex z-0 dark:bg-gray-900`}>
             <div className="sidebar-button">
                 {isSidebarCollapsed && (
                     <Tooltip title={t('open-sidebar')} side="right" sideOffset={10}>
@@ -280,7 +284,7 @@ const MainPage: React.FC<MainPageProps> = ({isSidebarCollapsed, toggleSidebarCol
             <div className="flex flex-col items-stretch w-full h-full">
                 <ToastContainer/>
                 <main
-                    className="relative h-full w-full transition-width flex flex-col overflow-hidden items-stretch flex-1">
+                    className="relative h-full transition-width flex flex-col overflow-hidden items-stretch flex-1">
                     {isNewConversation ? (
                         // Render the "System" part for new conversations
                         <div

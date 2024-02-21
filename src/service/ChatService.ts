@@ -1,6 +1,6 @@
 import {modelDetails, OpenAIModel} from "../models/model";
 import {ChatCompletionRequest, ChatCompletion, ChatMessage} from "../models/ChatCompletion";
-import {CHAT_PARAMETERS, OPENAI_API_KEY} from "../config";
+import {CHAT_PARAMETERS, OPENAI_API_KEY, OPENAI_MODEL_LIST} from "../config";
 import {CustomError} from "./CustomError";
 import {CHAT_COMPLETIONS_ENDPOINT, MODELS_ENDPOINT} from "../constants/apiEndpoints";
 
@@ -204,6 +204,26 @@ export class ChatService {
             this.abortController = null;
         }
     }
+
+    static getModels = (): Promise<OpenAIModel[]> => {
+        if (OPENAI_MODEL_LIST && OPENAI_MODEL_LIST.length > 0) {
+            return Promise.resolve(
+              OPENAI_MODEL_LIST.map(id => {
+                  return {
+                      id: id,
+                      object: 'model',
+                      context_window: 0,
+                      knowledge_cutoff: '',
+                      owned_by: 'not-set',
+                      permission: []
+                  } as OpenAIModel;
+              })
+            );
+        } else {
+            return ChatService.fetchModels();
+        }
+    }
+
 
     static fetchModels = (): Promise<OpenAIModel[]> => {
         if (this.models !== null) {

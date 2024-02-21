@@ -23,32 +23,17 @@ const Chat: React.FC<Props> = ({chatBlocks, onChatScroll, allowAutoScroll}) => {
     const chatDivRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-
-        if (OPENAI_MODEL_LIST && OPENAI_MODEL_LIST.length > 0) {
-            setModels(OPENAI_MODEL_LIST.map(id => {
-                  return {
-                      id: id,
-                      object: 'model',
-                      context_window: 0,
-                      knowledge_cutoff: '',
-                      owned_by: 'not-set',
-                      permission: []
-                  } as OpenAIModel;
-              })
-            );
-        } else {
-            ChatService.fetchModels()
-              .then(fetchedModels => {
-                  setModels(fetchedModels);
-              })
-              .catch(err => {
-                  if (err && err.message) {
-                      setError(err.message);
-                  } else {
-                      setError('Error fetching model list');
-                  }
-              });
-        }
+        ChatService.getModels()
+          .then(models => {
+              setModels(models);
+          })
+          .catch(err => {
+              if (err && err.message) {
+                  setError(err.message);
+              } else {
+                  setError('Error fetching model list');
+              }
+          });
     }, []);
 
     useEffect(() => {
@@ -140,7 +125,7 @@ const Chat: React.FC<Props> = ({chatBlocks, onChatScroll, allowAutoScroll}) => {
 
                       <span className="flex-grow">
                           <div style={{display: isNewConversation ? 'block' : 'none', width: '50ch'}}>
-                            <ModelSelect models={models}/>
+                            <ModelSelect value={`null`} models={models}/>
                           </div>
                       </span>
                   </div>

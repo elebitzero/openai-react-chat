@@ -20,22 +20,29 @@ interface ModelSelectProps {
     onModelSelect?: (modelId: string) => void;
     models: OpenAIModel[];
     className?: string;
+    allowNone?: boolean;
+    allowNoneLabel?: string;
+    value: string;
 }
 
 type SelectOption = { label: string; value: string; info: string };
+
+const NONE_MODEL = {
+    value: null,
+    label: '(None)',
+    info: '?k'
+};
 
 const ModelSelect: React.FC<ModelSelectProps> = ({
                                                      onModelSelect,
                                                      models, // Use models from props
                                                      className,
+                                                     allowNone = false,  // Default to false if not provided
+                                                     allowNoneLabel = '(None)',  // Default label if not provided
                                                  }) => {
     const { t } = useTranslation();
     const [options, setOptions] = useState<SelectOption[]>([]);
-    const [selectedOption, setSelectedOption] = useState<SelectOption>({
-        value: 'model-not-set',
-        label: '',
-        info: '?k'
-    });
+    const [selectedOption, setSelectedOption] = useState<SelectOption>();
     const [loading, setLoading] = useState<boolean>(true);
     const SHOW_MORE_MODELS = t('show-more-models');
     const SHOW_FEWER_MODELS = t('show-fewer-models');
@@ -74,6 +81,12 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
             const defaultOptions = models.filter(model => !/-\d{4}$/.test(model.id)).
               filter(model => !/-\d{4}-preview$/.test(model.id));
 
+            let initialOptions = [
+                ...(allowNone ? [NONE_MODEL] : []), // Conditionally prepend the NONE_MODEL
+                ...defaultOptions,
+                { value: "more", label: SHOW_MORE_MODELS, info: '' }
+            ];
+
             setOptions([
                 ...defaultOptions.map((model) => ({value: model.id, label: model.id, info: formatContextWindow(model.context_window)})),
                 {value: "more", label: SHOW_MORE_MODELS, info: ''}
@@ -106,7 +119,9 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
     }, [models]);
 
     useEffect(() => {
-        ChatService.setSelectedModelId(selectedOption.value);
+        if (selectedOption) {
+            ChatService.setSelectedModelId(selectedOption.value);
+        }
     }, [selectedOption]);
 
 
