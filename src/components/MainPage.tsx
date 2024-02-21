@@ -47,43 +47,52 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
   const [allowAutoScroll, setAllowAutoScroll] = useState(true);
   const messageBoxRef = useRef<MessageBoxHandles>(null);
 
-  useEffect(() => {
-    const handleSelectedConversation = (id: string | null) => {
-      if (id && id.length > 0) {
-        let n = Number(id);
-        getConversationById(n).then(conversation => {
-          if (conversation) {
-            setConversationId(conversation.id)
-            setSystemPrompt(conversation.systemPrompt);
-            ChatService.setSelectedModelId(conversation.model);
-            const messages: ChatMessage[] = JSON.parse(conversation.messages);
-            if (messages.length == 0) {
-              // Race condition: the navigate to /c/id and the updating of the messages state
-              // are happening at the same time.
-              console.warn('possible state problem');
-            } else {
-              setMessages(messages);
-            }
-            clearTextArea();
+  const handleSelectedConversation = (id: string | null) => {
+    if (id && id.length > 0) {
+      let n = Number(id);
+      getConversationById(n).then(conversation => {
+        if (conversation) {
+          setConversationId(conversation.id)
+          setSystemPrompt(conversation.systemPrompt);
+          ChatService.setSelectedModelId(conversation.model);
+          const messages: ChatMessage[] = JSON.parse(conversation.messages);
+          if (messages.length == 0) {
+            // Race condition: the navigate to /c/id and the updating of the messages state
+            // are happening at the same time.
+            console.warn('possible state problem');
           } else {
-            console.error("Conversation not found.");
+            setMessages(messages);
           }
-        });
-      } else {
-        setIsNewConversation(true);
-        setConversationId(0);
-        setSystemPrompt('');
-        clearTextArea();
-        // ChatService.setSelectedModelId('');
-        setMessages([]);
+          clearTextArea();
+        } else {
+          console.error("Conversation not found.");
+        }
+      });
+    } else {
+      setIsNewConversation(true);
+      setConversationId(0);
+      setSystemPrompt('');
+      clearTextArea();
+      setMessages([]);
+    }
+    setAllowAutoScroll(true);
+    setShowScrollButton(false)
+  }
+
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname === '/') {
+      setIsNewConversation(true);
+      setConversationId(0);
+      setSystemPrompt('');
+      setMessages([]);
+    } else {
+      if (id) {
+        handleSelectedConversation(id);
       }
-      setAllowAutoScroll(true);
-      setShowScrollButton(false)
     }
-    if (id) {
-      handleSelectedConversation(id);
-    }
-  }, [id]);
+  }, [id, location.pathname]);
 
   useEffect(() => {
     setIsNewConversation(messages.length === 0);
