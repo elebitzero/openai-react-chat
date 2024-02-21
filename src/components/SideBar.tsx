@@ -43,6 +43,7 @@ const Sidebar: React.FC<SidebarProps> = ({className, isSidebarCollapsed, toggleS
   const navigate = useNavigate();
   const currentPath = useCurrentPath();
   const [isSettingsModalVisible, setSettingsModalVisible] = useState(false);
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const [showSearchOptions, setShowSearchOptions] = useState(false);
   const [searchInputValue, setSearchInputValue] = useState("");
 
@@ -72,6 +73,12 @@ const Sidebar: React.FC<SidebarProps> = ({className, isSidebarCollapsed, toggleS
     const handleNewConversation = (conversation: Conversation) => {
       setSelectedId(conversation.id);
       setConversations(prevConversations => [conversation, ...prevConversations]);
+
+      if (scrollContainerRef.current) {
+        if ("scrollTop" in scrollContainerRef.current) {
+          scrollContainerRef.current.scrollTop = 0;
+        }
+      }
     };
 
     conversationsEmitter.on('newConversation', handleNewConversation);
@@ -383,7 +390,7 @@ const Sidebar: React.FC<SidebarProps> = ({className, isSidebarCollapsed, toggleS
                     )
                   }
                 </div>
-                <div
+                <div ref={scrollContainerRef}
                   className="flex-col flex-1 transition-opacity duration-500 -mr-2 pr-2 overflow-y-auto">
                   <div className="flex flex-col gap-2 pb-2 dark:text-gray-100 text-gray-800 text-sm">
                     <div>
