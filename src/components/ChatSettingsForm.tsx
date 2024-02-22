@@ -1,34 +1,37 @@
-import React, {useState, ChangeEvent, useEffect} from 'react';
-import AvatarFieldEditor, {ImageSource} from "./AvatarFieldEditor";
+import React, { useState, ChangeEvent, useEffect } from 'react';
+import AvatarFieldEditor, { ImageSource } from "./AvatarFieldEditor";
 import 'rc-slider/assets/index.css';
-import {OpenAIModel} from '../models/model';
+import { OpenAIModel } from '../models/model';
 import ModelSelect from './ModelSelect';
-import {ChatService} from "../service/ChatService";
-import {toast} from "react-toastify";
-import EditableField from './EditableField';
-import TemperatureSlider from './TemperatureSlider'
+import { ChatService } from "../service/ChatService";
+import { toast } from "react-toastify";
+import TemperatureSlider from './TemperatureSlider';
 import TopPSlider from './TopPSlider';
 import { ChatSettings } from '../models/ChatSettings';
+import { EditableField } from './EditableField';
 
 interface ChatSettingsFormProps {
+  chatSettings?: ChatSettings;
   readOnly?: boolean;
 }
 
-const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({readOnly = false}) => {
+const DUMMY_CHAT_SETTINGS: ChatSettings = {
+  id: Date.now(),
+  author: 'user',
+  icon: null,
+  name: '',
+  description: '',
+  instructions: 'You are a helpful assistant.',
+  model: null,
+  seed: null,
+  temperature: null,
+  top_p: null
+};
+
+const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({ chatSettings, readOnly = false }) => {
   const [models, setModels] = useState<OpenAIModel[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [formData, setFormData] = useState<ChatSettings>({
-    id: Date.now(),
-    author: 'user',
-    icon: null,
-    name: '',
-    description: '',
-    instructions: 'You are a helpful assistant.',
-    model: null,
-    seed: null,
-    temperature: null,
-    top_p: null
-  });
+  const [formData, setFormData] = useState<ChatSettings>(chatSettings || DUMMY_CHAT_SETTINGS);
 
   useEffect(() => {
     ChatService.getModels()
@@ -45,7 +48,7 @@ const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({readOnly = false}) =
   }, []);
 
   useEffect(() => {
-    toast.error(error, {
+    error && toast.error(error, {
       position: "top-center",
       autoClose: 5000,
       hideProgressBar: false,
@@ -55,30 +58,29 @@ const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({readOnly = false}) =
       progress: undefined,
       theme: "light",
     });
-  }, [error])
+  }, [error]);
 
-  const onImageChange = (
-    image: ImageSource,
-  ) => {
-    console.log('image.data = '+image.data);
-    console.dir(image.data);
-    setFormData({...formData, icon: image});
-  }
+  useEffect(() => {
+    setFormData(chatSettings || DUMMY_CHAT_SETTINGS);
+  }, [chatSettings]);
+
+  const onImageChange = (image: ImageSource) => {
+    setFormData({ ...formData, icon: image });
+  };
 
   const handleInputChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
-    const {name, value, type} = event.target;
+    const { name, value, type } = event.target;
     if (type === 'number') {
-      setFormData({...formData, [name]: value ? parseFloat(value) : null});
+      setFormData({ ...formData, [name]: value ? parseFloat(value) : null });
     } else {
-      setFormData({...formData, [name]: value});
+      setFormData({ ...formData, [name]: value });
     }
   };
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    console.log(formData);
 
     // Providing feedback or further actions here
     toast.success('Form submitted successfully.', {
@@ -100,18 +102,18 @@ const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({readOnly = false}) =
           <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="icon">
             Icon
           </label>
-          <AvatarFieldEditor readOnly={readOnly} image={{data: null, type: 'raster'}} onImageChange={onImageChange}/>
+          <AvatarFieldEditor readOnly={readOnly} image={formData?.icon ? formData.icon : {data:null, type:'raster'}} onImageChange={onImageChange}/>
         </div>
         <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
-            Name *
+          <label className={`block text-gray-700 text-sm font-bold mb-2`} htmlFor="name">
+            Name {readOnly ? '' : '*'}
           </label>
           {readOnly ? <p className="text-gray-700">{formData.name || "N/A"}</p> :
             <input
               type="text"
               id="name"
               name="name"
-              required
+              required={!readOnly}
               onChange={handleInputChange}
               placeholder="Enter name"
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -175,7 +177,8 @@ const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({readOnly = false}) =
           readOnly={readOnly}
           id="temperature"
           label="Temperature"
-          defaultValue={null}
+          value={formData.temperature}
+          defaultValue={1.0}
           defaultValueLabel="1.0"
           editorComponent={TemperatureSlider}
           onValueChange={(value: number | null) => {
@@ -186,23 +189,14 @@ const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({readOnly = false}) =
           readOnly={readOnly}
           id="top_p"
           label="Top P"
-          defaultValue={null}
+          value={formData.top_p}
+          defaultValue={1.0}
           defaultValueLabel="1.0"
           editorComponent={TopPSlider}
           onValueChange={(value: number | null) => {
             setFormData({...formData, top_p: value});
           }}
         />
-        <div className="flex items-center justify-between">
-          <button
-            type="submit"
-            disabled={!formData.name}
-            className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline
-            ${!formData.name ? 'bg-gray-400 hover:bg-gray-400 cursor-not-allowed' : ''}`}
-          >
-            Save
-          </button>
-        </div>
       </form>
     </div>
   );

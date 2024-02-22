@@ -173,7 +173,7 @@ const MessageBox = forwardRef<MessageBoxHandles, MessageBoxProps>(({loading, set
         // Check if there are MAX_ROWS or more newlines
         if (newlineCount >= MAX_ROWS || pastedText.length > 80*MAX_ROWS) {
             event.preventDefault();
-            const modifiedText = `\n${SNIPPET_MARKERS.begin}\n${pastedText}\n${SNIPPET_MARKERS.end}\n`;
+            const modifiedText = `${SNIPPET_MARKERS.begin}\n${pastedText}\n${SNIPPET_MARKERS.end}\n`;
             insertTextAtCursorPosition(modifiedText);
         } else {
             // Allow the default paste behavior to occur

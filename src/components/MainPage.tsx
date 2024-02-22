@@ -53,6 +53,7 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
 
   const newConversation = () => {
     setIsNewConversation(true);
+    setShowScrollButton(false);
     setConversationId(0);
     setSystemPrompt('');
     clearTextArea();
@@ -176,7 +177,7 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
     conversationsEmitter.emit('newConversation', conversation);
     db.conversations.add(conversation);
     if (gid) {
-      navigate(`/gid/${gid}/c/${conversation.id}`);
+      navigate(`/g/${gid}/c/${conversation.id}`);
     } else {
       navigate(`/c/${conversation.id}`);
     }
