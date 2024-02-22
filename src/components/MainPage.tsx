@@ -14,6 +14,9 @@ import {useLocation, useNavigate, useParams} from "react-router-dom";
 import {useTranslation} from 'react-i18next';
 import MessageBox, {MessageBoxHandles} from "./MessageBox";
 import {MAX_TITLE_LENGTH} from "../constants/appConstants";
+import { ChatSettings } from '../models/ChatSettings';
+import chatSettingsDB from '../service/ChatSettingsDB';
+import ChatSettingDropdownMenu from "./ChatSettingDropdownMenu";
 
 export const updateConversationMessages = async (id: number, updatedMessages: any[]) => {
   const conversation = await db.conversations.get(id);
@@ -35,11 +38,12 @@ interface MainPageProps {
 
 const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggleSidebarCollapse}) => {
   const {t} = useTranslation();
+  const [chatSettings, setChatSettings] = useState<ChatSettings | undefined>(undefined);
   const [isNewConversation, setIsNewConversation] = useState<boolean>(false);
   const [conversationId, setConversationId] = useState(0);
   const [systemPrompt, setSystemPrompt] = useState('');
   const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const {id} = useParams<{ id: string }>();
+  const {id, gid} = useParams<{ id?: string, gid?: string }>();
   const currentPath = useCurrentPath();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -47,6 +51,13 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
   const [allowAutoScroll, setAllowAutoScroll] = useState(true);
   const messageBoxRef = useRef<MessageBoxHandles>(null);
 
+  const newConversation = () => {
+    setIsNewConversation(true);
+    setConversationId(0);
+    setSystemPrompt('');
+    clearTextArea();
+    setMessages([]);
+  }
   const handleSelectedConversation = (id: string | null) => {
     if (id && id.length > 0) {
       let n = Number(id);
@@ -69,11 +80,7 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
         }
       });
     } else {
-      setIsNewConversation(true);
-      setConversationId(0);
-      setSystemPrompt('');
-      clearTextArea();
-      setMessages([]);
+      newConversation();
     }
     setAllowAutoScroll(true);
     setShowScrollButton(false)
@@ -83,16 +90,37 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
 
   useEffect(() => {
     if (location.pathname === '/') {
-      setIsNewConversation(true);
-      setConversationId(0);
-      setSystemPrompt('');
-      setMessages([]);
+      newConversation();
     } else {
       if (id) {
         handleSelectedConversation(id);
+      } else {
+        newConversation();
       }
     }
-  }, [id, location.pathname]);
+  }, [id, gid, location.pathname]);
+
+
+  useEffect(() => {
+    if (gid) {
+      const gidNumber = Number(gid); // Ensure 'gid' is a number
+      if (!isNaN(gidNumber)) {
+        fetchAndSetChatSettings(gidNumber); // Fetch settings using the provided gid
+      }
+    }
+  }, [gid, location.pathname]); // Re-run when `gid` changes
+
+  const fetchAndSetChatSettings = async (gid: number) => {
+    try {
+      const settings = await chatSettingsDB.chatSettings.get(gid);
+      setChatSettings(settings); // Update state with fetched settings
+      if (settings) {
+        setSystemPrompt(settings.instructions ? settings.instructions : '');
+      }
+    } catch (error) {
+      console.error('Failed to fetch chat settings:', error);
+    }
+  };
 
   useEffect(() => {
     setIsNewConversation(messages.length === 0);
@@ -147,7 +175,11 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
     };
     conversationsEmitter.emit('newConversation', conversation);
     db.conversations.add(conversation);
-    navigate(`/c/${conversation.id}`);
+    if (gid) {
+      navigate(`/gid/${gid}/c/${conversation.id}`);
+    } else {
+      navigate(`/c/${conversation.id}`);
+    }
   }
 
 
@@ -300,6 +332,12 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
       <div className="flex flex-col items-stretch w-full h-full">
         <main
           className="relative h-full transition-width flex flex-col overflow-hidden items-stretch flex-1">
+          {gid ? (
+            <div className="inline-block">
+              <ChatSettingDropdownMenu chatSetting={chatSettings} />
+            </div>
+          ) : null
+          }
           {isNewConversation ? (
             // Render the "System" part for new conversations
             <div

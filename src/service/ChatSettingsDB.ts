@@ -24,6 +24,6 @@ export async function getConversationById(id: number): Promise<ChatSettings | un
   return db.chatSettings.get(id);
 }
 
-const db = new ChatSettingsDB();
+const chatSettingsDB = new ChatSettingsDB();
 
-export default db;
+export default chatSettingsDB;

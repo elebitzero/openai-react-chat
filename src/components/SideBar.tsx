@@ -21,6 +21,7 @@ import {CloseSideBarIcon, iconProps} from "../svg";
 import {useTranslation} from 'react-i18next';
 import Tooltip from "./Tooltip";
 import SettingsModal from './SettingsModal';
+import ChatShortcuts from './ChatShortcuts';
 
 interface SidebarProps {
   className: string;
@@ -328,7 +329,7 @@ const Sidebar: React.FC<SidebarProps> = ({className, isSidebarCollapsed, toggleS
               </h2>
               <nav className="flex h-full flex-col p-2" aria-label="Chat history">
                 <div className="mb-1 flex flex-row gap-2">
-{/*                  <Tooltip title={t('open-settings')} side="right" sideOffset={10}>
+                  {/*                  <Tooltip title={t('open-settings')} side="right" sideOffset={10}>
                     <a
                       className="flex px-3 min-h-[44px] py-1 gap-3 transition-colors duration-200 dark:text-white cursor-pointer text-sm rounded-md border dark:border-white/20 hover:bg-gray-500/10 h-11 w-11 flex-shrink-0 items-center justify-center bg-white dark:bg-transparent"
                       onClick={() => openSettingsDialog()}>
@@ -350,10 +351,11 @@ const Sidebar: React.FC<SidebarProps> = ({className, isSidebarCollapsed, toggleS
                   </Tooltip>
                 </div>
                 {/*TODO: Chat Settings WIP*/}
-            {/* <div className="flex flex-col dark:bg-gray-700 bg-white p-1">  Example background colors for contrast
+            {/*     <div className="flex flex-col dark:bg-gray-700 bg-white p-1">  Example background colors for contrast
                   <Link to="/chatsettings?readOnly=true" className="m-2 dark:bg-gray-900 dark:text-gray-100 text-gray-900">Chat Settings (Read-Only)</Link>
                   <Link to="/chatsettings?readOnly=false" className="m-2 dark:bg-gray-900 dark:text-gray-100 text-gray-900">Chat Settings (Editable)</Link>
                 </div>*/}
+                {/*<ChatShortcuts/>*/}
                 <div className="flex flex-row items-center mb-2 relative">
                   <input
                     id="searchInput"
@@ -391,7 +393,7 @@ const Sidebar: React.FC<SidebarProps> = ({className, isSidebarCollapsed, toggleS
                   }
                 </div>
                 <div ref={scrollContainerRef}
-                  className="flex-col flex-1 transition-opacity duration-500 -mr-2 pr-2 overflow-y-auto">
+                     className="flex-col flex-1 transition-opacity duration-500 -mr-2 pr-2 overflow-y-auto">
                   <div className="flex flex-col gap-2 pb-2 dark:text-gray-100 text-gray-800 text-sm">
                     <div>
                                         <span>
@@ -447,7 +449,8 @@ const Sidebar: React.FC<SidebarProps> = ({className, isSidebarCollapsed, toggleS
                                                                       {convo.title}
                                                                     </div>
                                                                   )}
-                                                                  <div className="absolute flex right-1 z-10 dark:text-gray-300 text-gray-800">
+                                                                  <div
+                                                                    className="absolute flex right-1 z-10 dark:text-gray-300 text-gray-800">
                                                                     {isEditingTitle ? (
                                                                       <>
                                                                         <button

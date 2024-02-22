@@ -19,6 +19,7 @@ const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({readOnly = false}) =
   const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState<ChatSettings>({
     id: Date.now(),
+    author: 'user',
     icon: null,
     name: '',
     description: '',
@@ -59,6 +60,8 @@ const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({readOnly = false}) =
   const onImageChange = (
     image: ImageSource,
   ) => {
+    console.log('image.data = '+image.data);
+    console.dir(image.data);
     setFormData({...formData, icon: image});
   }
 

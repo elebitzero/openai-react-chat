@@ -1,20 +1,22 @@
 [
   {
     "id": 1,
+    "author": "system",
     "name": "React UI Developer",
     "description": "Focused on React/Typescript/TailwindCSS development.",
-    "instructions": "You are an experienced front end developer familiar with react, angular, typescript, tailwindcss, bootstrap, material, next.js. When providing code, the entire code should be printed without any comments in the code. Do not provide any explanation unless requested.",
+    "instructions": "You are an experienced front end developer familiar with react, angular, typescript, tailwindcss, bootstrap, material, next.js. When providing code, the entire code should be printed without any comments in the code. Code should wrapped at 80 characters if possible. with Do not provide any explanation unless requested.",
     "model": null,
     "seed": null,
     "temperature": 0.2,
     "top_p": null,
     "icon": {
-      "data": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIg…0ZSgxMjApIj48L2VsbGlwc2U+DQogIDwvZz4NCjwvc3ZnPg0K",
+      "data": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSItMTAuNSAtOS40NSAyMSAxOC45IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGNsYXNzPSJ0ZXh0LXNtIG1lLTAgdy0xMCBoLTEwIHRleHQtbGluayBkYXJrOnRleHQtbGluay1kYXJrIGZsZXggb3JpZ2luLWNlbnRlciB0cmFuc2l0aW9uLWFsbCBlYXNlLWluLW91dCIgc3R5bGU9ImNvbG9yOiAjMkI3REExOyI+DQogIDwhLS0gQmFja2dyb3VuZCAtLT4NCiAgPHJlY3QgeD0iLTEwLjUiIHk9Ii05LjQ1IiB3aWR0aD0iMjEiIGhlaWdodD0iMTguOSIgZmlsbD0iI0YzRjRGNiI+PC9yZWN0Pg0KICA8IS0tIENvbnRlbnQgKHNjYWxlZCBkb3duKSAtLT4NCiAgPGNpcmNsZSBjeD0iMCIgY3k9IjAiIHI9IjEuNiIgZmlsbD0iIzJCN0RBMSI+PC9jaXJjbGU+DQogIDxnIHN0cm9rZT0iY3VycmVudENvbG9yIiBzdHJva2Utd2lkdGg9IjEiIGZpbGw9Im5vbmUiPg0KICAgIDxlbGxpcHNlIGN4PSIwIiBjeT0iMCIgcng9IjgiIHJ5PSIzLjYiPjwvZWxsaXBzZT4NCiAgICA8ZWxsaXBzZSBjeD0iMCIgY3k9IjAiIHJ4PSI4IiByeT0iMy42IiB0cmFuc2Zvcm09InJvdGF0ZSg2MCkiPjwvZWxsaXBzZT4NCiAgICA8ZWxsaXBzZSBjeD0iMCIgY3k9IjAiIHJ4PSI4IiByeT0iMy42IiB0cmFuc2Zvcm09InJvdGF0ZSgxMjApIj48L2VsbGlwc2U+DQogIDwvZz4NCjwvc3ZnPg0K",
       "type": "svg"
     }
   },
   {
     "id": 2,
+    "author": "system",
     "name": "Math Tutor",
     "description": "Focused on solving math problems.",
     "instructions": "All math equations or multi-line math expressions. should be enclosed with $$..$$. Shorter math expressions should be enclosed with $..$.",
@@ -23,7 +25,7 @@
     "temperature": 0.2,
     "top_p": null,
     "icon": {
-      "data": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIg…0ZSgxMjApIj48L2VsbGlwc2U+DQogIDwvZz4NCjwvc3ZnPg0K",
+      "data": "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiIGhlaWdodD0iNTY5cHgiIHdpZHRoPSI1ODguNHB4Ij4KICAgIDwhLS0gQmFja2dyb3VuZCAtLT4KICAgIDxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSI1ODguNCIgaGVpZ2h0PSI1NjkiIGZpbGw9IiNGM0Y0RjYiPjwvcmVjdD4KICAgIDxwYXRoIHN0eWxlPSJmaWxsOmJsYWNrOyBzdHJva2U6bm9uZSIKICAgICAgICAgIGQ9Ik0gMTAuNSwxNzcgTCAzMS4yLDE3OC42IEMgNTIuNiwxNTQuMyA2MSw4Mi42IDE4Ny40LDk2LjYgQyAxODIuOCw0MDQgNDgsNDM2LjQgNTYuNCw0OTkuNCBDIDU5LjUsNTM1LjIgODcuOCw1NTcuMSAxMTguNSw1NTguNCBDIDIxNS4yLDU1NS4xIDIxMC45LDQyNC42IDI0MSw5NS45IEwgMzY1LjgsOTUuOSBDIDM1OS4yLDIxMS44IDM0MSwzMjcuNiAzMzksNDQxLjIgQyAzNDAuNSw1MTYuOCAzODYuNSw1NTcuMSA0NDcsNTU3LjYgQyA1NDYuNSw1NjAuOSA1NzcuOSw0NDQuOCA1NzcuOSwzOTUuMyBMIDU1Ni41LDM5NS4zIEMgNTU0LjQsNDM2LjEgNTM0LjgsNDY1LjUgNDkyLjksNDY3LjMgQyAzNzguOCw0NjguOCA0NDEuNiwyNjYuNiA0NDIuNCw5Ny40IEwgNTc3LjksOTguMiBMIDU3Ny4yLDExLjYgQyAxMy44LDguOSA4NS4zLC0yLjEgMTAuNSwxNzcgeiIgLz4KPC9zdmc+Cg==",
       "type": "svg"
     }
   }

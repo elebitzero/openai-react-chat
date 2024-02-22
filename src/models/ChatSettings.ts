@@ -2,6 +2,7 @@ import {ImageSource} from "../components/AvatarFieldEditor";
 
 export interface ChatSettings {
   id: number;
+  author: string;
   icon?: ImageSource | null;
   name: string;
   description?: string;
