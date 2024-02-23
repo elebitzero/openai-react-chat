@@ -382,7 +382,7 @@ const Sidebar: React.FC<SidebarProps> = ({className, isSidebarCollapsed, toggleS
                   >
                     <MagnifyingGlassIcon style={{color: "#FFFFFF"}} {...iconProps} />
                   </button>
-                  {
+{/*                  {
                     showSearchOptions && (
                       <SearchOptionsPopdown
                         onSelect={(value) => {
@@ -390,7 +390,7 @@ const Sidebar: React.FC<SidebarProps> = ({className, isSidebarCollapsed, toggleS
                           setShowSearchOptions(false); // Optionally, keep it open
                         }}/>
                     )
-                  }
+                  }*/}
                 </div>
                 <div ref={scrollContainerRef}
                      className="flex-col flex-1 transition-opacity duration-500 -mr-2 pr-2 overflow-y-auto">
