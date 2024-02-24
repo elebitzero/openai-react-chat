@@ -58,6 +58,7 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
     setSystemPrompt('');
     clearTextArea();
     setMessages([]);
+    messageBoxRef.current?.focusTextarea();
   }
   const handleSelectedConversation = (id: string | null) => {
     if (id && id.length > 0) {
@@ -85,6 +86,7 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
     }
     setAllowAutoScroll(true);
     setShowScrollButton(false)
+    messageBoxRef.current?.focusTextarea();
   }
 
   const location = useLocation();

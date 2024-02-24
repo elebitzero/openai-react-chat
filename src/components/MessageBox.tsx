@@ -28,6 +28,7 @@ export interface MessageBoxHandles {
     clearTextValue: () => void;
     getTextValue: () => string;
     resizeTextArea: () => void;
+    focusTextarea: () => void;
 }
 
 
@@ -50,6 +51,11 @@ const MessageBox = forwardRef<MessageBoxHandles, MessageBoxProps>(({loading, set
         resizeTextArea: () => {
             if (textAreaRef.current) {
                 textAreaRef.current.style.height = 'auto';
+            }
+        },
+        focusTextarea: () => {
+            if (textAreaRef.current) {
+                textAreaRef.current.focus();
             }
         },
     }));
