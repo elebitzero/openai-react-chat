@@ -32,7 +32,5 @@
 - Handles error conditions
   - Exceeding token limit for selected model.
 - System prompt to give instructions.
-- User configurable defaults in env.json
-    - Set Your OpenAI Key
-    - (Optional) Set the default model, model list, and default system prompt, and /api parameters
+- Set your OpenAI API key in local.env.json
   

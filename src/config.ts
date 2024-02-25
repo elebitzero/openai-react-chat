@@ -1,4 +1,4 @@
-import env from './env.json';
+import env from './local.env.json';
 
 export const OPENAI_API_KEY = (env as any).openapi_key;
 export const OPENAI_DEFAULT_MODEL: string = (env as any).default_model;
