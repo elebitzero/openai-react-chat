@@ -27,7 +27,6 @@ function rehypeInlineCodeProperty() {
             if (node.tagName === 'code') {
                 const isInline = node.position && node.position.start.line === node.position.end.line;
                 node.properties.dataInline = isInline;
-
                 // console.log('Code element:', node);
                 // console.log('Is inline:', isInline);
             }

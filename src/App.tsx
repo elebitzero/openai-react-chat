@@ -7,6 +7,7 @@ import MainPage from "./components/MainPage";
 import ChatSettingsForm from './components/ChatSettingsForm';
 import './App.css';
 import {ToastContainer} from "react-toastify";
+import ExploreCustomChats from "./components/ExploreCustomChats";
 
 const App = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -51,6 +52,7 @@ const App = () => {
               <Routes>
                 <Route path="/" element={<MainPageWithProps />} />
                 <Route path="/c/:id" element={<MainPageWithProps />} />
+                <Route path="/explore" element={<ExploreCustomChats/>} />
                 <Route path="/chatsettings" element={<ChatSettingsFormRoute />} />
                 // Use the wrapper for new routes
                 <Route path="/g/:gid" element={<MainPageWithProps />} />

@@ -3,21 +3,25 @@ import ChatBlock from "./ChatBlock";
 import ModelSelect from "./ModelSelect";
 import {OpenAIModel} from "../models/model";
 import {ChatService} from "../service/ChatService";
-import {OPENAI_MODEL_LIST} from "../config";
 import {toast} from "react-toastify";
 import {ChatMessage} from "../models/ChatCompletion";
 import {useTranslation} from 'react-i18next';
 import Tooltip from "./Tooltip";
+import {Conversation} from "../service/ConversationService";
+import {conversationsEmitter} from "../service/EventEmitter";
 
 interface Props {
     chatBlocks: ChatMessage[];
     onChatScroll: (isAtBottom : boolean) => void;
     allowAutoScroll: boolean;
+    model: string | null;
+    onModelChange: (value: string | null) => void;
+    conversation: Conversation | null;
 }
 
-const Chat: React.FC<Props> = ({chatBlocks, onChatScroll, allowAutoScroll}) => {
+const Chat: React.FC<Props> = ({chatBlocks, onChatScroll, allowAutoScroll, model,
+                                   onModelChange, conversation}) => {
     const { t } = useTranslation();
-    const [isNewConversation, setIsNewConversation] = useState<boolean>(false);
     const [models, setModels] = useState<OpenAIModel[]>([]);
     const [error, setError] = useState<string | null>(null);
     const chatDivRef = useRef<HTMLDivElement>(null);
@@ -34,10 +38,10 @@ const Chat: React.FC<Props> = ({chatBlocks, onChatScroll, allowAutoScroll}) => {
                   setError('Error fetching model list');
               }
           });
+
     }, []);
 
     useEffect(() => {
-        setIsNewConversation(chatBlocks.length === 0);
         if (chatDivRef.current && allowAutoScroll) {
             chatDivRef.current.scrollTop = chatDivRef.current.scrollHeight;
         }
@@ -68,7 +72,7 @@ const Chat: React.FC<Props> = ({chatBlocks, onChatScroll, allowAutoScroll}) => {
         }
     }, []);
 
-    const findModelById = (id: string): OpenAIModel | undefined => {
+    const findModelById = (id: string | null): OpenAIModel | undefined => {
         return models.find(model => model.id === id);
     };
 
@@ -101,21 +105,21 @@ const Chat: React.FC<Props> = ({chatBlocks, onChatScroll, allowAutoScroll}) => {
       <div className="flex-1 overflow-auto" ref={chatDivRef} id={'chat-container'} onScroll={handleScroll}>
           <div className="flex flex-col items-center text-sm dark:bg-gray-900">
               <div
-                className={`flex w-full items-center justify-center gap-1 p-3 text-gray-500 dark:border-gray-900/50 dark:bg-gray-900 dark:text-gray-300 ${!isNewConversation ? 'border-b border-black/10' : ''}`}>
+                className={`flex w-full items-center justify-center gap-1 p-3 text-gray-500 dark:border-gray-900/50 dark:bg-gray-900 dark:text-gray-300 ${!(conversation === null) ? 'border-b border-black/10' : ''}`}>
                   <div className="flex items-center flex-row gap-1">
                         <span
                           style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>{t('model')}
-                            {isNewConversation ? '' : (
+                            {!conversation ? '' : (
                               <span>
-                                  <span style={{marginLeft:'0.25em'}}>{ChatService.getSelectedModelId()}</span>
+                                  <span style={{marginLeft:'0.25em'}}>{conversation.model}</span>
                                   <Tooltip title={t('context-window')} side="bottom" sideOffset={10}>
                                       <span style={{marginLeft: '10px', fontSize: '0.85rem', color: '#6b7280'}}>
-                                        {formatContextWindow(findModelById(ChatService.getSelectedModelId())?.context_window)}
+                                        {formatContextWindow(findModelById(conversation.model)?.context_window)}
                                       </span>
                                   </Tooltip>
                                      <Tooltip title={t('knowledge-cutoff')} side="bottom" sideOffset={10}>
                                       <span style={{marginLeft: '10px', fontSize: '0.85rem', color: '#6b7280'}}>
-                                        {findModelById(ChatService.getSelectedModelId())?.knowledge_cutoff}
+                                        {findModelById(conversation.model)?.knowledge_cutoff}
                                       </span>
                                   </Tooltip>
                               </span>
@@ -124,8 +128,8 @@ const Chat: React.FC<Props> = ({chatBlocks, onChatScroll, allowAutoScroll}) => {
                         </span>
 
                       <span className="flex-grow">
-                          <div style={{display: isNewConversation ? 'block' : 'none', width: '50ch'}}>
-                            <ModelSelect value={`null`} models={models}/>
+                          <div style={{display: !conversation ? 'block' : 'none', width: '50ch'}}>
+                            <ModelSelect value={model} onModelSelect={onModelChange} models={models}/>
                           </div>
                       </span>
                   </div>

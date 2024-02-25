@@ -6,23 +6,24 @@ import {ScrollToBottomButton} from "./ScrollToBottomButton";
 import {OPENAI_DEFAULT_SYSTEM_PROMPT} from "../config";
 import {toast} from "react-toastify";
 import {CustomError} from "../service/CustomError";
-import db, {getConversationById} from "../service/ConversationDB";
 import {conversationsEmitter} from "../service/EventEmitter";
 import {OpenSideBarIcon} from "../svg";
 import Tooltip from "./Tooltip";
 import {useLocation, useNavigate, useParams} from "react-router-dom";
 import {useTranslation} from 'react-i18next';
 import MessageBox, {MessageBoxHandles} from "./MessageBox";
-import {MAX_TITLE_LENGTH} from "../constants/appConstants";
-import { ChatSettings } from '../models/ChatSettings';
+import {DEFAULT_INSTRUCTIONS, MAX_TITLE_LENGTH} from "../constants/appConstants";
+import {ChatSettings} from '../models/ChatSettings';
 import chatSettingsDB from '../service/ChatSettingsDB';
 import ChatSettingDropdownMenu from "./ChatSettingDropdownMenu";
+import ConversationService, { Conversation } from '../service/ConversationService';
+import {OpenAIModel} from "../models/model";
 
 export const updateConversationMessages = async (id: number, updatedMessages: any[]) => {
-  const conversation = await db.conversations.get(id);
+  const conversation = await ConversationService.getConversationById(id);
   if (conversation) {
     conversation.messages = JSON.stringify(updatedMessages);
-    await db.conversations.put(conversation);
+    await ConversationService.updateConversation(conversation);
   }
 }
 
@@ -39,9 +40,8 @@ interface MainPageProps {
 const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggleSidebarCollapse}) => {
   const {t} = useTranslation();
   const [chatSettings, setChatSettings] = useState<ChatSettings | undefined>(undefined);
-  const [isNewConversation, setIsNewConversation] = useState<boolean>(false);
-  const [conversationId, setConversationId] = useState(0);
-  const [systemPrompt, setSystemPrompt] = useState('');
+  const [conversation, setConversation] = useState<Conversation | null>(null);
+  const [model, setModel] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const {id, gid} = useParams<{ id?: string, gid?: string }>();
   const currentPath = useCurrentPath();
@@ -52,10 +52,8 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
   const messageBoxRef = useRef<MessageBoxHandles>(null);
 
   const newConversation = () => {
-    setIsNewConversation(true);
+    setConversation(null);
     setShowScrollButton(false);
-    setConversationId(0);
-    setSystemPrompt('');
     clearTextArea();
     setMessages([]);
     messageBoxRef.current?.focusTextarea();
@@ -63,11 +61,10 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
   const handleSelectedConversation = (id: string | null) => {
     if (id && id.length > 0) {
       let n = Number(id);
-      getConversationById(n).then(conversation => {
+      ConversationService.getConversationById(n)
+        .then(conversation => {
         if (conversation) {
-          setConversationId(conversation.id)
-          setSystemPrompt(conversation.systemPrompt);
-          ChatService.setSelectedModelId(conversation.model);
+          setConversation(conversation);
           const messages: ChatMessage[] = JSON.parse(conversation.messages);
           if (messages.length == 0) {
             // Race condition: the navigate to /c/id and the updating of the messages state
@@ -91,6 +88,10 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
 
   const location = useLocation();
 
+  const handleModelChange = (value: string | null) => {
+    setModel(value);
+  };
+
   useEffect(() => {
     if (location.pathname === '/') {
       newConversation();
@@ -106,31 +107,30 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
 
   useEffect(() => {
     if (gid) {
-      const gidNumber = Number(gid); // Ensure 'gid' is a number
+      const gidNumber = Number(gid);
       if (!isNaN(gidNumber)) {
-        fetchAndSetChatSettings(gidNumber); // Fetch settings using the provided gid
+        fetchAndSetChatSettings(gidNumber);
       }
     }
-  }, [gid, location.pathname]); // Re-run when `gid` changes
+  }, [gid, location.pathname]);
 
   const fetchAndSetChatSettings = async (gid: number) => {
     try {
       const settings = await chatSettingsDB.chatSettings.get(gid);
-      setChatSettings(settings); // Update state with fetched settings
-      if (settings) {
-        setSystemPrompt(settings.instructions ? settings.instructions : '');
-      }
+      setChatSettings(settings);
     } catch (error) {
       console.error('Failed to fetch chat settings:', error);
     }
   };
 
   useEffect(() => {
-    setIsNewConversation(messages.length === 0);
-    if (conversationId) {
+    if (messages.length === 0) {
+      setConversation(null);
+    }
+    if (conversation && conversation.id) {
       // Only update if there are messages
       if (messages.length > 0) {
-        updateConversationMessages(conversationId, messages);
+        updateConversationMessages(conversation.id, messages);
       }
     }
   }, [messages]);
@@ -147,12 +147,6 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  const handleSystemPromptChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
-    const newSystemPrompt = event.target.value;
-    setSystemPrompt(newSystemPrompt);
-  };
-
-
   function getTitle(message: string): string {
     let title = message.trimStart(); // Remove leading newlines
     let firstNewLineIndex = title.indexOf('\n');
@@ -166,18 +160,19 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
     // todo: use AI to generate title from the user message
     const id = Date.now();
     const timestamp = Date.now();
-    setConversationId(id);
     let shortenedText = getTitle(message);
-    const conversation = {
+    const conversation : Conversation = {
       id: id,
+      gid: getEffectiveChatSettings().id,
       timestamp: timestamp,
       title: shortenedText,
-      model: ChatService.getSelectedModelId(),
-      systemPrompt: systemPrompt,
-      messages: "[]"
+      model: model,
+      systemPrompt: chatSettings?.instructions ?? OPENAI_DEFAULT_SYSTEM_PROMPT ?? DEFAULT_INSTRUCTIONS,
+      messages: "[]",
     };
+    setConversation(conversation);
+    ConversationService.addConversation(conversation);
     conversationsEmitter.emit('newConversation', conversation);
-    db.conversations.add(conversation);
     if (gid) {
       navigate(`/g/${gid}/c/${conversation.id}`);
     } else {
@@ -187,7 +182,7 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
 
 
   const callApp = (message: string) => {
-    if (isNewConversation) {
+    if (!conversation) {
       startConversation(message);
     }
     setAllowAutoScroll(true);
@@ -218,19 +213,31 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
     }
   };
 
+  function getEffectiveChatSettings() : ChatSettings {
+    let effectiveSettings = chatSettings;
+    if (!effectiveSettings) {
+      effectiveSettings = {
+        id: 0,
+        author: 'system',
+        name: 'default',
+        model: model
+      }
+    }
+    return effectiveSettings;
+  }
 
   function sendMessage(updatedMessages: ChatMessage[]) {
     setLoading(true);
     clearTextArea();
-    let systemPromptFinal = systemPrompt;
-    if (!systemPromptFinal || systemPromptFinal === '') {
-      systemPromptFinal = OPENAI_DEFAULT_SYSTEM_PROMPT;
-    }
+    let systemPrompt = chatSettings?.instructions ?? OPENAI_DEFAULT_SYSTEM_PROMPT;
     let messages: ChatMessage[] = [{
       role: Role.System,
-      content: systemPromptFinal
+      content: systemPrompt
     } as ChatMessage, ...updatedMessages];
-    ChatService.sendMessageStreamed(messages, ChatService.getSelectedModelId(), handleStreamedResponse)
+
+    let effectiveSettings = getEffectiveChatSettings();
+
+    ChatService.sendMessageStreamed(effectiveSettings,messages, handleStreamedResponse)
       .then((response: ChatCompletion) => {
         // nop
       })
@@ -336,37 +343,13 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
         <main
           className="relative h-full transition-width flex flex-col overflow-hidden items-stretch flex-1">
           {gid ? (
-            <div className="inline-block">
-              <ChatSettingDropdownMenu chatSetting={chatSettings} />
+            <div className="inline-block absolute top-0 left-0 z-50">
+              <ChatSettingDropdownMenu chatSetting={chatSettings}/>
             </div>
           ) : null
           }
-          {isNewConversation ? (
-            // Render the "System" part for new conversations
-            <div
-              className="text-input-with-header chat-pg-instructions flex items-center justify-center m-5 dark:bg-gray-900">
-              <div className="text-input-header-subheading subheading dark:text-gray-100"
-                   style={{marginLeft: isSidebarCollapsed ? '4em' : '0'}}>{t('system')}
-              </div>
-              <div
-                className="text-input-header-wrapper overflow-wrapper text-input flex items-center justify-center w-3/5">
-                                <textarea aria-label="Input"
-                                          style={{maxHeight: "200px", overflowY: "auto"}}
-                                          className="focus:ring-0 focus-visible:ring-0 outline-none shadow-none text-input text-input-lg text-input-full text-input-header-buffer dark:placeholder-gray-100 dark:text-gray-100 dark:bg-gray-850"
-                                          placeholder={OPENAI_DEFAULT_SYSTEM_PROMPT}
-                                          value={systemPrompt}
-                                          onChange={handleSystemPromptChange}
-                                          onInput={(e: React.FormEvent<HTMLTextAreaElement>) => {
-                                            const target = e.target as HTMLTextAreaElement;
-                                            target.style.height = "auto";
-                                            target.style.height = target.scrollHeight + "px";
-                                          }}
-                                ></textarea>
-              </div>
-            </div>
-          ) : null}
-          {/*<div className="flex-grow">*/}
-          <Chat chatBlocks={messages} onChatScroll={handleUserScroll} allowAutoScroll={allowAutoScroll}/>
+          <Chat chatBlocks={messages} onChatScroll={handleUserScroll} conversation={conversation} model={model}
+                onModelChange={handleModelChange} allowAutoScroll={allowAutoScroll}/>
           {/*</div>*/}
           {/* Absolute container for the ScrollToBottomButton */}
           {showScrollButton && (

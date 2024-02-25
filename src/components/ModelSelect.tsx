@@ -15,14 +15,15 @@ import {ChatService} from '../service/ChatService';
 import {OPENAI_DEFAULT_MODEL} from "../config";
 import {useTranslation} from 'react-i18next';
 import Tooltip from "./Tooltip";
+import {DEFAULT_MODEL} from "../constants/appConstants";
 
 interface ModelSelectProps {
-    onModelSelect?: (modelId: string) => void;
+    onModelSelect?: (value: string | null) => void;
     models: OpenAIModel[];
     className?: string;
     allowNone?: boolean;
     allowNoneLabel?: string;
-    value: string;
+    value: string | null;
 }
 
 type SelectOption = { label: string; value: string; info: string };
@@ -35,10 +36,11 @@ const NONE_MODEL = {
 
 const ModelSelect: React.FC<ModelSelectProps> = ({
                                                      onModelSelect,
-                                                     models, // Use models from props
+                                                     models,
                                                      className,
-                                                     allowNone = false,  // Default to false if not provided
-                                                     allowNoneLabel = '(None)',  // Default label if not provided
+                                                     value = null,
+                                                     allowNone = false,
+                                                     allowNoneLabel = '(None)',
                                                  }) => {
     const { t } = useTranslation();
     const [options, setOptions] = useState<SelectOption[]>([]);
@@ -91,11 +93,14 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
                 ...defaultOptions.map((model) => ({value: model.id, label: model.id, info: formatContextWindow(model.context_window)})),
                 {value: "more", label: SHOW_MORE_MODELS, info: ''}
             ]);
-
-            if (OPENAI_DEFAULT_MODEL && OPENAI_DEFAULT_MODEL.length > 0) {
+            let defaultModelId = DEFAULT_MODEL;
+            if (value) {
+                defaultModelId = value;
+            }
+            if (defaultModelId && defaultModelId.length > 0) {
                 let found = false;
                 for (const model of models) {
-                    if (model.id === OPENAI_DEFAULT_MODEL) {
+                    if (model.id === defaultModelId) {
                         setSelectedOption({value: model.id, label: model.id, info: formatContextWindow(model.context_window)});
                         found = true;
                         break;
@@ -105,11 +110,11 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
                     setLoading(false);
                     return;
                 } else {
-                    console.warn('Model ' + OPENAI_DEFAULT_MODEL + ' not in the list of models');
+                    console.warn('Model ' + defaultModelId + ' not in the list of models');
                 }
             }
 
-            // Set the selectedOption to the first model in the list
+            // else set the selectedOption to the first model in the list
             const firstModel = models[0];
             setSelectedOption({value: firstModel.id, label: firstModel.id, info: formatContextWindow(firstModel.context_window)});
             setLoading(false);
@@ -120,7 +125,10 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
 
     useEffect(() => {
         if (selectedOption) {
-            ChatService.setSelectedModelId(selectedOption.value);
+            value = selectedOption.value;
+            if (onModelSelect) {
+                onModelSelect(value);
+            }
         }
     }, [selectedOption]);
 
@@ -161,7 +169,7 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
                 if (onModelSelect) {
                     onModelSelect(modelId);
                 }
-                ChatService.setSelectedModelId(modelId);
+                value = modelId;
                 setMenuIsOpen(false);
             }
             setLoading(false);

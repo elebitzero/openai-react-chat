@@ -20,7 +20,7 @@ class ChatSettingsDB extends Dexie {
 }
 
 export async function getConversationById(id: number): Promise<ChatSettings | undefined> {
-  const db = new ChatSettingsDB(); // Ensure you're using the instantiated DB correctly
+  const db: ChatSettingsDB = new ChatSettingsDB();
   return db.chatSettings.get(id);
 }
 

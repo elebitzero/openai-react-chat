@@ -1,11 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Link, useLocation, useNavigate} from 'react-router-dom';
-import db, {
-  Conversation,
-  getConversationById,
-  searchConversationsByTitle,
-  searchWithinConversations
-} from "../service/ConversationDB";
 import {conversationsEmitter} from '../service/EventEmitter';
 import {
   ChatBubbleLeftIcon,
@@ -14,6 +8,7 @@ import {
   MagnifyingGlassIcon,
   PencilSquareIcon,
   PlusIcon,
+  Squares2X2Icon,
   TrashIcon,
   XMarkIcon
 } from "@heroicons/react/24/outline";
@@ -21,7 +16,7 @@ import {CloseSideBarIcon, iconProps} from "../svg";
 import {useTranslation} from 'react-i18next';
 import Tooltip from "./Tooltip";
 import SettingsModal from './SettingsModal';
-import ChatShortcuts from './ChatShortcuts';
+import ConversationService, { Conversation } from "../service/ConversationService";
 
 interface SidebarProps {
   className: string;
@@ -41,7 +36,6 @@ const Sidebar: React.FC<SidebarProps> = ({className, isSidebarCollapsed, toggleS
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [editedTitle, setEditedTitle] = useState("");
   const [selectedId, setSelectedId] = useState<number | null>(null);
-  const NUM_INITIAL_CONVERSATIONS = 200;
   const navigate = useNavigate();
   const currentPath = useCurrentPath();
   const [isSettingsModalVisible, setSettingsModalVisible] = useState(false);
@@ -53,7 +47,8 @@ const Sidebar: React.FC<SidebarProps> = ({className, isSidebarCollapsed, toggleS
     const handleSelectedConversation = (id: string | null) => {
       if (id && id.length > 0) {
         let n = Number(id);
-        getConversationById(n).then(conversation => {
+        ConversationService.getConversationById(n)
+          .then(conversation => {
           if (conversation) {
             setSelectedId(conversation.id);
           } else {
@@ -69,19 +64,19 @@ const Sidebar: React.FC<SidebarProps> = ({className, isSidebarCollapsed, toggleS
     handleSelectedConversation(itemId)
   }, [currentPath]);
 
+  const handleNewConversation = (conversation: Conversation) => {
+    setSelectedId(conversation.id);
+    setConversations(prevConversations => [conversation, ...prevConversations]);
+
+    if (scrollContainerRef.current) {
+      if ("scrollTop" in scrollContainerRef.current) {
+        scrollContainerRef.current.scrollTop = 0;
+      }
+    }
+  };
+
   useEffect(() => {
     loadConversations();
-
-    const handleNewConversation = (conversation: Conversation) => {
-      setSelectedId(conversation.id);
-      setConversations(prevConversations => [conversation, ...prevConversations]);
-
-      if (scrollContainerRef.current) {
-        if ("scrollTop" in scrollContainerRef.current) {
-          scrollContainerRef.current.scrollTop = 0;
-        }
-      }
-    };
 
     conversationsEmitter.on('newConversation', handleNewConversation);
 
@@ -98,18 +93,15 @@ const Sidebar: React.FC<SidebarProps> = ({className, isSidebarCollapsed, toggleS
   }, [conversations]);
 
   const loadConversations = () => {
-    db.conversations
-      .orderBy('timestamp')
-      .reverse()
-      .limit(NUM_INITIAL_CONVERSATIONS)
-      .toArray()
-      .then(fetchedConversations => {
-        const modifiedConversations = fetchedConversations.map(conversation => ({
-          ...conversation,
-          messages: "[]"
-        }));
-        setConversations(modifiedConversations);
-      });
+    ConversationService.loadRecentConversationsTitleOnly().then(fetchedConversations => {
+      const modifiedConversations = fetchedConversations.map(conversation => ({
+        ...conversation,
+        messages: "[]"
+      }));
+      setConversations(modifiedConversations);
+    }).catch(error => {
+      console.error("Error loading conversations:", error);
+    });
   }
 
   const openSettingsDialog = () => {
@@ -146,15 +138,13 @@ const Sidebar: React.FC<SidebarProps> = ({className, isSidebarCollapsed, toggleS
   };
 
   const deleteConversation = (conversationId: number) => {
-    // Use the database to delete the conversation by ID
-    db.conversations.delete(conversationId);
+    ConversationService.deleteConversation(conversationId)
 
     // Update the conversations state to remove the deleted conversation
     setConversations((prevConversations) => {
         return prevConversations.filter((conversation) => conversation.id !== conversationId);
       }
     );
-    // Reset the selectedId to null
     setSelectedId(null);
     navigate('');
   };
@@ -168,7 +158,10 @@ const Sidebar: React.FC<SidebarProps> = ({className, isSidebarCollapsed, toggleS
       // If not in edit mode, simply select the conversation
     }
     setSelectedId(conversation.id);
-    navigate(`/c/${conversation.id}`);
+    const url = conversation.gid
+      ? `/g/${conversation.gid}/c/${conversation.id}`
+      : `/c/${conversation.id}`;
+    navigate(url);
   }
 
   const getHeaderFromTimestamp = (timestamp: number) => {
@@ -194,8 +187,7 @@ const Sidebar: React.FC<SidebarProps> = ({className, isSidebarCollapsed, toggleS
   };
 
   const saveEditedTitle = (conversation: Conversation) => {
-    db.conversations
-      .update(conversation.id, {title: editedTitle})
+    ConversationService.updateConversationPartial(conversation, {title: editedTitle})
       .then((updatedCount: number) => {
         if (updatedCount > 0) {
           // Update the conversation title in the state
@@ -239,6 +231,7 @@ const Sidebar: React.FC<SidebarProps> = ({className, isSidebarCollapsed, toggleS
       if (currentHeader !== lastHeader) {
         withMarkers.push({
           id: 0,
+          gid: 0,
           messages: "",
           model: "",
           systemPrompt: "",
@@ -280,7 +273,7 @@ const Sidebar: React.FC<SidebarProps> = ({className, isSidebarCollapsed, toggleS
         return;
       }
       try {
-        const foundConversations = await searchWithinConversations(actualSearchString);
+        const foundConversations = await ConversationService.searchWithinConversations(actualSearchString);
         // Assuming you do NOT want to modify the messages in this case, as you're searching within them
         setConversations(foundConversations);
       } catch (error) {
@@ -289,7 +282,7 @@ const Sidebar: React.FC<SidebarProps> = ({className, isSidebarCollapsed, toggleS
     } else {
       // Original search logic for searching by conversation title
       try {
-        const foundConversations = await searchConversationsByTitle(searchString);
+        const foundConversations = await ConversationService.searchConversationsByTitle(searchString);
         const modifiedConversations = foundConversations.map(conversation => ({
           ...conversation,
           messages: "[]" // Assuming overwriting messages or handling differently was intentional
@@ -329,19 +322,19 @@ const Sidebar: React.FC<SidebarProps> = ({className, isSidebarCollapsed, toggleS
               </h2>
               <nav className="flex h-full flex-col p-2" aria-label="Chat history">
                 <div className="mb-1 flex flex-row gap-2">
-                  {/*                  <Tooltip title={t('open-settings')} side="right" sideOffset={10}>
-                    <a
-                      className="flex px-3 min-h-[44px] py-1 gap-3 transition-colors duration-200 dark:text-white cursor-pointer text-sm rounded-md border dark:border-white/20 hover:bg-gray-500/10 h-11 w-11 flex-shrink-0 items-center justify-center bg-white dark:bg-transparent"
-                      onClick={() => openSettingsDialog()}>
-                      <Cog8ToothIcon/>
-                    </a>
-                  </Tooltip>*/}
                   <a
                     className="flex px-3 min-h-[44px] py-1 items-center gap-3 transition-colors duration-200 dark:text-white cursor-pointer text-sm rounded-md border dark:border-white/20 hover:bg-gray-500/10 h-11 bg-white dark:bg-transparent flex-grow overflow-hidden"
                     onClick={() => handleNewChat()}>
                     <PlusIcon {...iconProps} />
                     <span className="truncate">{t('new-chat')}</span>
                   </a>
+ {/*                 <Tooltip title={t('open-settings')} side="right" sideOffset={10}>
+                    <a
+                      className="flex px-3 min-h-[44px] py-1 gap-3 transition-colors duration-200 dark:text-white cursor-pointer text-sm rounded-md border dark:border-white/20 hover:bg-gray-500/10 h-11 w-11 flex-shrink-0 items-center justify-center bg-white dark:bg-transparent"
+                      onClick={() => openSettingsDialog()}>
+                      <Cog8ToothIcon/>
+                    </a>
+                  </Tooltip>*/}
                   <Tooltip title={t('close-sidebar')} side="right" sideOffset={10}>
                     <a
                       className="flex px-3 min-h-[44px] py-1 gap-3 transition-colors duration-200 dark:text-white cursor-pointer text-sm rounded-md border dark:border-white/20 hover:bg-gray-500/10 h-11 w-11 flex-shrink-0 items-center justify-center bg-white dark:bg-transparent"
@@ -351,10 +344,14 @@ const Sidebar: React.FC<SidebarProps> = ({className, isSidebarCollapsed, toggleS
                   </Tooltip>
                 </div>
                 {/*TODO: Chat Settings WIP*/}
-            {/*     <div className="flex flex-col dark:bg-gray-700 bg-white p-1">  Example background colors for contrast
+        {/*         <div className="flex flex-col dark:bg-gray-700 bg-white p-1">  Example background colors for contrast
                   <Link to="/chatsettings?readOnly=true" className="m-2 dark:bg-gray-900 dark:text-gray-100 text-gray-900">Chat Settings (Read-Only)</Link>
                   <Link to="/chatsettings?readOnly=false" className="m-2 dark:bg-gray-900 dark:text-gray-100 text-gray-900">Chat Settings (Editable)</Link>
                 </div>*/}
+               {/* <Link to="/explore" className="flex items-center m-2 dark:bg-gray-900 dark:text-gray-100 text-gray-900">
+                  <Squares2X2Icon  {...iconProps} className="mt-1 mr-2" />
+                  <span>Explore Custom Chats</span>
+                </Link>*/}
                 {/*<ChatShortcuts/>*/}
                 <div className="flex flex-row items-center mb-2 relative">
                   <input
@@ -413,8 +410,6 @@ const Sidebar: React.FC<SidebarProps> = ({className, isSidebarCollapsed, toggleS
                                                             </li>
                                                           );
                                                         } else {
-                                                          const linkTo = `/c/${convo.id}`;
-
                                                           if (convo.id === selectedId) {
                                                             return (
                                                               <li key={convo.id} className="relative z-[15]"

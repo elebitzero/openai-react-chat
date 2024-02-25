@@ -148,10 +148,11 @@ const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({ chatSettings, readO
             readOnly={readOnly}
             id="model"
             label="Model"
+            value={formData.model}
             defaultValue={null}
             defaultValueLabel={'gpt-4-turbo-preview'}
             editorComponent={(props) =>
-              <ModelSelect value={formData.model || 'gpt-4-turbo-preview'}
+              <ModelSelect value={formData.model}
                            onModelSelect={props.onValueChange}
                            models={models} allowNone={true}
                            allowNoneLabel="Default"/>}

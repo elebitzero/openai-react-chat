@@ -134,7 +134,10 @@ const ChatSettingDropdownMenu: React.FC<ChatSettingDropdownMenuProps> = ({
             <div className="fixed inset-0 bg-black bg-opacity-30 transition-opacity" />
           </Transition.Child>
           <div className="fixed inset-0 overflow-y-auto">
-            <div className="flex min-h-full items-center justify-center p-4 text-center">
+      <div
+        className="flex min-h-full items-start justify-center p-4 text-center"
+        style={{ marginTop: '5vh' }}
+      >
               <Transition.Child
                 as={Fragment}
                 enter="ease-out duration-300"
@@ -144,7 +147,7 @@ const ChatSettingDropdownMenu: React.FC<ChatSettingDropdownMenuProps> = ({
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="w-full max-w-2xl transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                <Dialog.Panel className="w-full max-w-2xl overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
                   <div className="absolute top-4 right-4">
                     <button
                       type="button"

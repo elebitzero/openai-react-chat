@@ -1,8 +1,10 @@
 import {modelDetails, OpenAIModel} from "../models/model";
 import {ChatCompletionRequest, ChatCompletion, ChatMessage} from "../models/ChatCompletion";
-import {CHAT_PARAMETERS, OPENAI_API_KEY, OPENAI_MODEL_LIST} from "../config";
+import {OPENAI_API_KEY} from "../config";
 import {CustomError} from "./CustomError";
 import {CHAT_COMPLETIONS_ENDPOINT, MODELS_ENDPOINT} from "../constants/apiEndpoints";
+import { ChatSettings } from "../models/ChatSettings";
+import {CHAT_STREAM_DEBOUNCE_TIME, DEFAULT_MODEL} from "../constants/appConstants";
 
 interface CompletionChunk {
     id: string;
@@ -22,16 +24,7 @@ interface CompletionChunkChoice {
 
 export class ChatService {
     private static models: Promise<OpenAIModel[]> | null = null;
-    static selectedModelId: string = '';
     static abortController: AbortController | null = null;
-
-    static setSelectedModelId(modelId: string) {
-        this.selectedModelId = modelId;
-    }
-
-    static getSelectedModelId(): string {
-        return this.selectedModelId;
-    }
 
     static async sendMessage(messages: ChatMessage[], modelId: string): Promise<ChatCompletion> {
         let endpoint = CHAT_COMPLETIONS_ENDPOINT;
@@ -48,9 +41,6 @@ export class ChatService {
             model: modelId,
             messages: messagesWithoutMessageType,
         };
-        if (CHAT_PARAMETERS.temperature) {
-            requestBody.temperature = CHAT_PARAMETERS.temperature
-        }
         const response = await fetch(endpoint, {
             method: "POST",
             headers: headers,
@@ -65,10 +55,34 @@ export class ChatService {
         return await response.json();
     }
 
+    private static lastCallbackTime: number = 0;
+    private static callDeferred: number | null = null;
+    private static accumulatedContent: string = ""; // To accumulate content between debounced calls
 
-    static async sendMessageStreamed(messages: ChatMessage[], modelId: string, callback: (content: string) => void): Promise<any> {
+    static debounceCallback(callback: (content: string) => void, delay: number = CHAT_STREAM_DEBOUNCE_TIME) {
+        return (content: string) => {
+            this.accumulatedContent += content; // Accumulate content on each call
+            const now = Date.now();
+            const timeSinceLastCall = now - this.lastCallbackTime;
+
+            if (this.callDeferred !== null) {
+                clearTimeout(this.callDeferred);
+            }
+
+            this.callDeferred = window.setTimeout(() => {
+                callback(this.accumulatedContent); // Pass the accumulated content to the original callback
+                this.lastCallbackTime = Date.now();
+                this.accumulatedContent = ""; // Reset the accumulated content after the callback is called
+            }, delay - timeSinceLastCall < 0 ? 0 : delay - timeSinceLastCall);  // Ensure non-negative delay
+
+            this.lastCallbackTime = timeSinceLastCall < delay ? this.lastCallbackTime : now; // Update last callback time if not within delay
+        };
+    }
+
+    static async sendMessageStreamed(chatSettings: ChatSettings,messages: ChatMessage[], callback: (content: string) => void): Promise<any> {
+        const debouncedCallback = this.debounceCallback(callback);
         this.abortController = new AbortController();
-        let endpoint = "https://api.openai.com/v1/chat/completions";
+        let endpoint = CHAT_COMPLETIONS_ENDPOINT;
         let headers = {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${OPENAI_API_KEY}`
@@ -79,13 +93,19 @@ export class ChatService {
             messages.map(({messageType, id: number, ...rest}) => rest);
 
         const requestBody: ChatCompletionRequest = {
-            model: modelId,
+            model: DEFAULT_MODEL,
             messages: messagesWithoutMessageType,
             stream: true,
         };
-        if (CHAT_PARAMETERS.temperature) {
-            requestBody.temperature = CHAT_PARAMETERS.temperature
+
+        if (chatSettings) {
+            const {model, temperature, top_p, seed} = chatSettings;
+            requestBody.model = model ?? requestBody.model;
+            requestBody.temperature = temperature ?? requestBody.temperature;
+            requestBody.top_p = top_p ?? requestBody.top_p;
+            requestBody.seed = seed ?? requestBody.seed;
         }
+
 
         let response: Response;
         try {
@@ -162,23 +182,26 @@ export class ChatService {
                         return o;
                     }).filter(Boolean); // Filter out undefined values which may be a result of the [DONE] term check
 
+                    let accumulatedContet = '';
                     chunks.forEach(chunk => {
                         chunk.choices.forEach(choice => {
                             if (choice.delta && choice.delta.content) {  // Check if delta and content exist
                                 const content = choice.delta.content;
-                                try {
-                                    callback(content);
-                                } catch (err) {
-                                    if (err instanceof Error) {
-                                        console.error(err.message);
-                                    }
-                                    console.log('error in client. continuing...')
+                                        try {
+                                            accumulatedContet += content;
+                                        } catch (err) {
+                                            if (err instanceof Error) {
+                                                console.error(err.message);
+                                            }
+                                            console.log('error in client. continuing...')
                                 }
                             } else if (choice?.finish_reason === 'stop') {
                                 // done
                             }
                         });
                     });
+                    debouncedCallback(accumulatedContet);
+
                     if (DONE) {
                         return;
                     }
@@ -206,22 +229,7 @@ export class ChatService {
     }
 
     static getModels = (): Promise<OpenAIModel[]> => {
-        if (OPENAI_MODEL_LIST && OPENAI_MODEL_LIST.length > 0) {
-            return Promise.resolve(
-              OPENAI_MODEL_LIST.map(id => {
-                  return {
-                      id: id,
-                      object: 'model',
-                      context_window: 0,
-                      knowledge_cutoff: '',
-                      owned_by: 'not-set',
-                      permission: []
-                  } as OpenAIModel;
-              })
-            );
-        } else {
-            return ChatService.fetchModels();
-        }
+        return ChatService.fetchModels();
     }
 
 
