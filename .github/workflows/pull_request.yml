@@ -22,7 +22,7 @@ jobs:
           node-version: '20'
 
       - name: Prepare Environment
-        run: cp env.json local.env.json
+        run: cp src/env.json src/local.env.json
 
       - name: Install dependencies
         run: npm install
