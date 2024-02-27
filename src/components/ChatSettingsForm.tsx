@@ -96,110 +96,110 @@ const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({ chatSettings, readO
   };
 
   return (
-    <div className="w-full max-w-lg mx-auto pt-3">
-      <form onSubmit={handleSubmit} className="bg-white px-8 pt-6 pb-8 mb-4">
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="icon">
-            Icon
-          </label>
-          <AvatarFieldEditor readOnly={readOnly} image={formData?.icon ? formData.icon : {data:null, type:'raster'}} onImageChange={onImageChange}/>
-        </div>
-        <div className="mb-4">
-          <label className={`block text-gray-700 text-sm font-bold mb-2`} htmlFor="name">
-            Name {readOnly ? '' : '*'}
-          </label>
-          {readOnly ? <p className="text-gray-700">{formData.name || "N/A"}</p> :
-            <input
-              type="text"
-              id="name"
-              name="name"
-              required={!readOnly}
-              onChange={handleInputChange}
-              placeholder="Enter name"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            />}
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="description">
-            Description
-          </label>
-          {readOnly ? <p className="text-gray-700">{formData.description || "N/A"}</p> :
-            <textarea
-              id="description"
-              name="description"
-              onChange={handleInputChange}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            ></textarea>}
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="instructions">
-            Instructions
-          </label>
-          {readOnly ? <p className="text-gray-700">{formData.instructions || "N/A"}</p> :
-            <textarea
-              id="instructions"
-              name="instructions"
-              onChange={handleInputChange}
-              className="h-56 shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            ></textarea>}
-        </div>
-        <div className="mb-4">
-          <EditableField<string | null>
-            readOnly={readOnly}
-            id="model"
-            label="Model"
-            value={formData.model}
-            defaultValue={null}
-            defaultValueLabel={'gpt-4-turbo-preview'}
-            editorComponent={(props) =>
-              <ModelSelect value={formData.model}
-                           onModelSelect={props.onValueChange}
-                           models={models} allowNone={true}
-                           allowNoneLabel="Default"/>}
-            onValueChange={(value: string | null) => {
-              setFormData({...formData, model: value});
-            }}
+      <div className="w-full max-w-lg mx-auto pt-3">
+        <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 px-8 pt-6 pb-8 mb-4">
+          <div className="mb-4">
+            <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="icon">
+              Icon
+            </label>
+            <AvatarFieldEditor readOnly={readOnly} image={formData?.icon ? formData.icon : {data:null, type:'raster'}} onImageChange={onImageChange}/>
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="name">
+              Name {readOnly ? '' : '*'}
+            </label>
+            {readOnly ? <p className="text-gray-700 dark:text-gray-300">{formData.name || "N/A"}</p> :
+                <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    required={!readOnly}
+                    onChange={handleInputChange}
+                    placeholder="Enter name"
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                />}
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="description">
+              Description
+            </label>
+            {readOnly ? <p className="text-gray-700 dark:text-gray-300">{formData.description || "N/A"}</p> :
+                <textarea
+                    id="description"
+                    name="description"
+                    onChange={handleInputChange}
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                ></textarea>}
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="instructions">
+              Instructions
+            </label>
+            {readOnly ? <p className="text-gray-700 dark:text-gray-300">{formData.instructions || "N/A"}</p> :
+                <textarea
+                    id="instructions"
+                    name="instructions"
+                    onChange={handleInputChange}
+                    className="h-56 shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                ></textarea>}
+          </div>
+          <div className="mb-4">
+            <EditableField<string | null>
+                readOnly={readOnly}
+                id="model"
+                label="Model"
+                value={formData.model}
+                defaultValue={null}
+                defaultValueLabel={'gpt-4-turbo-preview'}
+                editorComponent={(props) =>
+                    <ModelSelect value={formData.model}
+                                 onModelSelect={props.onValueChange}
+                                 models={models} allowNone={true}
+                                 allowNoneLabel="Default"/>}
+                onValueChange={(value: string | null) => {
+                  setFormData({...formData, model: value});
+                }}
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="seed">
+              Seed
+            </label>
+            {readOnly ? <p className="text-gray-700 dark:text-gray-300">{formData.seed || "N/A"}</p> :
+                <input
+                    type="number"
+                    id="seed"
+                    name="seed"
+                    onChange={handleInputChange}
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                />}
+          </div>
+          <EditableField<number | null>
+              readOnly={readOnly}
+              id="temperature"
+              label="Temperature"
+              value={formData.temperature}
+              defaultValue={1.0}
+              defaultValueLabel="1.0"
+              editorComponent={TemperatureSlider}
+              onValueChange={(value: number | null) => {
+                setFormData({...formData, temperature: value});
+              }}
           />
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="seed">
-            Seed
-          </label>
-          {readOnly ? <p className="text-gray-700">{formData.seed || "N/A"}</p> :
-            <input
-              type="number"
-              id="seed"
-              name="seed"
-              onChange={handleInputChange}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            />}
-        </div>
-        <EditableField<number | null>
-          readOnly={readOnly}
-          id="temperature"
-          label="Temperature"
-          value={formData.temperature}
-          defaultValue={1.0}
-          defaultValueLabel="1.0"
-          editorComponent={TemperatureSlider}
-          onValueChange={(value: number | null) => {
-            setFormData({...formData, temperature: value});
-          }}
-        />
-        <EditableField<number | null>
-          readOnly={readOnly}
-          id="top_p"
-          label="Top P"
-          value={formData.top_p}
-          defaultValue={1.0}
-          defaultValueLabel="1.0"
-          editorComponent={TopPSlider}
-          onValueChange={(value: number | null) => {
-            setFormData({...formData, top_p: value});
-          }}
-        />
-      </form>
-    </div>
+          <EditableField<number | null>
+              readOnly={readOnly}
+              id="top_p"
+              label="Top P"
+              value={formData.top_p}
+              defaultValue={1.0}
+              defaultValueLabel="1.0"
+              editorComponent={TopPSlider}
+              onValueChange={(value: number | null) => {
+                setFormData({...formData, top_p: value});
+              }}
+          />
+        </form>
+      </div>
   );
 };
 
