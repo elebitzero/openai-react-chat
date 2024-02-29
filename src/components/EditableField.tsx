@@ -1,4 +1,5 @@
 import React, { useState, ReactElement } from 'react';
+import {useTranslation} from 'react-i18next';
 
 export type EditorComponentProps<T> = {
   id: string;
@@ -30,6 +31,7 @@ export function EditableField<T>({
   const [isEditing, setIsEditing] = useState(false);
   const effectiveValue = value !== undefined && value !== null ? value : defaultValue;
   const [tempValue, setTempValue] = useState<T>(effectiveValue);
+  const {t} = useTranslation();
 
   const isValueSet = (): boolean => {
     return value !== undefined && value !== null;
@@ -69,7 +71,7 @@ export function EditableField<T>({
       {!isEditing ? (
         <div className="flex items-center">
           <span className="text-gray-600 text-sm mr-2">
-            {isValueSet() ? toStringRepresentation(effectiveValue) : `${defaultValueLabel} (default)`}
+            {isValueSet() ? toStringRepresentation(effectiveValue) : `${defaultValueLabel} ${t('default-label')}`}
           </span>
           {!readOnly && (
             <button className="text-blue-500 hover:text-blue-700 text-sm" onClick={handleEdit}>

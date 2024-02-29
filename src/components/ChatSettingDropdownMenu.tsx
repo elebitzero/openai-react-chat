@@ -5,6 +5,7 @@ import { ChevronDownIcon, PencilIcon, InformationCircleIcon,
 import { useNavigate } from 'react-router-dom';
 import { ChatSettings } from '../models/ChatSettings';
 import ChatSettingsForm from './ChatSettingsForm';
+import {useTranslation} from 'react-i18next';
 
 interface ChatSettingDropdownMenuProps {
   chatSetting: ChatSettings | undefined;
@@ -17,6 +18,7 @@ const ChatSettingDropdownMenu: React.FC<ChatSettingDropdownMenuProps> = ({
                                                                          }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const navigate = useNavigate();
+  const {t} = useTranslation();
 
   return (
       <Fragment>
@@ -53,7 +55,7 @@ const ChatSettingDropdownMenu: React.FC<ChatSettingDropdownMenuProps> = ({
                                                       className="w-4 h-4 mr-3"
                                                       aria-hidden="true"
                                                   />
-                                                  New chat
+                                                  {t('new-chat')}
                                               </a>
                                           )}
                                       </Menu.Item>
@@ -69,7 +71,7 @@ const ChatSettingDropdownMenu: React.FC<ChatSettingDropdownMenuProps> = ({
                                                       className="w-4 h-4 mr-3"
                                                       aria-hidden="true"
                                                   />
-                                                  About
+                                                  {t('menu-about')}
                                               </button>
                                           )}
                                       </Menu.Item>
@@ -89,7 +91,7 @@ const ChatSettingDropdownMenu: React.FC<ChatSettingDropdownMenuProps> = ({
                                                       className="w-4 h-4 mr-3"
                                                       aria-hidden="true"
                                                   />
-                                                  Edit
+                                                  {t('menu-edit')}
                                               </a>
                                           )}
                                       </Menu.Item>
@@ -105,7 +107,7 @@ const ChatSettingDropdownMenu: React.FC<ChatSettingDropdownMenuProps> = ({
                                                       className="collapse w-4 h-4 mr-3"
                                                       aria-hidden="true"
                                                   />
-                                                  Hide from sidebar
+                                                  {t('hide-sidebar')}
                                               </a>
                                           )}
                                       </Menu.Item>

@@ -9,6 +9,7 @@ import TemperatureSlider from './TemperatureSlider';
 import TopPSlider from './TopPSlider';
 import { ChatSettings } from '../models/ChatSettings';
 import { EditableField } from './EditableField';
+import {useTranslation} from 'react-i18next';
 
 interface ChatSettingsFormProps {
   chatSettings?: ChatSettings;
@@ -32,6 +33,7 @@ const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({ chatSettings, readO
   const [models, setModels] = useState<OpenAIModel[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState<ChatSettings>(chatSettings || DUMMY_CHAT_SETTINGS);
+  const {t} = useTranslation();
 
   useEffect(() => {
     ChatService.getModels()
@@ -100,13 +102,13 @@ const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({ chatSettings, readO
         <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 px-8 pt-6 pb-8 mb-4">
           <div className="mb-4">
             <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="icon">
-              Icon
+              {t('icon-header')}
             </label>
             <AvatarFieldEditor readOnly={readOnly} image={formData?.icon ? formData.icon : {data:null, type:'raster'}} onImageChange={onImageChange}/>
           </div>
           <div className="mb-4">
             <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="name">
-              Name {readOnly ? '' : '*'}
+              {t('name-header')} {readOnly ? '' : '*'}
             </label>
             {readOnly ? <p className="text-gray-700 dark:text-gray-300">{formData.name || "N/A"}</p> :
                 <input
@@ -121,7 +123,7 @@ const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({ chatSettings, readO
           </div>
           <div className="mb-4">
             <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="description">
-              Description
+              {t('description-header')}
             </label>
             {readOnly ? <p className="text-gray-700 dark:text-gray-300">{formData.description || "N/A"}</p> :
                 <textarea
@@ -133,7 +135,7 @@ const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({ chatSettings, readO
           </div>
           <div className="mb-4">
             <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="instructions">
-              Instructions
+              {t('instructions-header')}
             </label>
             {readOnly ? <p className="text-gray-700 dark:text-gray-300">{formData.instructions || "N/A"}</p> :
                 <textarea
@@ -147,7 +149,7 @@ const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({ chatSettings, readO
             <EditableField<string | null>
                 readOnly={readOnly}
                 id="model"
-                label="Model"
+                label={t('model-header')}
                 value={formData.model}
                 defaultValue={null}
                 defaultValueLabel={'gpt-4-turbo-preview'}
@@ -163,7 +165,7 @@ const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({ chatSettings, readO
           </div>
           <div className="mb-4">
             <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="seed">
-              Seed
+              {t('seed-header')}
             </label>
             {readOnly ? <p className="text-gray-700 dark:text-gray-300">{formData.seed || "N/A"}</p> :
                 <input
@@ -177,7 +179,7 @@ const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({ chatSettings, readO
           <EditableField<number | null>
               readOnly={readOnly}
               id="temperature"
-              label="Temperature"
+              label={t('temperature-header')}
               value={formData.temperature}
               defaultValue={1.0}
               defaultValueLabel="1.0"
@@ -189,7 +191,7 @@ const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({ chatSettings, readO
           <EditableField<number | null>
               readOnly={readOnly}
               id="top_p"
-              label="Top P"
+              label={t('top-p-header')}
               value={formData.top_p}
               defaultValue={1.0}
               defaultValueLabel="1.0"
