@@ -179,7 +179,6 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
     const id = Date.now();
     const timestamp = Date.now();
     let shortenedText = getTitle(message);
-    console.log('Starting conversation with '+chatSettings?.instructions ?? userSettings.instructions ?? OPENAI_DEFAULT_SYSTEM_PROMPT ?? DEFAULT_INSTRUCTIONS);
     let instructions = getFirstValidString(chatSettings?.instructions,userSettings.instructions,OPENAI_DEFAULT_SYSTEM_PROMPT,DEFAULT_INSTRUCTIONS);
     const conversation : Conversation = {
       id: id,
