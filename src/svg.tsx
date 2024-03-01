@@ -42,7 +42,7 @@ export const CloseSideBarIcon: React.FC<SVGProps<SVGSVGElement>> = (props) => (
 
 export const OpenSideBarIcon: React.FC<SVGProps<SVGSVGElement>> = (props) => (
 <svg
-    stroke="black"
+    stroke="currentColor"
     fill="none"
     strokeWidth="2"
     viewBox="0 0 24 24"

@@ -328,17 +328,6 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
 
   return (
     <div className={`${className} overflow-hidden w-full h-full relative flex z-0 dark:bg-gray-900`}>
-      <div className="sidebar-button">
-        {isSidebarCollapsed && (
-          <Tooltip title={t('open-sidebar')} side="right" sideOffset={10}>
-            <a
-              className="flex px-3 min-h-[44px] py-1 gap-3 transition-colors duration-200 dark:text-black cursor-pointer text-sm rounded-md hover:bg-gray-500/10 h-11 w-11 flex-shrink-0 items-center justify-center bg-white"
-              onClick={toggleSidebarCollapse}>
-              <OpenSideBarIcon></OpenSideBarIcon>
-            </a>
-          </Tooltip>
-        )}
-      </div>
       <div className="flex flex-col items-stretch w-full h-full">
         <main
           className="relative h-full transition-width flex flex-col overflow-hidden items-stretch flex-1">

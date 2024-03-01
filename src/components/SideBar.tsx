@@ -12,7 +12,7 @@ import {
   TrashIcon,
   XMarkIcon
 } from "@heroicons/react/24/outline";
-import {CloseSideBarIcon, iconProps} from "../svg";
+import {CloseSideBarIcon, iconProps, OpenSideBarIcon} from "../svg";
 import {useTranslation} from 'react-i18next';
 import Tooltip from "./Tooltip";
 import SettingsModal from './SettingsModal';
@@ -297,6 +297,16 @@ const Sidebar: React.FC<SidebarProps> = ({className, isSidebarCollapsed, toggleS
 
   return (
     <div className={`${className}`}  style={{width: isSidebarCollapsed ? "0px" : ""}}>
+      {isSidebarCollapsed && (
+          <div className="absolute top-0 left-0 z-50">
+            <Tooltip title={t('open-sidebar')} side="right" sideOffset={10}>
+              <button
+                  className="flex px-3 min-h-[44px] py-1 gap-3 transition-colors duration-200 dark:text-white cursor-pointer text-sm rounded-md border dark:border-white/20 hover:bg-gray-500/10 h-11 w-11 flex-shrink-0 items-center justify-center bg-white dark:bg-transparent"                  onClick={toggleSidebarCollapse}>
+                <OpenSideBarIcon/>
+              </button>
+            </Tooltip>
+          </div>
+      )}
       <SettingsModal
         isVisible={isSettingsModalVisible}
         onClose={() => setSettingsModalVisible(false)}
