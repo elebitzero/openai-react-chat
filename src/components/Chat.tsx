@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState, useContext} from 'react';
 import ChatBlock from "./ChatBlock";
 import ModelSelect from "./ModelSelect";
 import {OpenAIModel} from "../models/model";
@@ -8,7 +8,10 @@ import {ChatMessage} from "../models/ChatCompletion";
 import {useTranslation} from 'react-i18next';
 import Tooltip from "./Tooltip";
 import {Conversation} from "../service/ConversationService";
-import {conversationsEmitter} from "../service/EventEmitter";
+import {OPENAI_DEFAULT_SYSTEM_PROMPT} from "../config";
+import {DEFAULT_INSTRUCTIONS} from "../constants/appConstants";
+import { UserContext } from '../UserContext';
+import {InformationCircleIcon, PaperAirplaneIcon} from "@heroicons/react/24/outline";
 
 interface Props {
     chatBlocks: ChatMessage[];
@@ -21,6 +24,7 @@ interface Props {
 
 const Chat: React.FC<Props> = ({chatBlocks, onChatScroll, allowAutoScroll, model,
                                    onModelChange, conversation}) => {
+    const { userSettings, setUserSettings } = useContext(UserContext);
     const { t } = useTranslation();
     const [models, setModels] = useState<OpenAIModel[]>([]);
     const [error, setError] = useState<string | null>(null);
@@ -107,10 +111,18 @@ const Chat: React.FC<Props> = ({chatBlocks, onChatScroll, allowAutoScroll, model
               <div
                 className={`flex w-full items-center justify-center gap-1 p-3 text-gray-500 dark:border-gray-900/50 dark:bg-gray-900 dark:text-gray-300 ${!(conversation === null) ? 'border-b border-black/10' : ''}`}>
                   <div className="flex items-center flex-row gap-1">
-                        <span
-                          style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>{t('model')}
+                      {!conversation ? '' : (
+                          <Tooltip title={conversation.systemPrompt ?? userSettings.instructions ?? OPENAI_DEFAULT_SYSTEM_PROMPT ?? DEFAULT_INSTRUCTIONS} side="bottom" sideOffset={10}>
+                              <span style={{marginLeft: '10px', fontSize: '0.85rem', color: '#6b7280'}}>
+                                 <InformationCircleIcon width={20} height={20} stroke={'currentColor'}/>
+                              </span>
+                          </Tooltip>
+                        )}
+                        <span style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                            {t('model')}
                             {!conversation ? '' : (
                               <span>
+
                                   <span style={{marginLeft:'0.25em'}}>{conversation.model}</span>
                                   <Tooltip title={t('context-window')} side="bottom" sideOffset={10}>
                                       <span style={{marginLeft: '10px', fontSize: '0.85rem', color: '#6b7280'}}>

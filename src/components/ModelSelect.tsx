@@ -16,6 +16,7 @@ import {OPENAI_DEFAULT_MODEL} from "../config";
 import {useTranslation} from 'react-i18next';
 import Tooltip from "./Tooltip";
 import {DEFAULT_MODEL} from "../constants/appConstants";
+import './ModelSelect.css'
 
 interface ModelSelectProps {
     onModelSelect?: (value: string | null) => void;
@@ -36,13 +37,14 @@ const NONE_MODEL = {
 
 const ModelSelect: React.FC<ModelSelectProps> = ({
                                                      onModelSelect,
-                                                     models,
+                                                     models: externalModels,
                                                      className,
                                                      value = null,
                                                      allowNone = false,
                                                      allowNoneLabel = '(None)',
                                                  }) => {
     const { t } = useTranslation();
+    const [models, setModels] = useState<OpenAIModel[]>([]);
     const [options, setOptions] = useState<SelectOption[]>([]);
     const [selectedOption, setSelectedOption] = useState<SelectOption>();
     const [loading, setLoading] = useState<boolean>(true);
@@ -77,6 +79,54 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
         }),
         // Add other custom styles if needed for other parts of the select component
     };
+
+    useEffect(() => {
+        if (!models || models.length == 0) {
+            setLoading(true);
+            ChatService.getModels()
+              .then(data => {
+                  setModels(data);
+              })
+              .catch(err => {
+                  if (err && err.message) {
+                      // todo: display UI error
+                      console.log(err.message);
+                  } else {
+                      // todo: display UI error
+                      console.log('Error fetching model list');
+                  }
+              });
+        }
+    }, []);
+
+    useEffect(() => {
+        if (value) {
+            const matchingOption = options.find(option => option.value === value);
+            if (matchingOption) {
+                setSelectedOption(matchingOption);
+            } else {
+                console.warn(`No option found for value: ${value}`);
+            }
+        }
+    }, [value]);
+
+
+    useEffect(() => {
+        if (externalModels.length > 0) {
+            setModels(externalModels);
+        }
+        else {
+            setLoading(true);
+            ChatService.getModels()
+              .then(data => {
+                  setModels(data);
+              })
+              .catch(err => {
+                  console.error('Error fetching model list', err);
+              })
+              .finally(() => setLoading(false));
+        }
+    }, [externalModels]);
 
     useEffect(() => {
         if (models && models.length > 0) {
@@ -118,8 +168,6 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
             const firstModel = models[0];
             setSelectedOption({value: firstModel.id, label: firstModel.id, info: formatContextWindow(firstModel.context_window)});
             setLoading(false);
-        } else {
-            setLoading(true);
         }
     }, [models]);
 

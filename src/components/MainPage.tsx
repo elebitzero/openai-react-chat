@@ -1,4 +1,4 @@
-import React, {ChangeEvent, useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState, useContext} from 'react';
 import {ChatService} from "../service/ChatService";
 import Chat from "./Chat";
 import {ChatCompletion, ChatMessage, MessageType, Role} from "../models/ChatCompletion";
@@ -7,8 +7,6 @@ import {OPENAI_DEFAULT_SYSTEM_PROMPT} from "../config";
 import {toast} from "react-toastify";
 import {CustomError} from "../service/CustomError";
 import {conversationsEmitter} from "../service/EventEmitter";
-import {OpenSideBarIcon} from "../svg";
-import Tooltip from "./Tooltip";
 import {useLocation, useNavigate, useParams} from "react-router-dom";
 import {useTranslation} from 'react-i18next';
 import MessageBox, {MessageBoxHandles} from "./MessageBox";
@@ -17,7 +15,7 @@ import {ChatSettings} from '../models/ChatSettings';
 import chatSettingsDB from '../service/ChatSettingsDB';
 import ChatSettingDropdownMenu from "./ChatSettingDropdownMenu";
 import ConversationService, { Conversation } from '../service/ConversationService';
-import {OpenAIModel} from "../models/model";
+import { UserContext } from '../UserContext';
 
 export const updateConversationMessages = async (id: number, updatedMessages: any[]) => {
   const conversation = await ConversationService.getConversationById(id);
@@ -25,6 +23,15 @@ export const updateConversationMessages = async (id: number, updatedMessages: an
     conversation.messages = JSON.stringify(updatedMessages);
     await ConversationService.updateConversation(conversation);
   }
+}
+
+function getFirstValidString(...args: (string | undefined | null)[]): string {
+  for (const arg of args) {
+    if (arg !== null && arg !== undefined && arg.trim() !== '') {
+      return arg;
+    }
+  }
+  return '';
 }
 
 function useCurrentPath() {
@@ -38,6 +45,7 @@ interface MainPageProps {
 }
 
 const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggleSidebarCollapse}) => {
+  const { userSettings, setUserSettings } = useContext(UserContext);
   const {t} = useTranslation();
   const [chatSettings, setChatSettings] = useState<ChatSettings | undefined>(undefined);
   const [conversation, setConversation] = useState<Conversation | null>(null);
@@ -144,8 +152,18 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
 
     window.addEventListener('keydown', handleKeyDown);
 
+    if (userSettings.model) {
+      setModel(userSettings.model);
+    }
+
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
+
+  useEffect(() => {
+    if (userSettings.model) {
+      setModel(userSettings.model);
+    }
+  }, [userSettings]);
 
   function getTitle(message: string): string {
     let title = message.trimStart(); // Remove leading newlines
@@ -161,13 +179,15 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
     const id = Date.now();
     const timestamp = Date.now();
     let shortenedText = getTitle(message);
+    console.log('Starting conversation with '+chatSettings?.instructions ?? userSettings.instructions ?? OPENAI_DEFAULT_SYSTEM_PROMPT ?? DEFAULT_INSTRUCTIONS);
+    let instructions = getFirstValidString(chatSettings?.instructions,userSettings.instructions,OPENAI_DEFAULT_SYSTEM_PROMPT,DEFAULT_INSTRUCTIONS);
     const conversation : Conversation = {
       id: id,
       gid: getEffectiveChatSettings().id,
       timestamp: timestamp,
       title: shortenedText,
       model: model,
-      systemPrompt: chatSettings?.instructions ?? OPENAI_DEFAULT_SYSTEM_PROMPT ?? DEFAULT_INSTRUCTIONS,
+      systemPrompt: instructions,
       messages: "[]",
     };
     setConversation(conversation);
@@ -229,7 +249,7 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
   function sendMessage(updatedMessages: ChatMessage[]) {
     setLoading(true);
     clearTextArea();
-    let systemPrompt = chatSettings?.instructions ?? OPENAI_DEFAULT_SYSTEM_PROMPT;
+    let systemPrompt = getFirstValidString(conversation?.systemPrompt,chatSettings?.instructions,userSettings.instructions,OPENAI_DEFAULT_SYSTEM_PROMPT,DEFAULT_INSTRUCTIONS);
     let messages: ChatMessage[] = [{
       role: Role.System,
       content: systemPrompt
@@ -356,3 +376,4 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
 }
 
 export default MainPage;
+

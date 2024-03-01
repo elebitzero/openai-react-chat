@@ -1,9 +1,7 @@
 import React, { useState, ChangeEvent, useEffect } from 'react';
 import AvatarFieldEditor, { ImageSource } from "./AvatarFieldEditor";
 import 'rc-slider/assets/index.css';
-import { OpenAIModel } from '../models/model';
 import ModelSelect from './ModelSelect';
-import { ChatService } from "../service/ChatService";
 import { toast } from "react-toastify";
 import TemperatureSlider from './TemperatureSlider';
 import TopPSlider from './TopPSlider';
@@ -30,24 +28,9 @@ const DUMMY_CHAT_SETTINGS: ChatSettings = {
 };
 
 const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({ chatSettings, readOnly = false }) => {
-  const [models, setModels] = useState<OpenAIModel[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState<ChatSettings>(chatSettings || DUMMY_CHAT_SETTINGS);
   const {t} = useTranslation();
-
-  useEffect(() => {
-    ChatService.getModels()
-      .then(models => {
-        setModels(models);
-      })
-      .catch(err => {
-        if (err && err.message) {
-          setError(err.message);
-        } else {
-          setError('Error fetching model list');
-        }
-      });
-  }, []);
 
   useEffect(() => {
     error && toast.error(error, {
@@ -98,7 +81,7 @@ const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({ chatSettings, readO
   };
 
   return (
-      <div className="w-full max-w-lg mx-auto pt-3">
+      <div className="w-full md:max-w-2xl lg:max-w-3xl xl:max-w-4xl mx-auto pt-3">
         <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 px-8 pt-6 pb-8 mb-4">
           <div className="mb-4">
             <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="icon">
@@ -142,7 +125,7 @@ const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({ chatSettings, readO
                     id="instructions"
                     name="instructions"
                     onChange={handleInputChange}
-                    className="h-56 shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    className="resize-y rounded overflow-y-auto h-56 w-full max-h-[60vh] md:max-h-[calc(100vh-300px)] shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 ></textarea>}
           </div>
           <div className="mb-4">
@@ -156,7 +139,7 @@ const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({ chatSettings, readO
                 editorComponent={(props) =>
                     <ModelSelect value={formData.model}
                                  onModelSelect={props.onValueChange}
-                                 models={models} allowNone={true}
+                                 models={[]} allowNone={true}
                                  allowNoneLabel="Default"/>}
                 onValueChange={(value: string | null) => {
                   setFormData({...formData, model: value});

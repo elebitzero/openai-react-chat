@@ -65,9 +65,11 @@ export function EditableField<T>({
 
   return (
     <div className="mb-4">
-      <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor={id}>
-        {label}
-      </label>
+      {label && (
+        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor={id}>
+          {label}
+        </label>
+      )}
       {!isEditing ? (
         <div className="flex items-center">
           <span className="text-gray-600 text-sm mr-2">

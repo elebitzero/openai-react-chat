@@ -12,7 +12,7 @@ import "github-markdown-css/github-markdown.css";
 import remarkMath from 'remark-math'
 import rehypeKatex from 'rehype-katex'
 import 'katex/dist/katex.min.css'
-import {ThemeContext} from "../ThemeContext";
+import {UserContext} from "../UserContext";
 import { coldarkDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import { oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism'
 
@@ -35,7 +35,7 @@ function rehypeInlineCodeProperty() {
 }
 
 const MarkdownBlock: React.FC<ChatBlockProps> = ({markdown, role}) => {
-    const { theme } = useContext(ThemeContext);
+    const { userSettings, setUserSettings } = useContext(UserContext);
 
     function inlineCodeBlock({value, language}: { value: string; language: string | undefined }) {
         return (
@@ -70,7 +70,7 @@ const MarkdownBlock: React.FC<ChatBlockProps> = ({markdown, role}) => {
                 </div>
                 <div className="overflow-y-auto">
                     <SyntaxHighlighter language={language}
-                                       style={theme === 'dark' ? coldarkDark : oneLight}
+                                       style={userSettings.theme === 'dark' ? coldarkDark : oneLight}
                     >
                         {value}
                     </SyntaxHighlighter>
