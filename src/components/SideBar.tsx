@@ -301,7 +301,8 @@ const Sidebar: React.FC<SidebarProps> = ({className, isSidebarCollapsed, toggleS
           <div className="absolute top-0 left-0 z-50">
             <Tooltip title={t('open-sidebar')} side="right" sideOffset={10}>
               <button
-                  className="flex px-3 min-h-[44px] py-1 gap-3 transition-colors duration-200 dark:text-white cursor-pointer text-sm rounded-md border dark:border-white/20 hover:bg-gray-500/10 h-11 w-11 flex-shrink-0 items-center justify-center bg-white dark:bg-transparent"                  onClick={toggleSidebarCollapse}>
+                  className="flex px-3 min-h-[44px] py-1 gap-3 transition-colors duration-200 dark:text-white cursor-pointer text-sm rounded-md border dark:border-white/20 hover:bg-gray-300 dark:hover:bg-gray-600 h-11 w-11 flex-shrink-0 items-center justify-center bg-white dark:bg-transparent"
+                  onClick={toggleSidebarCollapse}>
                 <OpenSideBarIcon/>
               </button>
             </Tooltip>
