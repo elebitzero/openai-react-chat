@@ -17,7 +17,7 @@
     "highlight.js": "^11.9.0",
     "i18next": "^23.10.0",
     "i18next-browser-languagedetector": "^7.2.0",
-    "i18next-http-backend": "^2.4.3",
+    "i18next-http-backend": "^2.5.0",
     "postcss": "^8.4.35",
     "postcss-cli": "^11.0.0",
     "rc-slider": "^10.5.0",
