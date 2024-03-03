@@ -61,6 +61,16 @@ textarea:focus-visible {
     padding: 22px 16px 12px 0px;
 }
 
+.streaming-dot {
+    animation: blink 1s linear infinite;
+}
+
+@keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
 .subheading {
     color: #202123;
     color: var(--gray-900);

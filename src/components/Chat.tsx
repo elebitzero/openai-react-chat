@@ -20,10 +20,11 @@ interface Props {
     model: string | null;
     onModelChange: (value: string | null) => void;
     conversation: Conversation | null;
+    loading: boolean;
 }
 
 const Chat: React.FC<Props> = ({chatBlocks, onChatScroll, allowAutoScroll, model,
-                                   onModelChange, conversation}) => {
+                                   onModelChange, conversation, loading}) => {
     const { userSettings, setUserSettings } = useContext(UserContext);
     const { t } = useTranslation();
     const [models, setModels] = useState<OpenAIModel[]>([]);
@@ -146,8 +147,8 @@ const Chat: React.FC<Props> = ({chatBlocks, onChatScroll, allowAutoScroll, model
                       </span>
                   </div>
               </div>
-              {chatBlocks.map((block) => (
-                <ChatBlock key={`chat-block-${block.id}`} block={block}/>
+              {chatBlocks.map((block, index) => (
+                <ChatBlock key={`chat-block-${block.id}`} block={block} loading={index === chatBlocks.length - 1 && loading}/>
               ))}
               <div className="w-full h-24 flex-shrink-0"></div>
           </div>

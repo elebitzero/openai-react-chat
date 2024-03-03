@@ -15,9 +15,10 @@ import {iconProps} from "../svg";
 
 interface Props {
     block: ChatMessage;
+    loading: boolean;
 }
 
-const ChatBlock: React.FC<Props> = ({block}) => {
+const ChatBlock: React.FC<Props> = ({block, loading}) => {
     const errorStyles = block.messageType === MessageType.Error ? {
         backgroundColor: '#F5E6E6',
         borderColor: 'red',
@@ -60,7 +61,7 @@ const ChatBlock: React.FC<Props> = ({block}) => {
                               {block.role === 'user' ? (
                                 <UserContentBlock text={block.content}/>
                               ) : (
-                                <MarkdownBlock markdown={block.content} role={block.role}/>
+                                <MarkdownBlock markdown={block.content} role={block.role} loading={loading}/>
                               )}
                           </div>
                       </div>

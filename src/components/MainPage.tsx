@@ -357,7 +357,7 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
           ) : null
           }
           <Chat chatBlocks={messages} onChatScroll={handleUserScroll} conversation={conversation} model={model}
-                onModelChange={handleModelChange} allowAutoScroll={allowAutoScroll}/>
+                onModelChange={handleModelChange} allowAutoScroll={allowAutoScroll} loading={loading}/>
           {/*</div>*/}
           {/* Absolute container for the ScrollToBottomButton */}
           {showScrollButton && (
@@ -365,7 +365,6 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
               <ScrollToBottomButton onClick={scrollToBottom}/>
             </div>
           )}
-
           {/* MessageBox remains at the bottom */}
           <MessageBox ref={messageBoxRef} callApp={callApp} loading={loading} setLoading={setLoading}/>
         </main>

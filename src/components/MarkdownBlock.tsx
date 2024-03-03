@@ -19,6 +19,7 @@ import { oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism'
 interface ChatBlockProps {
     markdown: string;
     role: string;
+    loading: boolean;
 }
 
 function rehypeInlineCodeProperty() {
@@ -34,7 +35,7 @@ function rehypeInlineCodeProperty() {
     };
 }
 
-const MarkdownBlock: React.FC<ChatBlockProps> = ({markdown, role}) => {
+const MarkdownBlock: React.FC<ChatBlockProps> = ({markdown, role, loading}) => {
     const { userSettings, setUserSettings } = useContext(UserContext);
 
     function inlineCodeBlock({value, language}: { value: string; language: string | undefined }) {
@@ -87,13 +88,16 @@ const MarkdownBlock: React.FC<ChatBlockProps> = ({markdown, role}) => {
     };
 
     return (
-        <ReactMarkdown
-            remarkPlugins={[gfm,remarkMath]}
-            components={renderers}
-            rehypePlugins={[rehypeKatex,rehypeInlineCodeProperty]}
-        >
-            {markdown}
-        </ReactMarkdown>
+        <div>
+            <ReactMarkdown
+                remarkPlugins={[gfm, remarkMath]}
+                components={renderers}
+                rehypePlugins={[rehypeKatex, rehypeInlineCodeProperty]}
+            >
+                {markdown}
+            </ReactMarkdown>
+            {loading && <span className="streaming-dot">•••</span>}
+        </div>
     );
 };
 
