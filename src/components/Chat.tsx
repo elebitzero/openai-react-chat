@@ -61,7 +61,7 @@ const Chat: React.FC<Props> = ({chatBlocks, onChatScroll, allowAutoScroll, model
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
-            theme: "light",
+            theme: ((userSettings.theme && userSettings.theme === 'dark') ? 'dark' : 'light'),
         });
     }, [error])
 

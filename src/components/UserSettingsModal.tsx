@@ -1,16 +1,10 @@
 import React, { useState, useContext, useEffect } from 'react';
 import {XMarkIcon} from "@heroicons/react/24/outline";
-import { UserContext } from '../UserContext';
+import {Theme, UserContext } from '../UserContext';
 import ModelSelect from './ModelSelect';
 import {EditableField} from "./EditableField";
 import './UserSettingsModal.css';
 import {OPENAI_DEFAULT_SYSTEM_PROMPT} from "../config";
-
-interface UserSettings {
-  theme: 'light' | 'dark' | 'system';
-  model: string | null;
-  instructions: string;
-}
 
 interface UserSettingsModalProps {
   isVisible: boolean;
@@ -82,9 +76,9 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({ isVisible, onClos
                 <div className="flex items-center justify-between setting-panel">
                   <label htmlFor="theme">Theme</label>
                   <select id='theme' name='theme' className="border-gray-300 border rounded p-2"
-                          value={userSettings.theme}
+                          value={userSettings.userTheme}
                     onChange={(e) => {
-                    setUserSettings({...userSettings, theme: e.target.value as 'light' | 'dark' | 'system'});
+                    setUserSettings({...userSettings, userTheme: e.target.value as Theme});
                   }}>
                     <option value="dark">Dark</option>
                     <option value="light">Light</option>

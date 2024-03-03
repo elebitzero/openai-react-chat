@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, useEffect } from 'react';
+import React, {useState, ChangeEvent, useEffect, useContext} from 'react';
 import AvatarFieldEditor, { ImageSource } from "./AvatarFieldEditor";
 import 'rc-slider/assets/index.css';
 import ModelSelect from './ModelSelect';
@@ -8,6 +8,7 @@ import TopPSlider from './TopPSlider';
 import { ChatSettings } from '../models/ChatSettings';
 import { EditableField } from './EditableField';
 import {useTranslation} from 'react-i18next';
+import {UserContext} from "../UserContext";
 
 interface ChatSettingsFormProps {
   chatSettings?: ChatSettings;
@@ -28,6 +29,7 @@ const DUMMY_CHAT_SETTINGS: ChatSettings = {
 };
 
 const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({ chatSettings, readOnly = false }) => {
+  const { userSettings, setUserSettings } = useContext(UserContext);
   const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState<ChatSettings>(chatSettings || DUMMY_CHAT_SETTINGS);
   const {t} = useTranslation();
@@ -41,7 +43,7 @@ const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({ chatSettings, readO
       pauseOnHover: true,
       draggable: true,
       progress: undefined,
-      theme: "light",
+      theme: ((userSettings.theme && userSettings.theme === 'dark') ? 'dark' : 'light'),
     });
   }, [error]);
 
@@ -76,7 +78,7 @@ const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({ chatSettings, readO
       pauseOnHover: true,
       draggable: true,
       progress: undefined,
-      theme: "light",
+      theme: ((userSettings.theme && userSettings.theme === 'dark') ? 'dark' : 'light'),
     });
   };
 
