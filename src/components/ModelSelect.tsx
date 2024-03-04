@@ -56,10 +56,22 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
 
     const isDarkMode = () => userSettings.userTheme === 'dark';
 
+    const getColor = (state: OptionProps<SelectOption, false>) => {
+        if (state.data.value === 'more' || state.data.value === 'less' ) {
+            return 'var(--primary)';
+        } else {
+            return isDarkMode() ? 'white' : 'black';
+        }
+    };
+
+    const getInfoColor = () => {
+        return isDarkMode() ? 'gray' : 'gray';
+    };
+
     const customStyles: StylesConfig<SelectOption, false> = {
         option: (provided, state) => ({
             ...provided,
-            color: state.isSelected ? 'white' : isDarkMode() ? 'white' : 'black',
+            color: getColor(state),
             backgroundColor: isDarkMode() ? (state.isSelected ? '#4A5568' : state.isFocused ? '#2D3748' : '#1A202C') : state.isSelected ? '#edf2f7' : state.isFocused ? '#F2F2F2' : provided.backgroundColor,
             ':active': {
                 backgroundColor: isDarkMode() ? (state.isSelected ? '#4A5568' : '#2D3748') : (state.isSelected ? 'var(--gray-200)' : '#F2F2F2'),
@@ -79,7 +91,10 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
             ...provided,
             color: isDarkMode() ? 'white' : 'black',
         }),
-        // continue customizing other parts as needed
+        menu: (provided) => ({
+            ...provided,
+            backgroundColor: isDarkMode() ? '#1A202C' : provided.backgroundColor,
+        }),
     };
 
 
@@ -229,7 +244,7 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span>{props.data.label}</span>
               <Tooltip title={t('context-window')} side="right" sideOffset={10}>
-                  <span style={{marginLeft: '10px', fontSize: '0.85rem', color: '#6b7280'}}>{props.data.info}</span>
+                  <span style={{marginLeft: '10px', fontSize: '0.85rem', color: getInfoColor()}}>{props.data.info}</span>
               </Tooltip>
           </div>
       </components.SingleValue>
@@ -240,7 +255,7 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span>{props.data.label}</span>
               <Tooltip title={t('context-window')} side="right" sideOffset={10}>
-                  <span style={{marginLeft: '10px', fontSize: '0.85rem', color: '#6b7280'}}>{props.data.info}</span>
+                  <span style={{marginLeft: '10px', fontSize: '0.85rem', color: getInfoColor()}}>{props.data.info}</span>
               </Tooltip>
           </div>
       </components.Option>
