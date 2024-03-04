@@ -11,17 +11,22 @@ interface UserSettingsModalProps {
   onClose: () => void;
 }
 
+enum Tab {
+  GENERAL_TAB = "General",
+  INSTRUCTIONS_TAB = "Instructions",
+  STORAGE_TAB = "Storage",
+}
+
 const UserSettingsModal: React.FC<UserSettingsModalProps> = ({ isVisible, onClose }) => {
   const { userSettings, setUserSettings } = useContext(UserContext);
-  const [activeTab, setActiveTab] = useState<'General' | 'Storage' | 'Instructions'>('General');
+  const [activeTab, setActiveTab] = useState<Tab>(Tab.GENERAL_TAB);
 
-  // Storage estimation state keeps as potentially undefined
   const [storageUsage, setStorageUsage] = useState<number | undefined>();
   const [storageQuota, setStorageQuota] = useState<number | undefined>();
   const [percentageUsed, setPercentageUsed] = useState<number | undefined>();
 
   const formatBytesToMB = (bytes?: number) => {
-    if (typeof bytes === 'undefined') return; // Return undefined if not available
+    if (typeof bytes === 'undefined') return;
     const megabytes = bytes / 1024 / 1024;
     return `${megabytes.toFixed(2)} MB`;
   };
@@ -46,7 +51,6 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({ isVisible, onClos
     return null;
   }
 
-  // Helper function to optionally render storage info or 'N/A'
   const renderStorageInfo = (value?: number | string) => value ?? 'N/A';
 
   return (
@@ -60,18 +64,18 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({ isVisible, onClos
         </div>
         <div id='user-settings-content' className="flex flex-1">
           <div className="border-r border-gray-200 flex flex-col">
-            <div className={`cursor-pointer p-4 ${activeTab === 'General' ? 'bg-gray-200 dark:bg-gray-700' : ''}`}
-                 onClick={() => setActiveTab('General')}>General
+            <div className={`cursor-pointer p-4 ${activeTab === Tab.GENERAL_TAB ? 'bg-gray-200 dark:bg-gray-700' : ''}`}
+                 onClick={() => setActiveTab(Tab.GENERAL_TAB)}>General
             </div>
-            <div className={`cursor-pointer p-4 ${activeTab === 'Instructions' ? 'bg-gray-200 dark:bg-gray-700' : ''}`}
-                 onClick={() => setActiveTab('Instructions')}>Instructions
+            <div className={`cursor-pointer p-4 ${activeTab === Tab.INSTRUCTIONS_TAB ? 'bg-gray-200 dark:bg-gray-700' : ''}`}
+                 onClick={() => setActiveTab(Tab.INSTRUCTIONS_TAB)}>Instructions
             </div>
-            <div className={`cursor-pointer p-4 ${activeTab === 'Storage' ? 'bg-gray-200 dark:bg-gray-700' : ''}`}
-                 onClick={() => setActiveTab('Storage')}>Storage
+            <div className={`cursor-pointer p-4 ${activeTab === Tab.STORAGE_TAB ? 'bg-gray-200 dark:bg-gray-700' : ''}`}
+                 onClick={() => setActiveTab(Tab.STORAGE_TAB)}>Storage
             </div>
           </div>
           <div className="flex-1 p-4 flex flex-col">
-            <div className={`${activeTab === 'General' ? 'flex flex-col flex-1' : 'hidden'}`}>
+            <div className={`${activeTab ===  Tab.GENERAL_TAB ? 'flex flex-col flex-1' : 'hidden'}`}>
               <div className="border-b border-token-border-light pb-3 last-of-type:border-b-0">
                 <div className="flex items-center justify-between setting-panel">
                   <label htmlFor="theme">Theme</label>
@@ -108,7 +112,7 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({ isVisible, onClos
                 </div>
               </div>
             </div>
-            <div className={`${activeTab === 'Instructions' ? 'flex flex-col flex-1' : 'hidden'}`}>
+            <div className={`${activeTab ===  Tab.INSTRUCTIONS_TAB ? 'flex flex-col flex-1' : 'hidden'}`}>
               <div className="flex flex-col flex-1 border-b border-token-border-light pb-3 last-of-type:border-b-0">
                 <textarea
                   id="instructions"
@@ -123,7 +127,7 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({ isVisible, onClos
                 ></textarea>
             </div>
             </div>
-            <div className={`${activeTab === 'Storage' ? 'flex flex-col flex-1' : 'hidden'}`}>
+            <div className={`${activeTab === Tab.STORAGE_TAB ? 'flex flex-col flex-1' : 'hidden'}`}>
               <h3 className="text-lg mb-4">Storage</h3>
               <p>Chats are stored locally in your browser's IndexedDB.</p>
               <p>Usage: {renderStorageInfo(formatBytesToMB(storageUsage))} of {renderStorageInfo(formatBytesToMB(storageQuota))} ({renderStorageInfo(percentageUsed ? `${percentageUsed.toFixed(2)}%` : undefined)})

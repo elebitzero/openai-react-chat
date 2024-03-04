@@ -63,15 +63,17 @@ const MarkdownBlock: React.FC<ChatBlockProps> = ({markdown, role, loading}) => {
         return isInline ? (
             inlineCodeBlock({value: value, language})
         ) : (
-            <div className="border-black border rounded-md codeBlockContainer dark:bg-gray-850">
+            <div className="border border-gray-200 dark:border-gray-800 rounded-md codeBlockContainer dark:bg-gray-850">
                 <div
-                    className="flex items-center relative text-gray-200 bg-gray-800 px-4 py-2 text-xs font-sans justify-between rounded-t-md">
+                    className="flex items-center relative text-gray-200 bg-gray-800 px-4 py-1.5 text-xs font-sans justify-between rounded-t-md">
                     <span>{language}</span>
                     <CopyButton text={children}/>
                 </div>
                 <div className="overflow-y-auto">
-                    <SyntaxHighlighter language={language}
-                                       style={userSettings.theme === 'dark' ? coldarkDark : oneLight}
+                    <SyntaxHighlighter
+                      language={language}
+                      style={userSettings.theme === 'dark' ? coldarkDark : oneLight}
+                      customStyle={{ margin: '0' }}
                     >
                         {value}
                     </SyntaxHighlighter>
