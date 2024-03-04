@@ -369,6 +369,7 @@ const Sidebar: React.FC<SidebarProps> = ({className, isSidebarCollapsed, toggleS
                     id="searchInput"
                     className="flex-grow rounded-md border dark:text-gray-100 dark:bg-gray-850 dark:border-white/20 px-2 py-1"
                     type="text"
+                    autoComplete="off"
                     placeholder={t('search')}
                     value={searchInputValue}
                     onFocus={() => setShowSearchOptions(true)}
