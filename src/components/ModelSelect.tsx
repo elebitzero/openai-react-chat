@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import Select, {
     ActionMeta,
     components,
@@ -12,11 +12,12 @@ import Select, {
 } from 'react-select';
 import {OpenAIModel} from '../models/model';
 import {ChatService} from '../service/ChatService';
-import {OPENAI_DEFAULT_MODEL} from "../config";
+import {NotificationService} from '../service/NotificationService';
 import {useTranslation} from 'react-i18next';
 import Tooltip from "./Tooltip";
 import {DEFAULT_MODEL} from "../constants/appConstants";
 import './ModelSelect.css'
+import {UserContext} from "../UserContext";
 
 interface ModelSelectProps {
     onModelSelect?: (value: string | null) => void;
@@ -43,6 +44,7 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
                                                      allowNone = false,
                                                      allowNoneLabel = '(None)',
                                                  }) => {
+    const { userSettings, setUserSettings } = useContext(UserContext);
     const { t } = useTranslation();
     const [models, setModels] = useState<OpenAIModel[]>([]);
     const [options, setOptions] = useState<SelectOption[]>([]);
@@ -52,33 +54,34 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
     const SHOW_FEWER_MODELS = t('show-fewer-models');
     const [menuIsOpen, setMenuIsOpen] = useState(false);
 
+    const isDarkMode = () => userSettings.userTheme === 'dark';
+
     const customStyles: StylesConfig<SelectOption, false> = {
-        option: (provided: CSSObjectWithLabel, state: OptionProps<SelectOption, false, GroupBase<SelectOption>>) => ({
+        option: (provided, state) => ({
             ...provided,
-            color: state.data.value === 'more' || state.data.value === 'less' ? 'var(--primary)' : 'black',
-            backgroundColor: state.isSelected
-                ? 'var(--gray-200)'
-                : state.isFocused
-                    ? '#F2F2F2'
-                    : provided.backgroundColor,
+            color: state.isSelected ? 'white' : isDarkMode() ? 'white' : 'black',
+            backgroundColor: isDarkMode() ? (state.isSelected ? '#4A5568' : state.isFocused ? '#2D3748' : '#1A202C') : state.isSelected ? '#edf2f7' : state.isFocused ? '#F2F2F2' : provided.backgroundColor,
             ':active': {
-                ...provided[':active'],
-                backgroundColor: !state.isDisabled
-                    ? (state.isSelected ? 'var(--gray-600)' : '#F2F2F2')
-                    : provided[':active'] ? provided[':active'].backgroundColor : undefined,
+                backgroundColor: isDarkMode() ? (state.isSelected ? '#4A5568' : '#2D3748') : (state.isSelected ? 'var(--gray-200)' : '#F2F2F2'),
             },
         }),
-        control: (provided: CSSObjectWithLabel, state: ControlProps<SelectOption, false, GroupBase<SelectOption>>) => ({
+        control: (provided) => ({
             ...provided,
-            boxShadow: state.isFocused ? '0 0 0 1px var(--gray-600)' : 'none',
-            borderColor: state.isFocused ? 'var(--gray-600)' : 'var(--gray-600)',
+            backgroundColor: isDarkMode() ? '#2D3748' : 'white',
+            color: isDarkMode() ? 'white' : 'black',
+            borderColor: isDarkMode() ? '#4A5568' : '#E2E8F0',
+            boxShadow: isDarkMode() ? '0 0 0 1px #4A5568' : 'none',
+            '&:hover': {
+                borderColor: isDarkMode() ? '#4A5568' : '#CBD5E0',
+            },
         }),
-        singleValue: (provided, state: SingleValueProps<SelectOption>) => ({
+        singleValue: (provided) => ({
             ...provided,
-            color: state.isDisabled ? 'var(--gray-600)' : provided.color,
+            color: isDarkMode() ? 'white' : 'black',
         }),
-        // Add other custom styles if needed for other parts of the select component
+        // continue customizing other parts as needed
     };
+
 
     useEffect(() => {
         if (!models || models.length == 0) {
@@ -88,13 +91,7 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
                   setModels(data);
               })
               .catch(err => {
-                  if (err && err.message) {
-                      // todo: display UI error
-                      console.log(err.message);
-                  } else {
-                      // todo: display UI error
-                      console.log('Error fetching model list');
-                  }
+                  NotificationService.handleUnexpectedError(err,'Failed to get model list.');
               });
         }
     }, []);

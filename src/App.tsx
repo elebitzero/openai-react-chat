@@ -40,7 +40,7 @@ const App = () => {
   return (
     <BrowserRouter>
       <I18nextProvider i18n={i18n}>
-        <div className="App">
+        <div className="App dark:bg-gray-900 dark:text-gray-100">
           <ToastContainer/>
           <div className="flex overflow-hidden w-full h-full relative z-0">
             <Sidebar

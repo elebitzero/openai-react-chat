@@ -9,6 +9,7 @@ import { ChatSettings } from '../models/ChatSettings';
 import { EditableField } from './EditableField';
 import {useTranslation} from 'react-i18next';
 import {UserContext} from "../UserContext";
+import {NotificationService} from "../service/NotificationService";
 
 interface ChatSettingsFormProps {
   chatSettings?: ChatSettings;
@@ -30,22 +31,8 @@ const DUMMY_CHAT_SETTINGS: ChatSettings = {
 
 const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({ chatSettings, readOnly = false }) => {
   const { userSettings, setUserSettings } = useContext(UserContext);
-  const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState<ChatSettings>(chatSettings || DUMMY_CHAT_SETTINGS);
   const {t} = useTranslation();
-
-  useEffect(() => {
-    error && toast.error(error, {
-      position: "top-center",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: ((userSettings.theme && userSettings.theme === 'dark') ? 'dark' : 'light'),
-    });
-  }, [error]);
 
   useEffect(() => {
     setFormData(chatSettings || DUMMY_CHAT_SETTINGS);
@@ -68,18 +55,7 @@ const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({ chatSettings, readO
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-
-    // Providing feedback or further actions here
-    toast.success('Form submitted successfully.', {
-      position: "top-center",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: ((userSettings.theme && userSettings.theme === 'dark') ? 'dark' : 'light'),
-    });
+    NotificationService.handleSuccess('Form submitted successfully.');
   };
 
   return (
@@ -127,7 +103,7 @@ const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({ chatSettings, readO
                     id="instructions"
                     name="instructions"
                     onChange={handleInputChange}
-                    className="resize-y rounded overflow-y-auto h-56 w-full max-h-[60vh] md:max-h-[calc(100vh-300px)] shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    className="resize-y border rounded overflow-y-auto h-56 w-full max-h-[60vh] md:max-h-[calc(100vh-300px)] shadow appearance-none py-2 px-3 text-gray-700 dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 ></textarea>}
           </div>
           <div className="mb-4">

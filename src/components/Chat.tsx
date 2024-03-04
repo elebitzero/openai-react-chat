@@ -3,7 +3,6 @@ import ChatBlock from "./ChatBlock";
 import ModelSelect from "./ModelSelect";
 import {OpenAIModel} from "../models/model";
 import {ChatService} from "../service/ChatService";
-import {toast} from "react-toastify";
 import {ChatMessage} from "../models/ChatCompletion";
 import {useTranslation} from 'react-i18next';
 import Tooltip from "./Tooltip";
@@ -12,6 +11,7 @@ import {OPENAI_DEFAULT_SYSTEM_PROMPT} from "../config";
 import {DEFAULT_INSTRUCTIONS} from "../constants/appConstants";
 import { UserContext } from '../UserContext';
 import {InformationCircleIcon, PaperAirplaneIcon} from "@heroicons/react/24/outline";
+import { NotificationService } from '../service/NotificationService';
 
 interface Props {
     chatBlocks: ChatMessage[];
@@ -28,7 +28,6 @@ const Chat: React.FC<Props> = ({chatBlocks, onChatScroll, allowAutoScroll, model
     const { userSettings, setUserSettings } = useContext(UserContext);
     const { t } = useTranslation();
     const [models, setModels] = useState<OpenAIModel[]>([]);
-    const [error, setError] = useState<string | null>(null);
     const chatDivRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -37,11 +36,7 @@ const Chat: React.FC<Props> = ({chatBlocks, onChatScroll, allowAutoScroll, model
               setModels(models);
           })
           .catch(err => {
-              if (err && err.message) {
-                  setError(err.message);
-              } else {
-                  setError('Error fetching model list');
-              }
+              NotificationService.handleUnexpectedError(err,'Failed to get list of models');
           });
 
     }, []);
@@ -51,19 +46,6 @@ const Chat: React.FC<Props> = ({chatBlocks, onChatScroll, allowAutoScroll, model
             chatDivRef.current.scrollTop = chatDivRef.current.scrollHeight;
         }
     }, [chatBlocks]);
-
-    useEffect(() => {
-        toast.error(error, {
-            position: "top-center",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: ((userSettings.theme && userSettings.theme === 'dark') ? 'dark' : 'light'),
-        });
-    }, [error])
 
     useEffect(() => {
         const chatContainer = chatDivRef.current;

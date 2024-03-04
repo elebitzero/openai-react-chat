@@ -16,6 +16,7 @@ import chatSettingsDB from '../service/ChatSettingsDB';
 import ChatSettingDropdownMenu from "./ChatSettingDropdownMenu";
 import ConversationService, { Conversation } from '../service/ConversationService';
 import { UserContext } from '../UserContext';
+import {NotificationService} from '../service/NotificationService';
 
 export const updateConversationMessages = async (id: number, updatedMessages: any[]) => {
   const conversation = await ConversationService.getConversationById(id);
@@ -110,17 +111,19 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
         newConversation();
       }
     }
-  }, [id, gid, location.pathname]);
 
-
-  useEffect(() => {
     if (gid) {
       const gidNumber = Number(gid);
       if (!isNaN(gidNumber)) {
         fetchAndSetChatSettings(gidNumber);
+      } else {
+        setChatSettings(undefined);
       }
+    } else {
+      setChatSettings(undefined);
     }
-  }, [gid, location.pathname]);
+  }, [gid, id, location.pathname]);
+
 
   const fetchAndSetChatSettings = async (gid: number) => {
     try {
@@ -266,16 +269,7 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
             setLoading(false);
             addMessage(Role.Assistant, MessageType.Error, message);
           } else {
-            toast.error(err.message, {
-              position: "top-center",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: ((userSettings.theme && userSettings.theme === 'dark') ? 'dark' : 'light'),
-            });
+            NotificationService.handleUnexpectedError(err,'Failed to send message to openai.');
           }
         }
       ).finally(() => {

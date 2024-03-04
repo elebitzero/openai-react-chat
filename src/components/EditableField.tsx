@@ -72,7 +72,7 @@ export function EditableField<T>({
       )}
       {!isEditing ? (
         <div className="flex items-center">
-          <span className="text-gray-600 text-sm mr-2">
+          <span className="text-gray-600 dark:text-gray-400 text-sm mr-2">
             {isValueSet() ? toStringRepresentation(effectiveValue) : `${defaultValueLabel} ${t('default-label')}`}
           </span>
           {!readOnly && (

@@ -5,6 +5,7 @@ import {CustomError} from "./CustomError";
 import {CHAT_COMPLETIONS_ENDPOINT, MODELS_ENDPOINT} from "../constants/apiEndpoints";
 import { ChatSettings } from "../models/ChatSettings";
 import {CHAT_STREAM_DEBOUNCE_TIME, DEFAULT_MODEL} from "../constants/appConstants";
+import {NotificationService} from '../service/NotificationService';
 
 interface CompletionChunk {
     id: string;
@@ -117,11 +118,9 @@ export class ChatService {
             });
         } catch (error) {
             if (error instanceof Error && error.name === 'AbortError') {
-                // todo: propagate to ui
-                console.log('Stream reading was aborted');
+                NotificationService.handleUnexpectedError(error,'Stream reading was aborted.');
             } else if (error instanceof Error) {
-                // todo: propagate to ui
-                console.error('Error reading the stream', error.message);
+                NotificationService.handleUnexpectedError(error,'Error reading streamed response.');
             } else {
                 console.error('An unexpected error occurred');
             }
@@ -134,7 +133,7 @@ export class ChatService {
         }
 
         if (this.abortController.signal.aborted) {
-            // todo: propagate to ui
+            // todo: propagate to ui?
             console.log('Stream aborted');
             return; // Early return if the fetch was aborted
         }
@@ -208,11 +207,9 @@ export class ChatService {
                 }
             } catch (error) {
                 if (error instanceof Error && error.name === 'AbortError') {
-                    // todo: propagate to ui
-                    console.log('Stream reading was aborted');
+                    NotificationService.handleUnexpectedError(error,'Stream reading was aborted.');
                 } else if (error instanceof Error) {
-                    // todo: propagate to ui
-                    console.error('Error reading the stream', error.message);
+                    NotificationService.handleUnexpectedError(error,'Error reading streamed response.');
                 } else {
                     console.error('An unexpected error occurred');
                 }
@@ -265,10 +262,7 @@ export class ChatService {
                 }))
                 .sort((a, b) => b.id.localeCompare(a.id));
           });
-
         return this.models;
     };
-
-
 }
 
