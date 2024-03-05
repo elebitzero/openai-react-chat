@@ -5,10 +5,13 @@ import ModelSelect from './ModelSelect';
 import {EditableField} from "./EditableField";
 import './UserSettingsModal.css';
 import {OPENAI_DEFAULT_SYSTEM_PROMPT} from "../config";
+import ConversationService from "../service/ConversationService";
+import {NotificationService} from "../service/NotificationService";
 
 interface UserSettingsModalProps {
   isVisible: boolean;
   onClose: () => void;
+  onDeleteAllConversations: () => void;
 }
 
 enum Tab {
@@ -17,7 +20,7 @@ enum Tab {
   STORAGE_TAB = "Storage",
 }
 
-const UserSettingsModal: React.FC<UserSettingsModalProps> = ({ isVisible, onClose }) => {
+const UserSettingsModal: React.FC<UserSettingsModalProps> = ({ isVisible, onClose, onDeleteAllConversations }) => {
   const { userSettings, setUserSettings } = useContext(UserContext);
   const [activeTab, setActiveTab] = useState<Tab>(Tab.GENERAL_TAB);
 
@@ -29,6 +32,28 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({ isVisible, onClos
     if (typeof bytes === 'undefined') return;
     const megabytes = bytes / 1024 / 1024;
     return `${megabytes.toFixed(2)} MB`;
+  };
+
+  const handleDeleteAllConversations = async () => {
+    // Confirmation dialog to prevent accidental deletion
+    const isConfirmed = window.confirm('Are you sure you want to delete all conversations? This action cannot be undone.');
+
+    if (isConfirmed) {
+      try {
+        await ConversationService.deleteAllConversations();
+        onDeleteAllConversations();
+        NotificationService.handleSuccess("All conversations have been successfully deleted.");
+      } catch (error) {
+        console.error('Failed to delete all conversations:', error);
+        if (error instanceof Error) {
+          NotificationService.handleUnexpectedError(error, "Failed to delete all conversations");
+        } else {
+          // Handle the case where error is not an Error instance
+          // Perhaps log this situation or display a generic message
+          NotificationService.handleUnexpectedError(new Error('An unknown error occurred'), "Failed to delete all conversations");
+        }
+      }
+    }
   };
 
   useEffect(() => {
@@ -132,7 +157,7 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({ isVisible, onClos
               <p>Chats are stored locally in your browser's IndexedDB.</p>
               <p>Usage: {renderStorageInfo(formatBytesToMB(storageUsage))} of {renderStorageInfo(formatBytesToMB(storageQuota))} ({renderStorageInfo(percentageUsed ? `${percentageUsed.toFixed(2)}%` : undefined)})
               </p>
-              <button className="mt-4 py-2 px-4 bg-red-500 text-white rounded hover:bg-red-700">Delete All Chats
+              <button onClick={handleDeleteAllConversations} className="mt-4 py-2 px-4 bg-red-500 text-white rounded hover:bg-red-700">Delete All Chats
               </button>
             </div>
           </div>

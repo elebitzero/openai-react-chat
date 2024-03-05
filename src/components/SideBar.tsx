@@ -42,6 +42,7 @@ const Sidebar: React.FC<SidebarProps> = ({className, isSidebarCollapsed, toggleS
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const [showSearchOptions, setShowSearchOptions] = useState(false);
   const [searchInputValue, setSearchInputValue] = useState("");
+  const [lastUpdate, setLastUpdate] = useState(Date.now());
 
   useEffect(() => {
     const handleSelectedConversation = (id: string | null) => {
@@ -91,6 +92,10 @@ const Sidebar: React.FC<SidebarProps> = ({className, isSidebarCollapsed, toggleS
     const sortedConversations = [...conversations].sort((a, b) => b.timestamp - a.timestamp);  // Sort by timestamp if not already sorted
     setConversationsWithMarkers(insertTimeMarkers(sortedConversations));
   }, [conversations]);
+
+  useEffect(() => {
+    loadConversations();
+  }, [lastUpdate]);
 
   const loadConversations = () => {
     ConversationService.loadRecentConversationsTitleOnly().then(fetchedConversations => {
@@ -311,6 +316,7 @@ const Sidebar: React.FC<SidebarProps> = ({className, isSidebarCollapsed, toggleS
       <UserSettingsModal
         isVisible={isSettingsModalVisible}
         onClose={() => setSettingsModalVisible(false)}
+        onDeleteAllConversations={() => setLastUpdate(Date.now())}
       />
       {/* sidebar is always dark mode*/}
       <div className="sidebar dark duration-500 transition-all h-full flex-shrink-0 overflow-x-hidden bg-gray-900">

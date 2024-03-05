@@ -31,6 +31,9 @@ const db = new ConversationDB();
 const NUM_INITIAL_CONVERSATIONS = 200;
 
 class ConversationService {
+  static async deleteAllConversations(): Promise<void> {
+    await db.conversations.clear();
+  }
   static async getConversationById(id: number): Promise<Conversation | undefined> {
     return db.conversations.get(id);
   }
