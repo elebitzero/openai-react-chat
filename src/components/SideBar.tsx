@@ -365,10 +365,10 @@ const Sidebar: React.FC<SidebarProps> = ({className, isSidebarCollapsed, toggleS
                   <Link to="/chatsettings?readOnly=true" className="m-2 dark:bg-gray-900 dark:text-gray-100 text-gray-900">Chat Settings (Read-Only)</Link>
                   <Link to="/chatsettings?readOnly=false" className="m-2 dark:bg-gray-900 dark:text-gray-100 text-gray-900">Chat Settings (Editable)</Link>
                 </div>*/}
-               {/* <Link to="/explore" className="flex items-center m-2 dark:bg-gray-900 dark:text-gray-100 text-gray-900">
+                <Link to="/explore" className="flex items-center m-2 dark:bg-gray-900 dark:text-gray-100 text-gray-900">
                   <Squares2X2Icon  {...iconProps} className="mt-1 mr-2" />
-                  <span>Explore Custom Chats</span>
-                </Link>*/}
+                  <span>Custom Chats</span>
+                </Link>
                 {/*<ChatShortcuts/>*/}
                 <div className="flex flex-row items-center mb-2 relative">
                   <input

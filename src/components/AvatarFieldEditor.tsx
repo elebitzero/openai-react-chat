@@ -21,10 +21,7 @@ const AvatarFieldEditor: React.FC<AvatarFieldEditorProps> = ({
   const [imageSrc, setImageSrc] = useState<ImageSource>(image);
 
   useEffect(() => {
-    // Only sync the prop with the state if the component is in read-only mode
-    if (readOnly) {
-      setImageSrc(image);
-    }
+    setImageSrc(image);
   }, [image, readOnly]);
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {

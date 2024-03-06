@@ -14,6 +14,7 @@ import {NotificationService} from "../service/NotificationService";
 interface ChatSettingsFormProps {
   chatSettings?: ChatSettings;
   readOnly?: boolean;
+  onChange?: (updatedChatSettings: ChatSettings) => void;
 }
 
 const DUMMY_CHAT_SETTINGS: ChatSettings = {
@@ -29,10 +30,15 @@ const DUMMY_CHAT_SETTINGS: ChatSettings = {
   top_p: null
 };
 
-const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({ chatSettings, readOnly = false }) => {
-  const { userSettings, setUserSettings } = useContext(UserContext);
+const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({ chatSettings, readOnly = false, onChange = undefined }) => {
   const [formData, setFormData] = useState<ChatSettings>(chatSettings || DUMMY_CHAT_SETTINGS);
   const {t} = useTranslation();
+
+  useEffect(() => {
+    if (onChange) {
+      onChange(formData);
+    }
+  }, [formData]);
 
   useEffect(() => {
     setFormData(chatSettings || DUMMY_CHAT_SETTINGS);
@@ -76,6 +82,7 @@ const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({ chatSettings, readO
                     type="text"
                     id="name"
                     name="name"
+                    value={formData.name}
                     required={!readOnly}
                     onChange={handleInputChange}
                     placeholder="Enter name"
@@ -90,6 +97,7 @@ const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({ chatSettings, readO
                 <textarea
                     id="description"
                     name="description"
+                    value={formData.description}
                     onChange={handleInputChange}
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 ></textarea>}
@@ -101,6 +109,7 @@ const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({ chatSettings, readO
             {readOnly ? <p className="text-gray-700 dark:text-gray-300">{formData.instructions || "N/A"}</p> :
                 <textarea
                     id="instructions"
+                    value={formData.instructions}
                     name="instructions"
                     onChange={handleInputChange}
                     className="resize-y border rounded overflow-y-auto h-56 w-full max-h-[60vh] md:max-h-[calc(100vh-300px)] shadow appearance-none py-2 px-3 text-gray-700 dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"

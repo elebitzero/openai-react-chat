@@ -1,0 +1,78 @@
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import ChatSettingsForm from "./ChatSettingsForm";
+import { ChatSettings } from "../models/ChatSettings";
+import chatSettingsDB, { getConversationById } from "../service/ChatSettingsDB";
+import Button from "./Button";
+
+const CustomChatEditor: React.FC = () => {
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const isEditing = Boolean(id);
+  const initialChatSettings: ChatSettings = {
+    id: isEditing ? parseInt(id!) : Date.now(),
+    author: 'user',
+    icon: null,
+    name: '',
+    description: '',
+    instructions: 'You are a helpful assistant.',
+    model: null,
+    seed: null,
+    temperature: null,
+    top_p: null
+  };
+  const [chatSettings, setChatSettings] = useState<ChatSettings>(initialChatSettings);
+
+  useEffect(() => {
+    const fetchChatSettings = async () => {
+      if (isEditing && id) {
+        const existingSettings = await getConversationById(parseInt(id));
+        if (existingSettings) {
+          setChatSettings(existingSettings);
+        }
+      }
+    };
+    fetchChatSettings();
+  }, [id, isEditing]);
+
+  const handleSave = async () => {
+    if (isEditing) {
+      await chatSettingsDB.chatSettings.update(chatSettings.id, chatSettings);
+    } else {
+      await chatSettingsDB.chatSettings.add(chatSettings);
+    }
+    navigate('/explore');
+  };
+
+  const handleCancel = () => {
+    navigate('/explore');
+  };
+
+  const onChange = (updatedChatSettings: ChatSettings) => {
+    setChatSettings(updatedChatSettings);
+  };
+
+  return (
+    <div className="h-full">
+      <ChatSettingsForm chatSettings={chatSettings} onChange={onChange}/>
+      <div className="flex justify-end space-x-4 px-8 mt-4 w-full md:max-w-2xl lg:max-w-3xl xl:max-w-4xl mx-auto">
+        <Button
+          onClick={handleCancel}
+          variant="secondary"
+          className="mr-2"
+        >
+          Cancel
+        </Button>
+        <Button
+          onClick={handleSave}
+          disabled={!chatSettings.name}
+          variant="primary"
+        >
+          {isEditing ? 'Save' : 'Create'}
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+export default CustomChatEditor;

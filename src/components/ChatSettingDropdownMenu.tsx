@@ -1,33 +1,56 @@
 import React, { Fragment, useState } from 'react';
 import { Dialog, Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon, PencilIcon, InformationCircleIcon,
-  PencilSquareIcon, Cog6ToothIcon, XMarkIcon } from '@heroicons/react/24/outline';
+  PencilSquareIcon, Cog6ToothIcon, XMarkIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { useNavigate } from 'react-router-dom';
 import { ChatSettings } from '../models/ChatSettings';
 import ChatSettingsForm from './ChatSettingsForm';
 import {useTranslation} from 'react-i18next';
+import chatSettingsDB from "../service/ChatSettingsDB";
+import ChatSettingsDB from '../service/ChatSettingsDB';
+import {NotificationService} from "../service/NotificationService";
 
 interface ChatSettingDropdownMenuProps {
   chatSetting: ChatSettings | undefined;
+  showTitle?: boolean;
   className?: string;
 }
 
 const ChatSettingDropdownMenu: React.FC<ChatSettingDropdownMenuProps> = ({
                                                                            chatSetting,
+                                                                           showTitle = true,
                                                                            className,
                                                                          }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const navigate = useNavigate();
   const {t} = useTranslation();
 
+
+  const onAbout = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    event.stopPropagation();
+    setIsDialogOpen(true);
+  }
+
+  const onEdit = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    navigate('/custom/editor/'+chatSetting?.id)
+  }
+
+  const onDelete = async (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    if (chatSetting) {
+      await ChatSettingsDB.chatSettings.delete(chatSetting.id);
+      NotificationService.handleSuccess('Custom Chat '+chatSetting.name+' deleted.');
+      navigate('/explore');
+    }
+  }
+
   return (
       <Fragment>
-          <div className={`inline-block relative text-left ${className}`}>
+          <div className={`inline-block relative text-left ${className}`} onClick={(event) => event.stopPropagation()}>
               <Menu as="div">
                   {({ open }) => (
                       <>
                           <Menu.Button className="inline-flex px-3 py-2 text-md font-medium text-gray-700 bg-white dark:text-gray-200 dark:bg-gray-800 rounded-md shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none items-center">
-                              <span>{chatSetting ? chatSetting.name : 'Chat'}</span>
+                              <span>{showTitle && chatSetting ? chatSetting.name : ''}</span>
                               <ChevronDownIcon
                                   className={`${open ? 'transform rotate-180' : ''} w-5 h-5`}
                                   aria-hidden="true"
@@ -62,7 +85,7 @@ const ChatSettingDropdownMenu: React.FC<ChatSettingDropdownMenuProps> = ({
                                       <Menu.Item>
                                           {({ active }) => (
                                               <button
-                                                  onClick={() => setIsDialogOpen(true)}
+                                                  onClick={(event) => onAbout(event)}
                                                   className={`flex items-center w-full text-left px-4 py-2 text-sm ${
                                                       active ? 'bg-gray-100 dark:bg-gray-600 text-gray-900 dark:text-white' : 'text-gray-700 dark:text-gray-300'
                                                   }`}
@@ -78,6 +101,7 @@ const ChatSettingDropdownMenu: React.FC<ChatSettingDropdownMenuProps> = ({
                                       <Menu.Item>
                                           {({ active }) => (
                                               <a
+                                                  onClick={(event) => onEdit(event)}
                                                   className={`flex items-center px-4 py-2 text-sm ${
                                                       chatSetting?.author === 'system'
                                                           ? 'text-gray-400 dark:text-gray-500'
@@ -95,7 +119,7 @@ const ChatSettingDropdownMenu: React.FC<ChatSettingDropdownMenuProps> = ({
                                               </a>
                                           )}
                                       </Menu.Item>
-                                      <Menu.Item>
+                                    {/*  <Menu.Item>
                                           {({ active }) => (
                                               <a
                                                   href="#"
@@ -110,7 +134,29 @@ const ChatSettingDropdownMenu: React.FC<ChatSettingDropdownMenuProps> = ({
                                                   {t('hide-sidebar')}
                                               </a>
                                           )}
-                                      </Menu.Item>
+                                      </Menu.Item>*/}
+                                    <Menu.Item>
+                                      {({ active }) => (
+                                        <a
+                                          onClick={(event) => onDelete(event)}
+                                          href="#"
+                                          className={`flex items-center px-4 py-2 text-sm ${
+                                            chatSetting?.author === 'system'
+                                              ? 'text-gray-400 dark:text-gray-500'
+                                              : active
+                                                ? 'bg-gray-100 dark:bg-gray-600 text-gray-900 dark:text-white'
+                                                : 'text-gray-700 dark:text-gray-300'
+                                          }`}
+                                          aria-disabled={chatSetting?.author === 'system'}
+                                        >
+                                          <TrashIcon
+                                            className="collapse w-4 h-4 mr-3"
+                                            aria-hidden="true"
+                                          />
+                                          {t('menu-delete')}
+                                        </a>
+                                      )}
+                                    </Menu.Item>
                                   </div>
                               </Menu.Items>
                           </Transition>

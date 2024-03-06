@@ -8,6 +8,7 @@ import ChatSettingsForm from './components/ChatSettingsForm';
 import './App.css';
 import {ToastContainer} from "react-toastify";
 import ExploreCustomChats from "./components/ExploreCustomChats";
+import CustomChatEditor from './components/CustomChatEditor';
 
 const App = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -57,6 +58,8 @@ const App = () => {
                 // Use the wrapper for new routes
                 <Route path="/g/:gid" element={<MainPageWithProps />} />
                 <Route path="/g/:gid/c/:id" element={<MainPageWithProps />} />
+                <Route path="/custom/editor" element={<CustomChatEditor/>} />
+                <Route path="/custom/editor/:id" element={<CustomChatEditor/>} />
                 <Route path="*" element={<Navigate to="/" replace/>}/>
               </Routes>
             </div>
