@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react';
 import {XMarkIcon} from "@heroicons/react/24/outline";
 import {Theme, UserContext } from '../UserContext';
 import ModelSelect from './ModelSelect';
@@ -21,12 +21,19 @@ enum Tab {
 }
 
 const UserSettingsModal: React.FC<UserSettingsModalProps> = ({ isVisible, onClose, onDeleteAllConversations }) => {
+  const dialogRef = useRef<HTMLDivElement>(null);
   const { userSettings, setUserSettings } = useContext(UserContext);
   const [activeTab, setActiveTab] = useState<Tab>(Tab.GENERAL_TAB);
 
   const [storageUsage, setStorageUsage] = useState<number | undefined>();
   const [storageQuota, setStorageQuota] = useState<number | undefined>();
   const [percentageUsed, setPercentageUsed] = useState<number | undefined>();
+
+  const closeModalOnOutsideClick = (event: MouseEvent) => { // Step 2: Define the function
+    if (!dialogRef.current?.contains(event.target as Node)) {
+      onClose(); // If click is outside, close the modal
+    }
+  };
 
   const formatBytesToMB = (bytes?: number) => {
     if (typeof bytes === 'undefined') return;
@@ -57,6 +64,19 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({ isVisible, onClos
   };
 
   useEffect(() => {
+    const closeModalOnOutsideClick = (event: MouseEvent) => {
+      if (dialogRef.current && !dialogRef.current.contains(event.target as Node)) {
+        onClose();
+      }
+    };
+
+    document.addEventListener('mousedown', closeModalOnOutsideClick);
+    return () => {
+      document.removeEventListener('mousedown', closeModalOnOutsideClick);
+    };
+  }, [onClose]);
+
+  useEffect(() => {
     if ('storage' in navigator && 'estimate' in navigator.storage) {
       navigator.storage.estimate().then(({usage, quota}) => {
         setStorageUsage(usage);
@@ -80,7 +100,7 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({ isVisible, onClos
 
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 px-4">
-      <div className="flex flex-col bg-white dark:bg-gray-850 rounded-lg w-full max-w-md mx-auto overflow-hidden" style={{minHeight:"640px", minWidth:"43em"}}>
+      <div ref={dialogRef} className="flex flex-col bg-white dark:bg-gray-850 rounded-lg w-full max-w-md mx-auto overflow-hidden" style={{minHeight:"640px", minWidth:"43em"}}>
         <div id='user-settings-header' className="flex justify-between items-center border-b border-gray-200 p-4">
           <h1 className="text-lg font-semibold">Settings</h1>
           <button onClick={onClose} className="text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100">
