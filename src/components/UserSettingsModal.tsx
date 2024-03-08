@@ -127,7 +127,7 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({ isVisible, onClos
                 <div className="flex items-center justify-between setting-panel">
                   <label htmlFor="theme">Theme</label>
                   <select id='theme' name='theme'
-                          className="border-gray-300 border rounded p-2 dark:bg-gray-800 dark:text-white dark:border-gray-600"
+                          className="custom-select dark:custom-select border-gray-300 border rounded p-2 dark:bg-gray-800 dark:text-white dark:border-gray-600"
                           value={userSettings.userTheme}
                           onChange={(e) => {
                             setUserSettings({...userSettings, userTheme: e.target.value as Theme});
