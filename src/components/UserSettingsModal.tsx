@@ -7,6 +7,7 @@ import './UserSettingsModal.css';
 import {OPENAI_DEFAULT_SYSTEM_PROMPT} from "../config";
 import ConversationService from "../service/ConversationService";
 import {NotificationService} from "../service/NotificationService";
+import {useTranslation} from 'react-i18next';
 
 interface UserSettingsModalProps {
   isVisible: boolean;
@@ -28,6 +29,7 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({ isVisible, onClos
   const [storageUsage, setStorageUsage] = useState<number | undefined>();
   const [storageQuota, setStorageQuota] = useState<number | undefined>();
   const [percentageUsed, setPercentageUsed] = useState<number | undefined>();
+  const {t} = useTranslation();
 
   const closeModalOnOutsideClick = (event: MouseEvent) => { // Step 2: Define the function
     if (!dialogRef.current?.contains(event.target as Node)) {
@@ -96,7 +98,7 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({ isVisible, onClos
     return null;
   }
 
-  const renderStorageInfo = (value?: number | string) => value ?? 'N/A';
+  const renderStorageInfo = (value?: number | string) => value ?? t('non-applicable');
 
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 px-4">

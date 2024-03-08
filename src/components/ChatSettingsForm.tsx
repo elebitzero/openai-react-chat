@@ -77,7 +77,7 @@ const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({ chatSettings, readO
             <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="name">
               {t('name-header')} {readOnly ? '' : '*'}
             </label>
-            {readOnly ? <p className="text-gray-700 dark:text-gray-300">{formData.name || "N/A"}</p> :
+            {readOnly ? <p className="text-gray-700 dark:text-gray-300">{formData.name || t('non-applicable')}</p> :
                 <input
                     type="text"
                     id="name"
@@ -93,7 +93,7 @@ const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({ chatSettings, readO
             <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="description">
               {t('description-header')}
             </label>
-            {readOnly ? <p className="text-gray-700 dark:text-gray-300">{formData.description || "N/A"}</p> :
+            {readOnly ? <p className="text-gray-700 dark:text-gray-300">{formData.description || t('non-applicable')}</p> :
                 <textarea
                     id="description"
                     name="description"
@@ -106,7 +106,7 @@ const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({ chatSettings, readO
             <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="instructions">
               {t('instructions-header')}
             </label>
-            {readOnly ? <p className="text-gray-700 dark:text-gray-300">{formData.instructions || "N/A"}</p> :
+            {readOnly ? <p className="text-gray-700 dark:text-gray-300">{formData.instructions || t('non-applicable')}</p> :
                 <textarea
                     id="instructions"
                     value={formData.instructions}
@@ -137,7 +137,7 @@ const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({ chatSettings, readO
             <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="seed">
               {t('seed-header')}
             </label>
-            {readOnly ? <p className="text-gray-700 dark:text-gray-300">{formData.seed || "N/A"}</p> :
+            {readOnly ? <p className="text-gray-700 dark:text-gray-300">{formData.seed || t('non-applicable')}</p> :
                 <input
                     type="number"
                     id="seed"
