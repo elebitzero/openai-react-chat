@@ -41,27 +41,29 @@ const AvatarFieldEditor: React.FC<AvatarFieldEditorProps> = ({
           img.src = result;
           img.onload = () => {
             const canvas = document.createElement('canvas');
-            let width = img.width;
-            let height = img.height;
+            canvas.width = size;
+            canvas.height = size;
 
-            if (width > height) {
-              if (width > size) {
-                height *= size / width;
-                width = size;
-              }
-            } else {
-              if (height > size) {
-                width *= size / height;
-                height = size;
-              }
-            }
+            const scale = Math.min(img.width / size, img.height / size);
+            const scaledWidth = img.width / scale;
+            const scaledHeight = img.height / scale;
+            const xOffset = (scaledWidth - size) / 2;
+            const yOffset = (scaledHeight - size) / 2;
 
-            canvas.width = width;
-            canvas.height = height;
             const ctx = canvas.getContext('2d');
             if (ctx) {
-              ctx.drawImage(img, 0, 0, width, height);
+              // Assuming img.width or img.height could be larger, find the smaller dimension
+              const minDimension = Math.min(img.width, img.height);
+
+              // Calculate the top left x,y position to start cropping to keep the crop centered
+              const sx = (img.width - minDimension) / 2;
+              const sy = (img.height - minDimension) / 2;
+
+              // Draw the cropped and resized version of the image on the canvas
+              // Here the source crop (sx, sy, minDimension, minDimension) is drawn onto the canvas at full size (size, size)
+              ctx.drawImage(img, sx, sy, minDimension, minDimension, 0, 0, size, size);
             }
+
             const resizedImgDataURL = canvas.toDataURL('image/png');
             setImageSrc({ data: resizedImgDataURL, type: 'raster' });
             onImageChange({ data: resizedImgDataURL, type: 'raster' });
