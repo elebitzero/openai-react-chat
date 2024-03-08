@@ -185,6 +185,10 @@ const ChatSettingDropdownMenu: React.FC<ChatSettingDropdownMenuProps> = ({
                       <div
                           className="flex min-h-full items-start justify-center p-4 text-center"
                           style={{ marginTop: '5vh' }}
+                          onClick={(event) => {
+                            // This prevents the backdrop click from propagating.
+                            event.stopPropagation();
+                          }}
                       >
                           <Transition.Child
                               as={Fragment}
@@ -195,7 +199,7 @@ const ChatSettingDropdownMenu: React.FC<ChatSettingDropdownMenuProps> = ({
                               leaveFrom="opacity-100 scale-100"
                               leaveTo="opacity-0 scale-95"
                           >
-                              <Dialog.Panel className="w-full max-w-2xl overflow-hidden rounded-2xl bg-white dark:bg-gray-800 p-6 text-left align-middle shadow-xl transition-all">
+                              <Dialog.Panel className="relative w-full max-w-2xl overflow-hidden rounded-2xl bg-white dark:bg-gray-800 p-6 text-left align-middle shadow-xl transition-all">
                                   <div className="absolute top-4 right-4">
                                       <button
                                           type="button"
