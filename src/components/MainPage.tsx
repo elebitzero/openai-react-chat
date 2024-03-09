@@ -17,6 +17,7 @@ import ChatSettingDropdownMenu from "./ChatSettingDropdownMenu";
 import ConversationService, { Conversation } from '../service/ConversationService';
 import { UserContext } from '../UserContext';
 import {NotificationService} from '../service/NotificationService';
+import CustomChatSplash from './CustomChatSplash';
 
 export const updateConversationMessages = async (id: number, updatedMessages: any[]) => {
   const conversation = await ConversationService.getConversationById(id);
@@ -350,6 +351,9 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
             </div>
           ) : null
           }
+          {!conversation && chatSettings ? (
+            <CustomChatSplash className=" -translate-y-[10%] " chatSettings={chatSettings}/>
+          ) : null}
           <Chat chatBlocks={messages} onChatScroll={handleUserScroll} conversation={conversation} model={model}
                 onModelChange={handleModelChange} allowAutoScroll={allowAutoScroll} loading={loading}/>
           {/*</div>*/}

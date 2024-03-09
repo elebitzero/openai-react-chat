@@ -7,7 +7,7 @@ export interface ImageSource {
 
 interface AvatarFieldEditorProps {
   image: ImageSource;
-  onImageChange: (newImage: ImageSource) => void;
+  onImageChange?: (newImage: ImageSource) => void;
   readOnly?: boolean;
   size?: number;
 }
@@ -35,7 +35,9 @@ const AvatarFieldEditor: React.FC<AvatarFieldEditorProps> = ({
         const result = e.target!.result as string;
         if (file.type.startsWith('image/svg+xml')) {
           setImageSrc({ data: result, type: 'svg' });
-          onImageChange({ data: result, type: 'svg' });
+          if (onImageChange) {
+            onImageChange({data: result, type: 'svg'});
+          }
         } else if (file.type.startsWith('image/')) {
           const img = new Image();
           img.src = result;
@@ -66,7 +68,9 @@ const AvatarFieldEditor: React.FC<AvatarFieldEditorProps> = ({
 
             const resizedImgDataURL = canvas.toDataURL('image/png');
             setImageSrc({ data: resizedImgDataURL, type: 'raster' });
-            onImageChange({ data: resizedImgDataURL, type: 'raster' });
+            if (onImageChange) {
+              onImageChange({data: resizedImgDataURL, type: 'raster'});
+            }
           };
         }
       };
