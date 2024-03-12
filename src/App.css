@@ -67,11 +67,10 @@ textarea:focus-visible {
     appearance: none;
     background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="20" height="20"%3E%3Cpath d="M5 7l5 5 5-5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/%3E%3C/svg%3E');
     background-repeat: no-repeat;
-    background-position: right 0.5rem center; /* Adjust as necessary */
-    background-size: 1.25em 1.25em; /* Size of your custom chevron */
-    border: 1px solid currentColor; /* Customize as needed */
-    padding-right: 2rem; /* Ensure padding for the icon */
-    /* Other styles here */
+    background-position: right 0.5rem center;
+    background-size: 1.25em 1.25em;
+    border: 1px solid currentColor;
+    padding-right: 2rem;
 }
 .dark .dark\:custom-select {
     background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="20" height="20"%3E%3Cpath d="M5 7l5 5 5-5" stroke="%23cbd5e1" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/%3E%3C/svg%3E');
