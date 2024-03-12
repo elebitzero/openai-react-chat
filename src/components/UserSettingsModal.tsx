@@ -72,9 +72,18 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({ isVisible, onClos
       }
     };
 
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onClose();
+      }
+    };
+
     document.addEventListener('mousedown', closeModalOnOutsideClick);
+    document.addEventListener('keydown', closeOnEscape);
+
     return () => {
       document.removeEventListener('mousedown', closeModalOnOutsideClick);
+      document.removeEventListener('keydown', closeOnEscape);
     };
   }, [onClose]);
 
