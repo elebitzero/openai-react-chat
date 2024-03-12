@@ -2,24 +2,26 @@ import React, { Fragment, useState } from 'react';
 import { Dialog, Menu, Transition } from '@headlessui/react';
 import {
   ChevronDownIcon, PencilIcon, InformationCircleIcon,
-  PencilSquareIcon, Cog6ToothIcon, XMarkIcon, TrashIcon, EyeIcon, EyeSlashIcon
+  PencilSquareIcon, Cog6ToothIcon, XMarkIcon, TrashIcon, EyeIcon, EyeSlashIcon, DocumentDuplicateIcon
 } from '@heroicons/react/24/outline';
 import { useNavigate } from 'react-router-dom';
 import { ChatSettings } from '../models/ChatSettings';
 import ChatSettingsForm from './ChatSettingsForm';
 import {useTranslation} from 'react-i18next';
-import ChatSettingsDB, {updateShowInSidebar} from '../service/ChatSettingsDB';
+import ChatSettingsDB, {deleteChatSetting, updateShowInSidebar} from '../service/ChatSettingsDB';
 import {NotificationService} from "../service/NotificationService";
 
 interface ChatSettingDropdownMenuProps {
   chatSetting: ChatSettings | undefined;
   showTitle?: boolean;
+  showDelete?: boolean;
   className?: string;
 }
 
 const ChatSettingDropdownMenu: React.FC<ChatSettingDropdownMenuProps> = ({
                                                                            chatSetting,
                                                                            showTitle = true,
+                                                                           showDelete = false,
                                                                            className,
                                                                          }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -36,11 +38,19 @@ const ChatSettingDropdownMenu: React.FC<ChatSettingDropdownMenuProps> = ({
     navigate('/custom/editor/'+chatSetting?.id)
   }
 
+  const onDuplicate = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    event.preventDefault();
+    if (chatSetting) {
+      const newChatSetting = { ...chatSetting, id: 0, name: chatSetting.name+' (Copy)' };
+      navigate('/custom/editor/', { state: { initialChatSetting: newChatSetting } });
+    }
+  }
+
+
   const onDelete = async (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
     if (chatSetting) {
-      await ChatSettingsDB.chatSettings.delete(chatSetting.id);
+      deleteChatSetting(chatSetting.id);
       NotificationService.handleSuccess('Custom Chat '+chatSetting.name+' deleted.');
-      navigate('/explore');
     }
   }
 
@@ -133,6 +143,24 @@ const ChatSettingDropdownMenu: React.FC<ChatSettingDropdownMenuProps> = ({
                                               </a>
                                           )}
                                       </Menu.Item>
+                                    <Menu.Item>
+                                      {({ active }) => (
+                                        <a
+                                          onClick={(event) => onDuplicate(event)}
+                                          className={`flex items-center px-4 py-2 text-sm ${
+                                               active
+                                                ? 'bg-gray-100 dark:bg-gray-600 text-gray-900 dark:text-white'
+                                                : 'text-gray-700 dark:text-gray-300'
+                                          }`}
+                                        >
+                                          <DocumentDuplicateIcon
+                                            className="w-4 h-4 mr-3"
+                                            aria-hidden="true"
+                                          />
+                                          {t('menu-duplicate')}
+                                        </a>
+                                      )}
+                                    </Menu.Item>
                                       <Menu.Item>
                                         {({ active }) => (
                                           <a
@@ -149,28 +177,30 @@ const ChatSettingDropdownMenu: React.FC<ChatSettingDropdownMenuProps> = ({
                                           </a>
                                         )}
                                       </Menu.Item>
-                                    <Menu.Item>
-                                      {({ active }) => (
-                                        <a
-                                          onClick={(event) => onDelete(event)}
-                                          href="#"
-                                          className={`flex items-center px-4 py-2 text-sm ${
-                                            chatSetting?.author === 'system'
-                                              ? 'text-gray-400 dark:text-gray-500'
-                                              : active
-                                                ? 'bg-gray-100 dark:bg-gray-600 text-gray-900 dark:text-white'
-                                                : 'text-gray-700 dark:text-gray-300'
-                                          }`}
-                                          aria-disabled={chatSetting?.author === 'system'}
-                                        >
-                                          <TrashIcon
-                                            className="w-4 h-4 mr-3"
-                                            aria-hidden="true"
-                                          />
-                                          {t('menu-delete')}
-                                        </a>
+                                      {showDelete && (
+                                        <Menu.Item>
+                                          {({ active }) => (
+                                            <a
+                                              onClick={(event) => onDelete(event)}
+                                              href="#"
+                                              className={`flex items-center px-4 py-2 text-sm ${
+                                                chatSetting?.author === 'system'
+                                                  ? 'text-gray-400 dark:text-gray-500'
+                                                  : active
+                                                    ? 'bg-gray-100 dark:bg-gray-600 text-gray-900 dark:text-white'
+                                                    : 'text-gray-700 dark:text-gray-300'
+                                              }`}
+                                              aria-disabled={chatSetting?.author === 'system'}
+                                            >
+                                              <TrashIcon
+                                                className="w-4 h-4 mr-3"
+                                                aria-hidden="true"
+                                              />
+                                              {t('menu-delete')}
+                                            </a>
+                                          )}
+                                        </Menu.Item>
                                       )}
-                                    </Menu.Item>
                                   </div>
                               </Menu.Items>
                           </Transition>

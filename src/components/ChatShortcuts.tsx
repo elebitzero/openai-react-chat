@@ -1,8 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Link} from 'react-router-dom';
-import chatSettingsDB from '../service/ChatSettingsDB';
+import chatSettingsDB, { chatSettingsEmitter } from '../service/ChatSettingsDB';
 import {ChatSettings} from '../models/ChatSettings';
-import {chatSettingsEmitter} from '../service/EventEmitter';
 
 const ChatShortcuts: React.FC = () => {
   const [chatSettings, setChatSettings] = useState<ChatSettings[]>([]);

@@ -82,7 +82,6 @@ const Sidebar: React.FC<SidebarProps> = ({className, isSidebarCollapsed, toggleS
 
     conversationsEmitter.on('newConversation', handleNewConversation);
 
-    // Cleanup: remove the event listener when the component unmounts
     return () => {
       conversationsEmitter.off('newConversation', handleNewConversation);
     };

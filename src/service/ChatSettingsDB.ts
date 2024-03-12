@@ -1,7 +1,14 @@
 import Dexie from 'dexie';
 import { ChatSettings } from '../models/ChatSettings';
 import initialData from './chatSettingsData.json';
-import {chatSettingsEmitter} from "./EventEmitter";
+import {EventEmitter} from "./EventEmitter";
+
+export interface ChatSettingsChangeEvent {
+  action: 'edit' | 'delete',
+  gid: number
+}
+
+export const chatSettingsEmitter = new EventEmitter<ChatSettingsChangeEvent>();
 
 class ChatSettingsDB extends Dexie {
   chatSettings: Dexie.Table<ChatSettings, number>;
@@ -41,13 +48,22 @@ export async function getChatSettingsById(id: number): Promise<ChatSettings | un
 export async function updateShowInSidebar(id: number, showInSidebar: number) {
   try {
     await chatSettingsDB.chatSettings.update(id, { showInSidebar });
-    chatSettingsEmitter.emit('chatSettingsChanged',{gid: id});
+    let event: ChatSettingsChangeEvent = {action: 'edit', gid: id};
+    chatSettingsEmitter.emit('chatSettingsChanged',event);
   } catch (error) {
     console.error('Failed to update:', error);
   }
 }
 
-
+export async function deleteChatSetting(id: number) {
+  try {
+    await chatSettingsDB.chatSettings.delete(id);
+    let event: ChatSettingsChangeEvent = {action: 'delete', gid: id};
+    chatSettingsEmitter.emit('chatSettingsChanged',event);
+  } catch (error) {
+    console.error('Failed to update:', error);
+  }
+}
 
 const chatSettingsDB = new ChatSettingsDB();
 

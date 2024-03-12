@@ -5,13 +5,13 @@ import {ChatCompletion, ChatMessage, MessageType, Role} from "../models/ChatComp
 import {ScrollToBottomButton} from "./ScrollToBottomButton";
 import {OPENAI_DEFAULT_SYSTEM_PROMPT} from "../config";
 import {CustomError} from "../service/CustomError";
-import {chatSettingsEmitter, conversationsEmitter} from "../service/EventEmitter";
+import {conversationsEmitter} from "../service/EventEmitter";
 import {useLocation, useNavigate, useParams} from "react-router-dom";
 import {useTranslation} from 'react-i18next';
 import MessageBox, {MessageBoxHandles} from "./MessageBox";
 import {DEFAULT_INSTRUCTIONS, MAX_TITLE_LENGTH} from "../constants/appConstants";
 import {ChatSettings} from '../models/ChatSettings';
-import chatSettingsDB, {updateShowInSidebar} from '../service/ChatSettingsDB';
+import chatSettingsDB, {chatSettingsEmitter, updateShowInSidebar} from '../service/ChatSettingsDB';
 import ChatSettingDropdownMenu from "./ChatSettingDropdownMenu";
 import ConversationService, { Conversation } from '../service/ConversationService';
 import { UserContext } from '../UserContext';

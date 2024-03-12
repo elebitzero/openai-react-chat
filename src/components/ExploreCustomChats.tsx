@@ -2,10 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import ChatSettingsList from './ChatSettingsList';
-import chatSettingsDB from '../service/ChatSettingsDB';
+import chatSettingsDB, { ChatSettingsChangeEvent, chatSettingsEmitter } from '../service/ChatSettingsDB';
 import { ChatSettings } from '../models/ChatSettings';
 import { useTranslation } from 'react-i18next';
-import { chatSettingsEmitter } from '../service/EventEmitter';
 
 const ExploreCustomChats: React.FC = () => {
   const [exampleChats, setExampleChats] = useState<ChatSettings[]>([]);
@@ -13,16 +12,25 @@ const ExploreCustomChats: React.FC = () => {
   const navigate = useNavigate();
   const {t} = useTranslation();
 
-  const fetchChatSettings = async (gid?: number) => {
-    if (gid) {
-      const updatedChat = await chatSettingsDB.chatSettings.get(gid);
-      if (updatedChat) {
-        setExampleChats(prevChats =>
-          prevChats.map(chat => chat.id === gid ? updatedChat : chat).filter(chat => chat.author === 'system')
-        );
-        setMyChats(prevChats =>
-          prevChats.map(chat => chat.id === gid ? updatedChat : chat).filter(chat => chat.author === 'user')
-        );
+  const fetchChatSettings = async (event?: ChatSettingsChangeEvent) => {
+    if (event) {
+      const gid = event.gid;
+      if (event.action === 'edit') {
+        const updatedChat = await chatSettingsDB.chatSettings.get(gid);
+        if (updatedChat) {
+          if (updatedChat.author === 'system') {
+            setExampleChats(prevChats =>
+              prevChats.map(chat => chat.id === gid ? updatedChat : chat)
+            );
+          } else if (updatedChat.author === 'user') {
+            setMyChats(prevChats =>
+              prevChats.map(chat => chat.id === gid ? updatedChat : chat)
+            );
+          }
+        }
+      } else if (event.action === 'delete') {
+        setExampleChats(prevChats => prevChats.filter(chat => chat.id !== gid));
+        setMyChats(prevChats => prevChats.filter(chat => chat.id !== gid));
       }
     } else {
       const allChatSettings = await chatSettingsDB.chatSettings.orderBy('name').toArray();
@@ -34,9 +42,9 @@ const ExploreCustomChats: React.FC = () => {
   useEffect(() => {
     fetchChatSettings();
 
-    const listener = (data: { gid?: number }) => {
-      if (data && typeof data === 'object') {
-        fetchChatSettings(data.gid);
+    const listener = (event: ChatSettingsChangeEvent) => {
+      if (event?.gid) {
+        fetchChatSettings(event);
       } else {
         fetchChatSettings();
       }

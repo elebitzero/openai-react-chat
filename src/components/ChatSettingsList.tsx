@@ -24,7 +24,7 @@ const ChatSettingsList: React.FC<ChatSettingsListProps> = ({ chatSettings }) => 
           className="flex items-center gap-4 cursor-pointer p-3 bg-gray-100 hover:bg-gray-200 rounded-lg dark:bg-gray-700 dark:hover:bg-gray-600 relative"
         >
           <div className="bg-transparent absolute top-0 right-0" >
-              <ChatSettingDropdownMenu chatSetting={setting} showTitle={false} className="bg-transparent"/>
+              <ChatSettingDropdownMenu chatSetting={setting} showTitle={false} showDelete={true} className="bg-transparent"/>
           </div>
           <div className="h-12 w-12 flex-shrink-0">
             <div className="bg-white overflow-hidden rounded-full">

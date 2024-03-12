@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import ChatSettingsForm from "./ChatSettingsForm";
 import { ChatSettings } from "../models/ChatSettings";
 import chatSettingsDB, {getChatSettingsById} from "../service/ChatSettingsDB";
@@ -7,6 +7,7 @@ import Button from "./Button";
 
 const CustomChatEditor: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { id } = useParams();
   const isEditing = Boolean(id);
   const initialChatSettings: ChatSettings = {
@@ -24,17 +25,21 @@ const CustomChatEditor: React.FC = () => {
   const [chatSettings, setChatSettings] = useState<ChatSettings>(initialChatSettings);
 
   useEffect(() => {
-    const fetchChatSettings = async () => {
-      if (isEditing && id) {
+    const stateChatSetting = location.state?.initialChatSetting as ChatSettings | undefined;
+    if (stateChatSetting) {
+      setChatSettings(stateChatSetting);
+    } else if (isEditing && id) {
+      const fetchChatSettings = async () => {
         const existingSettings = await getChatSettingsById(parseInt(id));
         if (existingSettings) {
           setChatSettings(existingSettings);
         }
-      }
-    };
-    fetchChatSettings();
-  }, [id, isEditing]);
-
+      };
+      fetchChatSettings();
+    } else {
+      setChatSettings(initialChatSettings);
+    }
+  }, [id, isEditing, location.state, initialChatSettings]);
   const handleSave = async () => {
     if (isEditing) {
       await chatSettingsDB.chatSettings.update(chatSettings.id, chatSettings);
