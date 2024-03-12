@@ -17,6 +17,7 @@ import {useTranslation} from 'react-i18next';
 import Tooltip from "./Tooltip";
 import UserSettingsModal from './UserSettingsModal';
 import ConversationService, { Conversation } from "../service/ConversationService";
+import ChatShortcuts from './ChatShortcuts';
 
 interface SidebarProps {
   className: string;
@@ -360,16 +361,11 @@ const Sidebar: React.FC<SidebarProps> = ({className, isSidebarCollapsed, toggleS
                     </a>
                   </Tooltip>
                 </div>
-                {/*TODO: Chat Settings WIP*/}
-         {/*        <div className="flex flex-col dark:bg-gray-700 bg-white p-1">  Example background colors for contrast
-                  <Link to="/chatsettings?readOnly=true" className="m-2 dark:bg-gray-900 dark:text-gray-100 text-gray-900">Chat Settings (Read-Only)</Link>
-                  <Link to="/chatsettings?readOnly=false" className="m-2 dark:bg-gray-900 dark:text-gray-100 text-gray-900">Chat Settings (Editable)</Link>
-                </div>*/}
                 <Link to="/explore" className="flex items-center m-2 dark:bg-gray-900 dark:text-gray-100 text-gray-900">
                   <Squares2X2Icon  {...iconProps} className="mt-1 mr-2" />
                   <span>Custom Chats</span>
                 </Link>
-                {/*<ChatShortcuts/>*/}
+                <ChatShortcuts/>
                 <div className="flex flex-row items-center mb-2 relative">
                   <input
                     id="searchInput"

@@ -4,15 +4,14 @@ import Chat from "./Chat";
 import {ChatCompletion, ChatMessage, MessageType, Role} from "../models/ChatCompletion";
 import {ScrollToBottomButton} from "./ScrollToBottomButton";
 import {OPENAI_DEFAULT_SYSTEM_PROMPT} from "../config";
-import {toast} from "react-toastify";
 import {CustomError} from "../service/CustomError";
-import {conversationsEmitter} from "../service/EventEmitter";
+import {chatSettingsEmitter, conversationsEmitter} from "../service/EventEmitter";
 import {useLocation, useNavigate, useParams} from "react-router-dom";
 import {useTranslation} from 'react-i18next';
 import MessageBox, {MessageBoxHandles} from "./MessageBox";
 import {DEFAULT_INSTRUCTIONS, MAX_TITLE_LENGTH} from "../constants/appConstants";
 import {ChatSettings} from '../models/ChatSettings';
-import chatSettingsDB from '../service/ChatSettingsDB';
+import chatSettingsDB, {updateShowInSidebar} from '../service/ChatSettingsDB';
 import ChatSettingDropdownMenu from "./ChatSettingDropdownMenu";
 import ConversationService, { Conversation } from '../service/ConversationService';
 import { UserContext } from '../UserContext';
@@ -60,47 +59,20 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
   const [showScrollButton, setShowScrollButton] = useState(false);
   const [allowAutoScroll, setAllowAutoScroll] = useState(true);
   const messageBoxRef = useRef<MessageBoxHandles>(null);
+  const chatSettingsRef = useRef(chatSettings);
 
-  const newConversation = () => {
-    setConversation(null);
-    setShowScrollButton(false);
-    clearTextArea();
-    setMessages([]);
-    messageBoxRef.current?.focusTextarea();
-  }
-  const handleSelectedConversation = (id: string | null) => {
-    if (id && id.length > 0) {
-      let n = Number(id);
-      ConversationService.getConversationById(n)
-        .then(conversation => {
-        if (conversation) {
-          setConversation(conversation);
-          const messages: ChatMessage[] = JSON.parse(conversation.messages);
-          if (messages.length == 0) {
-            // Race condition: the navigate to /c/id and the updating of the messages state
-            // are happening at the same time.
-            console.warn('possible state problem');
-          } else {
-            setMessages(messages);
-          }
-          clearTextArea();
-        } else {
-          console.error("Conversation not found.");
-        }
-      });
-    } else {
-      newConversation();
-    }
-    setAllowAutoScroll(true);
-    setShowScrollButton(false)
-    messageBoxRef.current?.focusTextarea();
-  }
+  useEffect(() => {
+    chatSettingsRef.current = chatSettings;
+  }, [chatSettings]);
+
+  useEffect(() => {
+    chatSettingsEmitter.on('chatSettingsChanged', chatSettingsListener);
+    return () => {
+      chatSettingsEmitter.off('chatSettingsChanged', chatSettingsListener);
+    };
+  }, []);
 
   const location = useLocation();
-
-  const handleModelChange = (value: string | null) => {
-    setModel(value);
-  };
 
   useEffect(() => {
     if (location.pathname === '/') {
@@ -124,16 +96,6 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
       setChatSettings(undefined);
     }
   }, [gid, id, location.pathname]);
-
-
-  const fetchAndSetChatSettings = async (gid: number) => {
-    try {
-      const settings = await chatSettingsDB.chatSettings.get(gid);
-      setChatSettings(settings);
-    } catch (error) {
-      console.error('Failed to fetch chat settings:', error);
-    }
-  };
 
   useEffect(() => {
     if (messages.length === 0) {
@@ -169,6 +131,64 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
     }
   }, [userSettings]);
 
+  const chatSettingsListener = (data: { gid?: number }) => {
+    const currentChatSettings = chatSettingsRef.current;
+    if (data && typeof data === 'object') {
+      if (currentChatSettings && currentChatSettings.id === data.gid) {
+        fetchAndSetChatSettings(data.gid);
+      }
+    } else {
+      if (currentChatSettings) {
+        fetchAndSetChatSettings(currentChatSettings.id);
+      }
+    }
+  };
+
+  const fetchAndSetChatSettings = async (gid: number) => {
+    try {
+      const settings = await chatSettingsDB.chatSettings.get(gid);
+      setChatSettings(settings);
+    } catch (error) {
+      console.error('Failed to fetch chat settings:', error);
+    }
+  };
+
+  const newConversation = () => {
+    setConversation(null);
+    setShowScrollButton(false);
+    clearTextArea();
+    setMessages([]);
+    messageBoxRef.current?.focusTextarea();
+  }
+  const handleSelectedConversation = (id: string | null) => {
+    if (id && id.length > 0) {
+      let n = Number(id);
+      ConversationService.getConversationById(n)
+        .then(conversation => {
+          if (conversation) {
+            setConversation(conversation);
+            const messages: ChatMessage[] = JSON.parse(conversation.messages);
+            if (messages.length == 0) {
+              // Race condition: the navigate to /c/id and the updating of the messages state
+              // are happening at the same time.
+              console.warn('possible state problem');
+            } else {
+              setMessages(messages);
+            }
+            clearTextArea();
+          } else {
+            console.error("Conversation not found.");
+          }
+        });
+    } else {
+      newConversation();
+    }
+    setAllowAutoScroll(true);
+    setShowScrollButton(false)
+    messageBoxRef.current?.focusTextarea();
+  }
+
+
   function getTitle(message: string): string {
     let title = message.trimStart(); // Remove leading newlines
     let firstNewLineIndex = title.indexOf('\n');
@@ -179,7 +199,6 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
   }
 
   function startConversation(message: string) {
-    // todo: use AI to generate title from the user message
     const id = Date.now();
     const timestamp = Date.now();
     let shortenedText = getTitle(message);
@@ -198,11 +217,15 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
     conversationsEmitter.emit('newConversation', conversation);
     if (gid) {
       navigate(`/g/${gid}/c/${conversation.id}`);
+      updateShowInSidebar(Number(gid),1);
     } else {
       navigate(`/c/${conversation.id}`);
     }
   }
 
+  const handleModelChange = (value: string | null) => {
+    setModel(value);
+  };
 
   const callApp = (message: string) => {
     if (!conversation) {

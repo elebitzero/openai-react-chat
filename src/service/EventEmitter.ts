@@ -21,5 +21,5 @@ class EventEmitter {
     }
 }
 
-
+export const chatSettingsEmitter = new EventEmitter();
 export const conversationsEmitter = new EventEmitter();

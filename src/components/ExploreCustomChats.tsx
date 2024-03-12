@@ -4,7 +4,8 @@ import { PlusIcon } from '@heroicons/react/24/outline';
 import ChatSettingsList from './ChatSettingsList';
 import chatSettingsDB from '../service/ChatSettingsDB';
 import { ChatSettings } from '../models/ChatSettings';
-import {useTranslation} from 'react-i18next';
+import { useTranslation } from 'react-i18next';
+import { chatSettingsEmitter } from '../service/EventEmitter';
 
 const ExploreCustomChats: React.FC = () => {
   const [exampleChats, setExampleChats] = useState<ChatSettings[]>([]);
@@ -12,14 +13,39 @@ const ExploreCustomChats: React.FC = () => {
   const navigate = useNavigate();
   const {t} = useTranslation();
 
-  useEffect(() => {
-    const fetchChatSettings = async () => {
+  const fetchChatSettings = async (gid?: number) => {
+    if (gid) {
+      const updatedChat = await chatSettingsDB.chatSettings.get(gid);
+      if (updatedChat) {
+        setExampleChats(prevChats =>
+          prevChats.map(chat => chat.id === gid ? updatedChat : chat).filter(chat => chat.author === 'system')
+        );
+        setMyChats(prevChats =>
+          prevChats.map(chat => chat.id === gid ? updatedChat : chat).filter(chat => chat.author === 'user')
+        );
+      }
+    } else {
       const allChatSettings = await chatSettingsDB.chatSettings.orderBy('name').toArray();
       setExampleChats(allChatSettings.filter(chat => chat.author === 'system'));
       setMyChats(allChatSettings.filter(chat => chat.author === 'user'));
+    }
+  };
+
+  useEffect(() => {
+    fetchChatSettings();
+
+    const listener = (data: { gid?: number }) => {
+      if (data && typeof data === 'object') {
+        fetchChatSettings(data.gid);
+      } else {
+        fetchChatSettings();
+      }
     };
 
-    fetchChatSettings();
+    chatSettingsEmitter.on('chatSettingsChanged', listener);
+    return () => {
+      chatSettingsEmitter.off('chatSettingsChanged', listener);
+    };
   }, []);
 
   return (

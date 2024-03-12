@@ -6,8 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { ChatSettings } from '../models/ChatSettings';
 import ChatSettingsForm from './ChatSettingsForm';
 import {useTranslation} from 'react-i18next';
-import chatSettingsDB from "../service/ChatSettingsDB";
-import ChatSettingsDB from '../service/ChatSettingsDB';
+import ChatSettingsDB, {updateShowInSidebar} from '../service/ChatSettingsDB';
 import {NotificationService} from "../service/NotificationService";
 
 interface ChatSettingDropdownMenuProps {
@@ -40,6 +39,19 @@ const ChatSettingDropdownMenu: React.FC<ChatSettingDropdownMenuProps> = ({
       await ChatSettingsDB.chatSettings.delete(chatSetting.id);
       NotificationService.handleSuccess('Custom Chat '+chatSetting.name+' deleted.');
       navigate('/explore');
+    }
+  }
+
+  const onHideFromSidebar = async (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    if (chatSetting) {
+      updateShowInSidebar(chatSetting.id,0);
+    }
+  }
+
+  const toggleInSidebar = async (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    if (chatSetting) {
+      const newShowInSidebar = chatSetting.showInSidebar === 1 ? 0 : 1;
+      await updateShowInSidebar(chatSetting.id, newShowInSidebar);
     }
   }
 
@@ -119,22 +131,23 @@ const ChatSettingDropdownMenu: React.FC<ChatSettingDropdownMenuProps> = ({
                                               </a>
                                           )}
                                       </Menu.Item>
-                                    {/*  <Menu.Item>
-                                          {({ active }) => (
-                                              <a
-                                                  href="#"
-                                                  className={`flex items-center px-4 py-2 text-sm ${
-                                                      active ? 'bg-gray-100 dark:bg-gray-600 text-gray-900 dark:text-white' : 'text-gray-700 dark:text-gray-300'
-                                                  }`}
-                                              >
-                                                  <PencilIcon
-                                                      className="collapse w-4 h-4 mr-3"
-                                                      aria-hidden="true"
-                                                  />
-                                                  {t('hide-sidebar')}
-                                              </a>
-                                          )}
-                                      </Menu.Item>*/}
+                                      <Menu.Item>
+                                        {({ active }) => (
+                                          <a
+                                            onClick={(event) => toggleInSidebar(event)}
+                                            href="#"
+                                            className={`flex items-center px-4 py-2 text-sm ${
+                                              active ? 'bg-gray-100 dark:bg-gray-600 text-gray-900 dark:text-white' : 'text-gray-700 dark:text-gray-300'
+                                            }`}
+                                          >
+                                            <PencilIcon
+                                              className="collapse w-4 h-4 mr-3"
+                                              aria-hidden="true"
+                                            />
+                                            {chatSetting?.showInSidebar === 1 ? t('hide-sidebar') : t('show-sidebar')}
+                                          </a>
+                                        )}
+                                      </Menu.Item>
                                     <Menu.Item>
                                       {({ active }) => (
                                         <a

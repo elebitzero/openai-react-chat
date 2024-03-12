@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import ChatSettingsForm from "./ChatSettingsForm";
 import { ChatSettings } from "../models/ChatSettings";
-import chatSettingsDB, { getConversationById } from "../service/ChatSettingsDB";
+import chatSettingsDB, {getChatSettingsById} from "../service/ChatSettingsDB";
 import Button from "./Button";
 
 const CustomChatEditor: React.FC = () => {
@@ -26,7 +26,7 @@ const CustomChatEditor: React.FC = () => {
   useEffect(() => {
     const fetchChatSettings = async () => {
       if (isEditing && id) {
-        const existingSettings = await getConversationById(parseInt(id));
+        const existingSettings = await getChatSettingsById(parseInt(id));
         if (existingSettings) {
           setChatSettings(existingSettings);
         }

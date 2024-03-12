@@ -1,18 +1,29 @@
 import React, {useEffect, useState} from 'react';
 import {Link} from 'react-router-dom';
 import chatSettingsDB from '../service/ChatSettingsDB';
-import {ChatSettings} from '../models/ChatSettings'; // Ensure this import path is correct
+import {ChatSettings} from '../models/ChatSettings';
+import {chatSettingsEmitter} from '../service/EventEmitter';
 
 const ChatShortcuts: React.FC = () => {
   const [chatSettings, setChatSettings] = useState<ChatSettings[]>([]);
 
-  useEffect(() => {
-    const loadChatSettings = async () => {
-      const allChatSettings = await chatSettingsDB.chatSettings.orderBy('name').toArray();
-      setChatSettings(allChatSettings);
-    };
+  const loadChatSettings = async () => {
+    const filteredAndSortedChatSettings = await chatSettingsDB.chatSettings
+      .where('showInSidebar').equals(1)
+      .sortBy('name');
+    setChatSettings(filteredAndSortedChatSettings);
+  };
 
+  const onDatabaseUpdate = (data: any) => {
     loadChatSettings();
+  };
+
+  useEffect(() => {
+    chatSettingsEmitter.on('chatSettingsChanged', onDatabaseUpdate);
+    loadChatSettings();
+    return () => {
+      chatSettingsEmitter.off('chatSettingsChanged', onDatabaseUpdate);
+    };
   }, []);
 
   return (
@@ -27,7 +38,6 @@ const ChatShortcuts: React.FC = () => {
     </span>
         </Link>
       ))}
-
     </div>
   );
 };

@@ -11,4 +11,5 @@ export interface ChatSettings {
   seed?: number | null;
   temperature?: number | null;
   top_p?: number | null;
+  showInSidebar?: number;
 }
