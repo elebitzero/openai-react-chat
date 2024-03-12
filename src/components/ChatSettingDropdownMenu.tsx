@@ -1,7 +1,9 @@
 import React, { Fragment, useState } from 'react';
 import { Dialog, Menu, Transition } from '@headlessui/react';
-import { ChevronDownIcon, PencilIcon, InformationCircleIcon,
-  PencilSquareIcon, Cog6ToothIcon, XMarkIcon, TrashIcon } from '@heroicons/react/24/outline';
+import {
+  ChevronDownIcon, PencilIcon, InformationCircleIcon,
+  PencilSquareIcon, Cog6ToothIcon, XMarkIcon, TrashIcon, EyeIcon, EyeSlashIcon
+} from '@heroicons/react/24/outline';
 import { useNavigate } from 'react-router-dom';
 import { ChatSettings } from '../models/ChatSettings';
 import ChatSettingsForm from './ChatSettingsForm';
@@ -140,10 +142,9 @@ const ChatSettingDropdownMenu: React.FC<ChatSettingDropdownMenuProps> = ({
                                               active ? 'bg-gray-100 dark:bg-gray-600 text-gray-900 dark:text-white' : 'text-gray-700 dark:text-gray-300'
                                             }`}
                                           >
-                                            <PencilIcon
-                                              className="collapse w-4 h-4 mr-3"
-                                              aria-hidden="true"
-                                            />
+                                            {chatSetting?.showInSidebar === 1 ?
+                                              <EyeSlashIcon className="w-4 h-4 mr-3" aria-hidden="true"/>
+                                              :   <EyeIcon className="w-4 h-4 mr-3" aria-hidden="true"/>}
                                             {chatSetting?.showInSidebar === 1 ? t('hide-sidebar') : t('show-sidebar')}
                                           </a>
                                         )}
@@ -163,7 +164,7 @@ const ChatSettingDropdownMenu: React.FC<ChatSettingDropdownMenuProps> = ({
                                           aria-disabled={chatSetting?.author === 'system'}
                                         >
                                           <TrashIcon
-                                            className="collapse w-4 h-4 mr-3"
+                                            className="w-4 h-4 mr-3"
                                             aria-hidden="true"
                                           />
                                           {t('menu-delete')}
