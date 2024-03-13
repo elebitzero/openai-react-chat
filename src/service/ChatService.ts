@@ -255,11 +255,14 @@ export class ChatService {
               // Filter, enrich with contextWindow from the imported constant, and sort
               return models
                 .filter(model => model.id.startsWith("gpt-"))
-                .map(model => ({
-                    ...model,
-                    context_window: modelDetails[model.id].contextWindowSize || 0,// Use the imported constant
-                    knowledge_cutoff: modelDetails[model.id].knowledgeCutoffDate || '' // Use the imported constant
-                }))
+                .map(model => {
+                    const details = modelDetails[model.id] || { contextWindowSize: 0, knowledgeCutoffDate: '' };
+                    return {
+                        ...model,
+                        context_window: details.contextWindowSize,
+                        knowledge_cutoff: details.knowledgeCutoffDate
+                    };
+                })
                 .sort((a, b) => b.id.localeCompare(a.id));
           });
         return this.models;
