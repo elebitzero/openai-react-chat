@@ -2,65 +2,7 @@ import React, {CSSProperties, useState} from 'react';
 import {SNIPPET_MARKERS} from "../constants/appConstants";
 import {ChevronDownIcon, ChevronUpIcon} from "@heroicons/react/24/outline";
 import {useTranslation} from 'react-i18next';
-
-interface FoldableTextSectionProps {
-    content: string;
-}
-
-const FoldableTextSection: React.FC<FoldableTextSectionProps> = ({ content }) => {
-    const { t } = useTranslation();
-    const [isExpanded, setIsExpanded] = useState(false);
-
-    const toggleSection = () => {
-        setIsExpanded(!isExpanded);
-    };
-
-    // Define your style constants
-    const buttonStyles: CSSProperties  = {
-        color: 'var(--primary)',
-        cursor: 'pointer',
-        userSelect: 'none',
-        backgroundColor: 'transparent',
-        border: 'none',
-        padding: 0,
-        display: 'flex',
-        alignItems: 'center',
-        fontSize: '1rem',
-        outline: 'none',
-    };
-
-    const iconStyles: CSSProperties  = {
-        width: '1em',
-        height: '1em',
-        marginRight: '0.5em',
-    };
-
-    const contentStyles: CSSProperties  = {
-        whiteSpace: 'pre-wrap',
-        wordBreak: 'break-word',
-        maxHeight: isExpanded ? 'none' : '4.5em', // Sets max height to show first 3 lines based on line height of 1.5em
-        overflow: 'hidden',
-    };
-
-    return (
-        <div>
-            <div style={contentStyles}>{content}</div>
-            <button onClick={toggleSection} style={buttonStyles} aria-expanded={isExpanded}>
-                {isExpanded ? (
-                    <>
-                        <ChevronUpIcon style={iconStyles} />
-                        {t('collapse')}
-                    </>
-                ) : (
-                    <>
-                        <ChevronDownIcon style={iconStyles} />
-                        {t('expand')}
-                    </>
-                )}
-            </button>
-        </div>
-    );
-};
+import FoldableTextSection from './FoldableTextSection';
 
 interface UserContentBlockProps {
     text: string;
