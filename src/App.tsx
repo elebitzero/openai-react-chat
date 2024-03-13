@@ -17,13 +17,6 @@ const App = () => {
     setIsSidebarCollapsed(!isSidebarCollapsed);
   };
 
-
-  const ChatSettingsFormRoute = () => {
-    const [searchParams] = useSearchParams();
-    const readOnly = searchParams.get('readOnly') === 'true';
-    return <ChatSettingsForm readOnly={readOnly}/>;
-  };
-
   interface MainPageProps {
     className: string;
     isSidebarCollapsed: boolean;
@@ -54,7 +47,6 @@ const App = () => {
                 <Route path="/" element={<MainPageWithProps />} />
                 <Route path="/c/:id" element={<MainPageWithProps />} />
                 <Route path="/explore" element={<ExploreCustomChats/>} />
-                <Route path="/chatsettings" element={<ChatSettingsFormRoute />} />
                 // Use the wrapper for new routes
                 <Route path="/g/:gid" element={<MainPageWithProps />} />
                 <Route path="/g/:gid/c/:id" element={<MainPageWithProps />} />

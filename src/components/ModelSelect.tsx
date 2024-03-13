@@ -49,7 +49,7 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
     const [models, setModels] = useState<OpenAIModel[]>([]);
     const [options, setOptions] = useState<SelectOption[]>([]);
     const [selectedOption, setSelectedOption] = useState<SelectOption>();
-    const [loading, setLoading] = useState<boolean>(true);
+    const [loading, setLoading] = useState<boolean>(false);
     const SHOW_MORE_MODELS = t('show-more-models');
     const SHOW_FEWER_MODELS = t('show-fewer-models');
     const [menuIsOpen, setMenuIsOpen] = useState(false);
@@ -99,35 +99,12 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
 
 
     useEffect(() => {
-        if (!models || models.length == 0) {
-            setLoading(true);
-            ChatService.getModels()
-              .then(data => {
-                  setModels(data);
-              })
-              .catch(err => {
-                  NotificationService.handleUnexpectedError(err,'Failed to get model list.');
-              });
-        }
     }, []);
-
-    useEffect(() => {
-        if (value) {
-            const matchingOption = options.find(option => option.value === value);
-            if (matchingOption) {
-                setSelectedOption(matchingOption);
-            } else {
-                console.warn(`No option found for value: ${value}`);
-            }
-        }
-    }, [value]);
-
 
     useEffect(() => {
         if (externalModels.length > 0) {
             setModels(externalModels);
-        }
-        else {
+        } else {
             setLoading(true);
             ChatService.getModels()
               .then(data => {
@@ -140,21 +117,20 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
         }
     }, [externalModels]);
 
+    function getModelOption(model: OpenAIModel) {
+        return {value: model.id, label: model.id, info: formatContextWindow(model.context_window)};
+    }
+
     useEffect(() => {
         if (models && models.length > 0) {
             const defaultOptions = models.filter(model => !/-\d{4}$/.test(model.id)).
               filter(model => !/-\d{4}-preview$/.test(model.id));
 
-            let initialOptions = [
-                ...(allowNone ? [NONE_MODEL] : []), // Conditionally prepend the NONE_MODEL
-                ...defaultOptions,
-                { value: "more", label: SHOW_MORE_MODELS, info: '' }
-            ];
-
-            setOptions([
-                ...defaultOptions.map((model) => ({value: model.id, label: model.id, info: formatContextWindow(model.context_window)})),
+            const newOptions = [
+                ...defaultOptions.map((model) => getModelOption(model)),
                 {value: "more", label: SHOW_MORE_MODELS, info: ''}
-            ]);
+            ];
+            setOptions(newOptions);
             let defaultModelId = DEFAULT_MODEL;
             if (value) {
                 defaultModelId = value;
@@ -163,13 +139,12 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
                 let found = false;
                 for (const model of models) {
                     if (model.id === defaultModelId) {
-                        setSelectedOption({value: model.id, label: model.id, info: formatContextWindow(model.context_window)});
+                        setSelectedOption(getModelOption(model));
                         found = true;
                         break;
                     }
                 }
                 if (found) {
-                    setLoading(false);
                     return;
                 } else {
                     console.warn('Model ' + defaultModelId + ' not in the list of models');
@@ -177,18 +152,15 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
             }
 
             // else set the selectedOption to the first model in the list
-            const firstModel = models[0];
-            setSelectedOption({value: firstModel.id, label: firstModel.id, info: formatContextWindow(firstModel.context_window)});
-            setLoading(false);
+            if (newOptions.length > 0) {
+                setSelectedOption(newOptions[0]);
+            }
         }
-    }, [models]);
+    }, [models,value]);
 
     useEffect(() => {
         if (selectedOption) {
-            value = selectedOption.value;
-            if (onModelSelect) {
-                onModelSelect(value);
-            }
+            onModelSelect?.(selectedOption.value);
         }
     }, [selectedOption]);
 
@@ -220,21 +192,17 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
                 ]);
                 setMenuIsOpen(true);
             } else {
-                const modelId = option.value;
                 setSelectedOption({
                     value: option.value,
                     label: option.label,
                     info: option.info
                 });
                 if (onModelSelect) {
-                    onModelSelect(modelId);
+                onModelSelect(option.value);
                 }
-                value = modelId;
                 setMenuIsOpen(false);
             }
-            setLoading(false);
         } else {
-            setLoading(true);
             setMenuIsOpen(false);
         }
     };

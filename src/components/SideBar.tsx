@@ -117,10 +117,6 @@ const Sidebar: React.FC<SidebarProps> = ({className, isSidebarCollapsed, toggleS
     navigate('');
   }
 
-  const handleShowChatSettings = (readOnly: boolean) => {
-    navigate('/chatsettings?'+readOnly);
-  }
-
   interface SearchOptionsPopdownProps {
     onSelect: (value: string) => void;
   }

@@ -103,7 +103,7 @@ const Chat: React.FC<Props> = ({chatBlocks, onChatScroll, allowAutoScroll, model
                         )}
                         <span style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                             {t('model')}
-                            {!conversation ? '' : (
+                            {conversation && (
                               <span>
 
                                   <span style={{marginLeft:'0.25em'}}>{conversation.model}</span>
@@ -121,12 +121,11 @@ const Chat: React.FC<Props> = ({chatBlocks, onChatScroll, allowAutoScroll, model
                             )
                             }
                         </span>
-
-                      <span className="flex-grow">
-                          <div style={{display: !conversation ? 'block' : 'none', width: '50ch'}}>
-                            <ModelSelect value={model} onModelSelect={onModelChange} models={models}/>
-                          </div>
-                      </span>
+                      {!conversation && (
+                        <span className="flex-grow" style={{width: '50ch'}}>
+                          <ModelSelect value={model} onModelSelect={onModelChange} models={models}/>
+                        </span>
+                      )}
                   </div>
               </div>
               {chatBlocks.map((block, index) => (

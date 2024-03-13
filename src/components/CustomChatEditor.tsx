@@ -39,7 +39,8 @@ const CustomChatEditor: React.FC = () => {
     } else {
       setChatSettings(initialChatSettings);
     }
-  }, [id, isEditing, location.state, initialChatSettings]);
+  }, [id, isEditing, location.state]);
+
   const handleSave = async () => {
     if (isEditing) {
       await chatSettingsDB.chatSettings.update(chatSettings.id, chatSettings);
