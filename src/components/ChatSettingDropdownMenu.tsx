@@ -1,11 +1,11 @@
-import React, { Fragment, useState } from 'react';
-import { Dialog, Menu, Transition } from '@headlessui/react';
+import React, {Fragment, useState} from 'react';
+import {Dialog, Menu, Transition} from '@headlessui/react';
 import {
-  ChevronDownIcon, PencilIcon, InformationCircleIcon,
+  ChevronDownIcon, InformationCircleIcon,
   PencilSquareIcon, Cog6ToothIcon, XMarkIcon, TrashIcon, EyeIcon, EyeSlashIcon, DocumentDuplicateIcon
 } from '@heroicons/react/24/outline';
-import { useNavigate } from 'react-router-dom';
-import { ChatSettings } from '../models/ChatSettings';
+import {useNavigate} from 'react-router-dom';
+import {ChatSettings} from '../models/ChatSettings';
 import ChatSettingsForm from './ChatSettingsForm';
 import {useTranslation} from 'react-i18next';
 import ChatSettingsDB, {deleteChatSetting, updateShowInSidebar} from '../service/ChatSettingsDB';
@@ -34,33 +34,36 @@ const ChatSettingDropdownMenu: React.FC<ChatSettingDropdownMenuProps> = ({
     setIsDialogOpen(true);
   }
 
-  const onEdit = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
-    navigate('/custom/editor/'+chatSetting?.id)
+  const onEdit = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    navigate('/custom/editor/' + chatSetting?.id)
   }
 
-  const onDuplicate = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+  const onDuplicate = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.preventDefault();
+    event.stopPropagation();
     if (chatSetting) {
-      const newChatSetting = { ...chatSetting, id: 0, name: chatSetting.name+' (Copy)' };
-      navigate('/custom/editor/', { state: { initialChatSetting: newChatSetting } });
+      const newChatSetting = {...chatSetting, id: 0, name: `${chatSetting.name} (Copy)`};
+      navigate('/custom/editor/', {state: {initialChatSetting: newChatSetting}});
     }
   }
 
-
-  const onDelete = async (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+  const onDelete = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    event.stopPropagation();
     if (chatSetting) {
-      deleteChatSetting(chatSetting.id);
-      NotificationService.handleSuccess('Custom Chat '+chatSetting.name+' deleted.');
+      await deleteChatSetting(chatSetting.id);
+      NotificationService.handleSuccess(`Custom Chat ${chatSetting.name} deleted.`);
     }
   }
 
-  const onHideFromSidebar = async (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+  const onHideFromSidebar = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    event.stopPropagation();
     if (chatSetting) {
-      updateShowInSidebar(chatSetting.id,0);
+      await updateShowInSidebar(chatSetting.id, 0);
     }
   }
 
-  const toggleInSidebar = async (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+  const toggleInSidebar = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    event.stopPropagation();
     if (chatSetting) {
       const newShowInSidebar = chatSetting.showInSidebar === 1 ? 0 : 1;
       await updateShowInSidebar(chatSetting.id, newShowInSidebar);
@@ -68,201 +71,205 @@ const ChatSettingDropdownMenu: React.FC<ChatSettingDropdownMenuProps> = ({
   }
 
   return (
-      <Fragment>
-          <div className={`inline-block relative text-left ${className}`} onClick={(event) => event.stopPropagation()}>
-              <Menu as="div">
-                  {({ open }) => (
-                      <>
-                          <Menu.Button className="inline-flex px-3 py-2 text-md font-medium text-gray-700 bg-white dark:text-gray-200 dark:bg-gray-800 rounded-md shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none items-center">
-                              <span>{showTitle && chatSetting ? chatSetting.name : ''}</span>
-                              <ChevronDownIcon
-                                  className={`${open ? 'transform rotate-180' : ''} w-5 h-5`}
-                                  aria-hidden="true"
-                              />
-                          </Menu.Button>
-                          <Transition
-                              enter="transition duration-100 ease-out"
-                              enterFrom="transform scale-95 opacity-0"
-                              enterTo="transform scale-100 opacity-100"
-                              leave="transition duration-75 ease-out"
-                              leaveFrom="transform scale-100 opacity-100"
-                              leaveTo="transform scale-95 opacity-0"
-                          >
-                              <Menu.Items className="absolute left-0 w-56 mt-2 origin-top-left bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 divide-y divide-gray-100 dark:divide-gray-600 rounded-md shadow-lg outline-none z-20">
-                                  <div className="py-1">
-                                      <Menu.Item>
-                                          {({ active }) => (
-                                              <a
-                                                  onClick={() => navigate(`/g/${chatSetting?.id}`)}
-                                                  className={`flex items-center px-4 py-2 text-sm ${
-                                                      active ? 'bg-gray-100 dark:bg-gray-600 text-gray-900 dark:text-white' : 'text-gray-700 dark:text-gray-300'
-                                                  }`}
-                                              >
-                                                  <PencilSquareIcon
-                                                      className="w-4 h-4 mr-3"
-                                                      aria-hidden="true"
-                                                  />
-                                                  {t('new-chat')}
-                                              </a>
-                                          )}
-                                      </Menu.Item>
-                                      <Menu.Item>
-                                          {({ active }) => (
-                                              <button
-                                                  onClick={(event) => onAbout(event)}
-                                                  className={`flex items-center w-full text-left px-4 py-2 text-sm ${
-                                                      active ? 'bg-gray-100 dark:bg-gray-600 text-gray-900 dark:text-white' : 'text-gray-700 dark:text-gray-300'
-                                                  }`}
-                                              >
-                                                  <InformationCircleIcon
-                                                      className="w-4 h-4 mr-3"
-                                                      aria-hidden="true"
-                                                  />
-                                                  {t('menu-about')}
-                                              </button>
-                                          )}
-                                      </Menu.Item>
-                                      <Menu.Item>
-                                          {({ active }) => (
-                                              <a
-                                                  onClick={(event) => onEdit(event)}
-                                                  className={`flex items-center px-4 py-2 text-sm ${
-                                                      chatSetting?.author === 'system'
-                                                          ? 'text-gray-400 dark:text-gray-500'
-                                                          : active
-                                                              ? 'bg-gray-100 dark:bg-gray-600 text-gray-900 dark:text-white'
-                                                              : 'text-gray-700 dark:text-gray-300'
-                                                  }`}
-                                                  aria-disabled={chatSetting?.author === 'system'}
-                                              >
-                                                  <Cog6ToothIcon
-                                                      className="w-4 h-4 mr-3"
-                                                      aria-hidden="true"
-                                                  />
-                                                  {t('menu-edit')}
-                                              </a>
-                                          )}
-                                      </Menu.Item>
-                                    <Menu.Item>
-                                      {({ active }) => (
-                                        <a
-                                          onClick={(event) => onDuplicate(event)}
-                                          className={`flex items-center px-4 py-2 text-sm ${
-                                               active
-                                                ? 'bg-gray-100 dark:bg-gray-600 text-gray-900 dark:text-white'
-                                                : 'text-gray-700 dark:text-gray-300'
-                                          }`}
-                                        >
-                                          <DocumentDuplicateIcon
-                                            className="w-4 h-4 mr-3"
-                                            aria-hidden="true"
-                                          />
-                                          {t('menu-duplicate')}
-                                        </a>
-                                      )}
-                                    </Menu.Item>
-                                      <Menu.Item>
-                                        {({ active }) => (
-                                          <a
-                                            onClick={(event) => toggleInSidebar(event)}
-                                            href="#"
-                                            className={`flex items-center px-4 py-2 text-sm ${
-                                              active ? 'bg-gray-100 dark:bg-gray-600 text-gray-900 dark:text-white' : 'text-gray-700 dark:text-gray-300'
-                                            }`}
-                                          >
-                                            {chatSetting?.showInSidebar === 1 ?
-                                              <EyeSlashIcon className="w-4 h-4 mr-3" aria-hidden="true"/>
-                                              :   <EyeIcon className="w-4 h-4 mr-3" aria-hidden="true"/>}
-                                            {chatSetting?.showInSidebar === 1 ? t('hide-sidebar') : t('show-sidebar')}
-                                          </a>
-                                        )}
-                                      </Menu.Item>
-                                      {showDelete && (
-                                        <Menu.Item>
-                                          {({ active }) => (
-                                            <a
-                                              onClick={(event) => onDelete(event)}
-                                              href="#"
-                                              className={`flex items-center px-4 py-2 text-sm ${
-                                                chatSetting?.author === 'system'
-                                                  ? 'text-gray-400 dark:text-gray-500'
-                                                  : active
-                                                    ? 'bg-gray-100 dark:bg-gray-600 text-gray-900 dark:text-white'
-                                                    : 'text-gray-700 dark:text-gray-300'
-                                              }`}
-                                              aria-disabled={chatSetting?.author === 'system'}
-                                            >
-                                              <TrashIcon
-                                                className="w-4 h-4 mr-3"
-                                                aria-hidden="true"
-                                              />
-                                              {t('menu-delete')}
-                                            </a>
-                                          )}
-                                        </Menu.Item>
-                                      )}
-                                  </div>
-                              </Menu.Items>
-                          </Transition>
-                      </>
-                  )}
-              </Menu>
-          </div>
-          <Transition.Root show={isDialogOpen} as={Fragment}>
-              <Dialog
-                  as="div"
-                  className="relative z-10"
-                  onClose={() => setIsDialogOpen(false)}
+    <Fragment>
+      <div className={`inline-block relative text-left ${className}`} onClick={(event) => event.stopPropagation()}>
+        <Menu as="div">
+          {({open}) => (
+            <>
+              <Menu.Button
+                className="inline-flex px-3 py-2 text-md font-medium text-gray-700 bg-white dark:text-gray-200 dark:bg-gray-800 rounded-md shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none items-center">
+                <span>{showTitle && chatSetting ? chatSetting.name : ''}</span>
+                <ChevronDownIcon
+                  className={`${open ? 'transform rotate-180' : ''} w-5 h-5`}
+                  aria-hidden="true"
+                />
+              </Menu.Button>
+              <Transition
+                enter="transition duration-100 ease-out"
+                enterFrom="transform scale-95 opacity-0"
+                enterTo="transform scale-100 opacity-100"
+                leave="transition duration-75 ease-out"
+                leaveFrom="transform scale-100 opacity-100"
+                leaveTo="transform scale-95 opacity-0"
               >
-                  <Transition.Child
-                      as={Fragment}
-                      enter="ease-out duration-300"
-                      enterFrom="opacity-0"
-                      enterTo="opacity-100"
-                      leave="ease-in duration-200"
-                      leaveFrom="opacity-100"
-                      leaveTo="opacity-0"
-                  >
-                      <div className="fixed inset-0 bg-black bg-opacity-30 transition-opacity" />
-                  </Transition.Child>
-                  <div className="fixed inset-0 overflow-y-auto">
-                      <div
-                          className="flex min-h-full items-start justify-center p-4 text-center"
-                          style={{ marginTop: '5vh' }}
-                          onClick={(event) => {
-                            // This prevents the backdrop click from propagating.
-                            event.stopPropagation();
-                          }}
-                      >
-                          <Transition.Child
-                              as={Fragment}
-                              enter="ease-out duration-300"
-                              enterFrom="opacity-0 scale-95"
-                              enterTo="opacity-100 scale-100"
-                              leave="ease-in duration-200"
-                              leaveFrom="opacity-100 scale-100"
-                              leaveTo="opacity-0 scale-95"
+                <Menu.Items
+                  className="absolute left-0 w-56 mt-2 origin-top-left bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 divide-y divide-gray-100 dark:divide-gray-600 rounded-md shadow-lg outline-none z-20">
+                  <div className="py-1">
+                    <Menu.Item>
+                      {({active}) => (
+                        <button
+                          onClick={() => navigate(`/g/${chatSetting?.id}`)}
+                          className={`flex items-center w-full text-left px-4 py-2 text-sm ${
+                            active ? 'bg-gray-100 dark:bg-gray-600 text-gray-900 dark:text-white' : 'text-gray-700 dark:text-gray-300'
+                          }`}
+                        >
+                          <PencilSquareIcon
+                            className="w-4 h-4 mr-3"
+                            aria-hidden="true"
+                          />
+                          {t('new-chat')}
+                        </button>
+                      )}
+                    </Menu.Item>
+                    <Menu.Item>
+                      {({active}) => (
+                        <button
+                          onClick={onAbout}
+                          className={`flex items-center w-full text-left px-4 py-2 text-sm ${
+                            active ? 'bg-gray-100 dark:bg-gray-600 text-gray-900 dark:text-white' : 'text-gray-700 dark:text-gray-300'
+                          }`}
+                        >
+                          <InformationCircleIcon
+                            className="w-4 h-4 mr-3"
+                            aria-hidden="true"
+                          />
+                          {t('menu-about')}
+                        </button>
+                      )}
+                    </Menu.Item>
+                    <Menu.Item>
+                      {({active}) => (
+                        <button
+                          onClick={onEdit}
+                          disabled={chatSetting?.author === 'system'}
+                          className={`flex items-center w-full text-left px-4 py-2 text-sm ${
+                            chatSetting?.author === 'system'
+                              ? 'text-gray-400 dark:text-gray-500 cursor-not-allowed'
+                              : active
+                                ? 'bg-gray-100 dark:bg-gray-600 text-gray-900 dark:text-white'
+                                : 'text-gray-700 dark:text-gray-300'
+                          }`}
+                          aria-disabled={chatSetting?.author === 'system'}
+                        >
+                          <Cog6ToothIcon
+                            className="w-4 h-4 mr-3"
+                            aria-hidden="true"
+                          />
+                          {t('menu-edit')}
+                        </button>
+                      )}
+                    </Menu.Item>
+                    <Menu.Item>
+                      {({active}) => (
+                        <button
+                          onClick={onDuplicate}
+                          className={`flex items-center w-full px-4 py-2 text-sm ${
+                            active
+                              ? 'bg-gray-100 dark:bg-gray-600 text-gray-900 dark:text-white'
+                              : 'text-gray-700 dark:text-gray-300'
+                          }`}
+                        >
+                          <DocumentDuplicateIcon
+                            className="w-4 h-4 mr-3"
+                            aria-hidden="true"
+                          />
+                          {t('menu-duplicate')}
+                        </button>
+                      )}
+                    </Menu.Item>
+                    <Menu.Item>
+                      {({active}) => (
+                        <button
+                          onClick={toggleInSidebar}
+                          className={`flex items-center w-full px-4 py-2 text-sm ${
+                            active ? 'bg-gray-100 dark:bg-gray-600 text-gray-900 dark:text-white' : 'text-gray-700 dark:text-gray-300'
+                          }`}
+                        >
+                          {chatSetting?.showInSidebar === 1 ? (
+                            <EyeSlashIcon className="w-4 h-4 mr-3" aria-hidden="true"/>
+                          ) : (
+                            <EyeIcon className="w-4 h-4 mr-3" aria-hidden="true"/>
+                          )}
+                          {chatSetting?.showInSidebar === 1 ? t('hide-sidebar') : t('show-sidebar')}
+                        </button>
+                      )}
+                    </Menu.Item>
+                    {showDelete && (
+                      <Menu.Item>
+                        {({active}) => (
+                          <button
+                            onClick={onDelete}
+                            disabled={chatSetting?.author === 'system'}
+                            className={`flex items-center w-full px-4 py-2 text-sm ${
+                              chatSetting?.author === 'system'
+                                ? 'text-gray-400 dark:text-gray-500 cursor-not-allowed'
+                                : active
+                                  ? 'bg-gray-100 dark:bg-gray-600 text-gray-900 dark:text-white'
+                                  : 'text-gray-700 dark:text-gray-300'
+                            }`}
                           >
-                              <Dialog.Panel className="relative w-full max-w-2xl overflow-hidden rounded-2xl bg-white dark:bg-gray-800 p-6 text-left align-middle shadow-xl transition-all">
-                                  <div className="absolute top-4 right-4">
-                                      <button
-                                          type="button"
-                                          className="inline-flex justify-center p-2 text-gray-400 hover:text-gray-500 dark:text-gray-200 dark:hover:text-gray-400"
-                                          onClick={() => setIsDialogOpen(false)}
-                                      >
-                                          <XMarkIcon className="w-6 h-6" aria-hidden="true" />
-                                      </button>
-                                  </div>
-                                  <div className="mt-2">
-                                      <ChatSettingsForm readOnly={true} chatSettings={chatSetting} />
-                                  </div>
-                              </Dialog.Panel>
-                          </Transition.Child>
-                      </div>
+                            <TrashIcon
+                              className="w-4 h-4 mr-3"
+                              aria-hidden="true"
+                            />
+                            {t('menu-delete')}
+                          </button>
+                        )}
+                      </Menu.Item>
+                    )}
                   </div>
-              </Dialog>
-          </Transition.Root>
-      </Fragment>
+                </Menu.Items>
+              </Transition>
+            </>
+          )}
+        </Menu>
+      </div>
+      <Transition.Root show={isDialogOpen} as={Fragment}>
+        <Dialog
+          as="div"
+          className="relative z-10"
+          onClose={() => setIsDialogOpen(false)}
+        >
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-black bg-opacity-30 transition-opacity"/>
+          </Transition.Child>
+          <div className="fixed inset-0 overflow-y-auto">
+            <div
+              className="flex min-h-full items-start justify-center p-4 text-center"
+              style={{marginTop: '5vh'}}
+              onClick={(event) => {
+                // This prevents the backdrop click from propagating.
+                event.stopPropagation();
+              }}
+            >
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0 scale-95"
+                enterTo="opacity-100 scale-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-0 scale-95"
+              >
+                <Dialog.Panel
+                  className="relative w-full max-w-2xl overflow-hidden rounded-2xl bg-white dark:bg-gray-800 p-6 text-left align-middle shadow-xl transition-all">
+                  <div className="absolute top-4 right-4">
+                    <button
+                      type="button"
+                      className="inline-flex justify-center p-2 text-gray-400 hover:text-gray-500 dark:text-gray-200 dark:hover:text-gray-400"
+                      onClick={() => setIsDialogOpen(false)}
+                    >
+                      <XMarkIcon className="w-6 h-6" aria-hidden="true"/>
+                    </button>
+                  </div>
+                  <div className="mt-2">
+                    <ChatSettingsForm readOnly={true} chatSettings={chatSetting}/>
+                  </div>
+                </Dialog.Panel>
+              </Transition.Child>
+            </div>
+          </div>
+        </Dialog>
+      </Transition.Root>
+    </Fragment>
   );
 };
 
