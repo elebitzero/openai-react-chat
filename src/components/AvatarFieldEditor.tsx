@@ -104,6 +104,7 @@ const AvatarFieldEditor: React.FC<AvatarFieldEditorProps> = ({
       )}
       {!readOnly && ( // Conditionally render the input based on readOnly status
         <input
+          id="icon"
           type="file"
           accept="image/*"
           onChange={handleImageUpload}
