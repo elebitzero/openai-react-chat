@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useContext, useEffect, useRef } from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react';
 import {XMarkIcon} from "@heroicons/react/24/outline";
 import {Theme, UserContext } from '../UserContext';
 import ModelSelect from './ModelSelect';
@@ -9,6 +9,7 @@ import ConversationService from "../service/ConversationService";
 import {NotificationService} from "../service/NotificationService";
 import {useTranslation} from 'react-i18next';
 import {Transition} from '@headlessui/react';
+import EditableInstructions from './EditableInstructions';
 
 interface UserSettingsModalProps {
   isVisible: boolean;
@@ -31,12 +32,13 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({ isVisible, onClos
   const [storageQuota, setStorageQuota] = useState<number | undefined>();
   const [percentageUsed, setPercentageUsed] = useState<number | undefined>();
   const {t} = useTranslation();
+  const editableInstructionsRef = useRef<{ getCurrentValue: () => string }>(null);
 
-  const closeModalOnOutsideClick = (event: MouseEvent) => { // Step 2: Define the function
-    if (!dialogRef.current?.contains(event.target as Node)) {
-      onClose(); // If click is outside, close the modal
+  useEffect(() => {
+    if (isVisible) {
+      setActiveTab(Tab.GENERAL_TAB);
     }
-  };
+  }, [isVisible]);
 
   const formatBytesToMB = (bytes?: number) => {
     if (typeof bytes === 'undefined') return;
@@ -66,16 +68,23 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({ isVisible, onClos
     }
   };
 
+  const handleClose = () => {
+    const currentInstructions = editableInstructionsRef.current?.getCurrentValue();
+    setUserSettings({...userSettings, instructions: currentInstructions || ''});
+    onClose();
+  };
+
+
   useEffect(() => {
     const closeModalOnOutsideClick = (event: MouseEvent) => {
       if (dialogRef.current && !dialogRef.current.contains(event.target as Node)) {
-        onClose();
+        handleClose();
       }
     };
 
     const closeOnEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        onClose();
+        handleClose();
       }
     };
 
@@ -86,7 +95,7 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({ isVisible, onClos
       document.removeEventListener('mousedown', closeModalOnOutsideClick);
       document.removeEventListener('keydown', closeOnEscape);
     };
-  }, [onClose]);
+  }, [handleClose]);
 
   useEffect(() => {
     if ('storage' in navigator && 'estimate' in navigator.storage) {
@@ -123,7 +132,7 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({ isVisible, onClos
                  style={{minHeight: "640px", minWidth: "43em"}}>
               <div id='user-settings-header' className="flex justify-between items-center border-b border-gray-200 p-4">
                 <h1 className="text-lg font-semibold">Settings</h1>
-                <button onClick={onClose}
+                <button onClick={handleClose}
                         className="text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100">
                   <XMarkIcon className="h-8 w-8" aria-hidden="true"/>
                 </button>
@@ -149,7 +158,8 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({ isVisible, onClos
                       <div className="flex items-center justify-between setting-panel">
                         <label htmlFor="theme">Theme</label>
                         <select id='theme' name='theme'
-                                className="custom-select dark:custom-select border-gray-300 border rounded p-2 dark:bg-gray-800 dark:text-white dark:border-gray-600"
+                                className="custom-select dark:custom-select border-gray-300 border rounded p-2
+                                dark:bg-gray-800 dark:text-white dark:border-gray-600"
                                 value={userSettings.userTheme}
                                 onChange={(e) => {
                                   setUserSettings({...userSettings, userTheme: e.target.value as Theme});
@@ -182,25 +192,24 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({ isVisible, onClos
                     </div>
                   </div>
                   <div className={`${activeTab === Tab.INSTRUCTIONS_TAB ? 'flex flex-col flex-1' : 'hidden'}`}>
-                    <div
-                        className="flex flex-col flex-1 border-b border-token-border-light pb-3 last-of-type:border-b-0">
-                <textarea
-                    id="instructions"
-                    name="instructions"
-                    value={userSettings.instructions}
-                    placeholder={OPENAI_DEFAULT_SYSTEM_PROMPT}
-                    onChange={(e) => {
-                      setUserSettings({...userSettings, instructions: e.target.value});
-                    }}
-                    className="flex-1 resize-y rounded overflow-y-auto h-72 w-full max-h-[60vh] md:max-h-[calc(100vh-300px)] shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    spellCheck={false}
-                ></textarea>
+                    <div className="flex flex-col flex-1 border-b border-token-border-light pb-3 last-of-type:border-b-0">
+                      <EditableInstructions
+                        ref={editableInstructionsRef}
+                        initialValue={userSettings.instructions}
+                        placeholder={OPENAI_DEFAULT_SYSTEM_PROMPT}
+                        onChange={(text) => {
+                          // setUserSettings({...userSettings, instructions: text});
+                        }}
+                        className="flex flex-col h-full"
+                      />
                     </div>
                   </div>
                   <div className={`${activeTab === Tab.STORAGE_TAB ? 'flex flex-col flex-1' : 'hidden'}`}>
                     <h3 className="text-lg mb-4">Storage</h3>
                     <p>Chats are stored locally in your browser's IndexedDB.</p>
-                    <p>Usage: {renderStorageInfo(formatBytesToMB(storageUsage))} of {renderStorageInfo(formatBytesToMB(storageQuota))} ({renderStorageInfo(percentageUsed ? `${percentageUsed.toFixed(2)}%` : undefined)})
+                    <p>Usage: {renderStorageInfo(formatBytesToMB(storageUsage))} of
+                      {renderStorageInfo(formatBytesToMB(storageQuota))}
+                      ({renderStorageInfo(percentageUsed ? `${percentageUsed.toFixed(2)}%` : undefined)})
                     </p>
                     <button onClick={handleDeleteAllConversations}
                             className="mt-4 py-2 px-4 bg-red-500 text-white rounded hover:bg-red-700">Delete All Chats
