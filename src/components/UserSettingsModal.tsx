@@ -171,7 +171,11 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({ isVisible, onClos
 
                       </div>
                       <div className="flex items-center justify-between setting-panel">
-                        <label htmlFor="model">Model</label>
+                        {userSettings.model ? (
+                            <label htmlFor="model">{t('model-header')}</label>
+                        ) : (
+                            <span>{t('model-header')}</span>
+                        )}
                         <EditableField<string | null>
                             readOnly={false}
                             id="model"
