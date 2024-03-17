@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import FormLabel from "./FormLabel";
+import {useTranslation} from 'react-i18next';
 
 export interface ImageSource {
   data: string | null;
@@ -19,6 +21,7 @@ const AvatarFieldEditor: React.FC<AvatarFieldEditorProps> = ({
                                                                size = 120
                                                              }) => {
   const [imageSrc, setImageSrc] = useState<ImageSource>(image);
+  const {t} = useTranslation();
 
   useEffect(() => {
     setImageSrc(image);
@@ -79,6 +82,8 @@ const AvatarFieldEditor: React.FC<AvatarFieldEditorProps> = ({
   };
 
   return (
+  <div className="mb-4">
+    <FormLabel readOnly={readOnly} label={t('icon-header')} htmlFor="icon" value={image}></FormLabel>
     <div className="relative flex justify-center items-center">
       {imageSrc.data ? (
         <img
@@ -112,6 +117,7 @@ const AvatarFieldEditor: React.FC<AvatarFieldEditorProps> = ({
         />
       )}
     </div>
+  </div>
   );
 };
 

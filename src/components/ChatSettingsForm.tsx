@@ -10,6 +10,7 @@ import { EditableField } from './EditableField';
 import {useTranslation} from 'react-i18next';
 import {UserContext} from "../UserContext";
 import {NotificationService} from "../service/NotificationService";
+import FormLabel from "./FormLabel";
 
 interface ChatSettingsFormProps {
   chatSettings?: ChatSettings;
@@ -67,16 +68,10 @@ const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({ chatSettings, readO
   return (
       <div className="w-full md:max-w-2xl lg:max-w-3xl xl:max-w-4xl mx-auto pt-3">
         <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 px-8 pt-6 pb-8 mb-4">
-          <div className="mb-4">
-            <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="icon">
-              {t('icon-header')}
-            </label>
             <AvatarFieldEditor readOnly={readOnly} image={formData?.icon ? formData.icon : {data:null, type:'raster'}} onImageChange={onImageChange}/>
-          </div>
           <div className="mb-4">
-            <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="name">
-              {t('name-header')} {readOnly ? '' : '*'}
-            </label>
+            <FormLabel readOnly={readOnly} label={`${t('name-header')}${readOnly ? '' : ' *'}`} htmlFor="name"
+                       value={formData.name || t('non-applicable')}></FormLabel>
             {readOnly ? <p className="text-gray-700 dark:text-gray-300">{formData.name || t('non-applicable')}</p> :
                 <input
                     type="text"
@@ -91,9 +86,8 @@ const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({ chatSettings, readO
                 />}
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="description">
-              {t('description-header')}
-            </label>
+            <FormLabel readOnly={readOnly} label={t('description-header')} htmlFor="description"
+                       value={formData.description || t('non-applicable')}></FormLabel>
             {readOnly ? <p className="text-gray-700 dark:text-gray-300">{formData.description || t('non-applicable')}</p> :
                 <textarea
                     id="description"
@@ -104,9 +98,8 @@ const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({ chatSettings, readO
                 ></textarea>}
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="instructions">
-              {t('instructions-header')}
-            </label>
+            <FormLabel readOnly={readOnly} label={t('instructions-header')} htmlFor="instructions"
+                       value={formData.instructions || t('non-applicable')}></FormLabel>
             {readOnly ? <p className="text-gray-700 dark:text-gray-300">{formData.instructions || t('non-applicable')}</p> :
                 <textarea
                     id="instructions"
@@ -135,9 +128,8 @@ const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({ chatSettings, readO
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="seed">
-              {t('seed-header')}
-            </label>
+            <FormLabel readOnly={readOnly} label={t('seed-header')} htmlFor={"seed"}
+                       value={formData.seed || t('non-applicable')}></FormLabel>
             {readOnly ? <p className="text-gray-700 dark:text-gray-300">{formData.seed || t('non-applicable')}</p> :
                 <input
                     type="number"
