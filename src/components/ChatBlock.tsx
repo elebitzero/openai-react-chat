@@ -85,9 +85,9 @@ const ChatBlock: React.FC<Props> = ({block, loading, isLastBlock}) => {
       <div key={`chat-block-${block.id}`}
            className={`group w-full text-gray-800 dark:text-gray-100 border-b border-black/10 dark:border-gray-900/50
             ${block.role === 'assistant' ? 'bg-custom-gray dark:bg-gray-900' : 'bg-white dark:bg-gray-850'}`}>
-          <div className="text-base md:max-w-2xl lg:max-w-3xl xl:max-w-4xl 2xl:max-w-5xl 3xl:max-w-6xl 4xl:max-w7xl p-4 flex lg:px-0 m-auto flex-col">
+          <div className="text-base md:max-w-2xl lg:max-w-3xl xl:max-w-4xl 2xl:max-w-5xl 3xl:max-w-6xl 4xl:max-w7xl p-2 flex lg:px-0 m-auto flex-col">
               <div className="w-full flex">
-                  <div className="w-[30px] flex flex-col relative items-end">
+                  <div className="w-[30px] flex flex-col relative items-end mr-4">
                       <div className="relative flex h-[30px] w-[30px] p-0 rounded-sm items-center justify-center">
                           {/* Main Icon */}
                           {block.role === 'user' ? (
@@ -133,7 +133,7 @@ const ChatBlock: React.FC<Props> = ({block, loading, isLastBlock}) => {
                   </div>
               </div>
               {!(isLastBlock && loading) && (
-                <div id={`action-block-${block.id}`} className="flex justify-start items-center ml-8">
+                <div id={`action-block-${block.id}`} className="flex justify-start items-center ml-10">
                     {block.role === 'assistant' && (
                       <TextToSpeechButton content={block.content}/>
                     )}

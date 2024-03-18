@@ -1,8 +1,11 @@
-
-.chat-action-button:hover svg path {
+.chat-action-button:hover svg path,
+.chat-action-button:hover span {
+    color: black;
     stroke: black;
 }
 
-.dark .chat-action-button:hover svg path {
+.dark .chat-action-button:hover svg path,
+.dark .chat-action-button:hover span {
+    color: white;
     stroke: white;
 }
