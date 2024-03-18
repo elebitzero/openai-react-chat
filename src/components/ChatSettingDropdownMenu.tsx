@@ -257,7 +257,7 @@ const ChatSettingDropdownMenu: React.FC<ChatSettingDropdownMenuProps> = ({
                       className="inline-flex justify-center p-2 text-gray-400 hover:text-gray-500 dark:text-gray-200 dark:hover:text-gray-400"
                       onClick={() => setIsDialogOpen(false)}
                     >
-                      <XMarkIcon className="w-6 h-6" aria-hidden="true"/>
+                      <XMarkIcon className="w-8 h-8" aria-hidden="true"/>
                     </button>
                   </div>
                   <div className="mt-2">
