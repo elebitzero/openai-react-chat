@@ -207,7 +207,7 @@ export class ChatService {
                 }
             } catch (error) {
                 if (error instanceof Error && error.name === 'AbortError') {
-                    NotificationService.handleUnexpectedError(error,'Stream reading was aborted.');
+                    // User aborted the stream, so no need to propagate an error.
                 } else if (error instanceof Error) {
                     NotificationService.handleUnexpectedError(error,'Error reading streamed response.');
                 } else {
