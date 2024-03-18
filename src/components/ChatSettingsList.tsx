@@ -31,7 +31,7 @@ const ChatSettingsList: React.FC<ChatSettingsListProps> = ({ chatSettings }) => 
               {(setting.icon && setting.icon.data) ? (
                 <img src={setting.icon.data} alt="" className="h-full w-full"/>
               ) : (
-                <CubeIcon className="h-full w-full text-gray-900 dark:text-gray-200"/>
+                <CubeIcon className="h-full w-full text-gray-900"/>
               )}
             </div>
           </div>
