@@ -18,6 +18,8 @@
   "seed-header": "Seed",
   "temperature-header": "Temperatur",
   "top-p-header": "Top P",
+  "speed-header": "Geschwindigkeit",
+  "voice-header": "Stimme",
   "select-a-model": "Modell auswählen",
   "show-more-models": "Mehr Modelle anzeigen",
   "show-fewer-models": "Weniger Modelle anzeigen",

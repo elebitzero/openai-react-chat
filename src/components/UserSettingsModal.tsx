@@ -220,7 +220,7 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({isVisible, onClose
                 <div className={`${activeTab === Tab.SPEECH_TAB ? 'flex flex-col flex-1' : 'hidden'}`}>
                   <div className="flex flex-col flex-1">
                     <div className="setting-panel flex justify-between">
-                      <label htmlFor="speech-model">Model</label>
+                      <label htmlFor="speech-model">{t('model-header')}</label>
                       <select id="speech-model"
                               className="custom-select dark:custom-select border-gray-300 border rounded p-2 dark:bg-gray-800 dark:text-white dark:border-gray-600"
                               value={userSettings.speechModel || undefined}
@@ -230,7 +230,7 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({isVisible, onClose
                       </select>
                     </div>
                     <div className="setting-panel flex justify-between">
-                      <label htmlFor="voice">Voice</label>
+                      <label htmlFor="voice">{t('voice-header')}</label>
                       <select id="voice"
                               className="custom-select dark:custom-select border-gray-300 border rounded p-2 dark:bg-gray-800 dark:text-white dark:border-gray-600"
                               value={userSettings.speechVoice || undefined}
@@ -244,10 +244,14 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({isVisible, onClose
                       </select>
                     </div>
                     <div className="setting-panel flex items-center justify-between">
-                      <label htmlFor="speed">Speed</label>
+                      {userSettings.speechSpeed ? (
+                          <label htmlFor="speed">{t('speed-header')}</label>
+                      ) : (
+                          <span>{t('speed-header')}</span>
+                      )}
                       <EditableField<number | null>
                         readOnly={false}
-                        id="model"
+                        id="speed"
                         label=""
                         value={userSettings.speechSpeed}
                         defaultValue={1.0}

@@ -19,6 +19,8 @@
   "seed-header": "Seed",
   "temperature-header": "Temperature",
   "top-p-header": "Top P",
+  "speed-header": "Speed",
+  "voice-header": "Voice",
   "select-a-model": "Select a model",
   "show-more-models": "Show more models",
   "show-fewer-models": "Show fewer models",

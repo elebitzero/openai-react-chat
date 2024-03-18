@@ -18,6 +18,8 @@
   "seed-header": "시드",
   "temperature-header": "온도",
   "top-p-header": "상위 P",
+  "speed-header": "속도",
+  "voice-header": "목소리",
   "select-a-model": "모델 선택",
   "show-more-models": "더 많은 모델 표시",
   "show-fewer-models": "더 적은 모델 표시",

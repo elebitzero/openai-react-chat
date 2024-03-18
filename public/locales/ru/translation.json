@@ -18,6 +18,8 @@
   "seed-header": "Сид",
   "temperature-header": "Температура",
   "top-p-header": "Топ P",
+  "speed-header": "Скорость",
+  "voice-header": "Голос",
   "select-a-model": "Выберите модель",
   "show-more-models": "Показать больше моделей",
   "show-fewer-models": "Показать меньше моделей",

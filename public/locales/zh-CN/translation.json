@@ -18,6 +18,8 @@
   "seed-header": "种子",
   "temperature-header": "温度",
   "top-p-header": "Top P",
+  "speed-header": "速度",
+  "voice-header": "声音",
   "select-a-model": "选择一个模型",
   "show-more-models": "显示更多模型",
   "show-fewer-models": "显示较少模型",

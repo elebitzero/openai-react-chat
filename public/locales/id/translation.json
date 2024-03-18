@@ -18,6 +18,8 @@
   "seed-header": "Biji",
   "temperature-header": "Suhu",
   "top-p-header": "Top P",
+  "speed-header": "Kecepatan",
+  "voice-header": "Suara",
   "select-a-model": "Pilih model",
   "show-more-models": "Tampilkan lebih banyak model",
   "show-fewer-models": "Tampilkan lebih sedikit model",

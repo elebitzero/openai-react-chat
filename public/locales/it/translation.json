@@ -18,6 +18,8 @@
   "seed-header": "Seme",
   "temperature-header": "Temperatura",
   "top-p-header": "Top P",
+  "speed-header": "Velocità",
+  "voice-header": "Voce",
   "select-a-model": "Seleziona un modello",
   "show-more-models": "Mostra più modelli",
   "show-fewer-models": "Mostra meno modelli",

@@ -18,6 +18,8 @@
   "seed-header": "Ziarno",
   "temperature-header": "Temperatura",
   "top-p-header": "Top P",
+  "speed-header": "Prędkość",
+  "voice-header": "Głos",
   "select-a-model": "Wybierz model",
   "show-more-models": "Pokaż więcej modeli",
   "show-fewer-models": "Pokaż mniej modeli",

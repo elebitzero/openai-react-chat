@@ -18,6 +18,8 @@
   "seed-header": "बीज",
   "temperature-header": "तापमान",
   "top-p-header": "टॉप P",
+  "speed-header": "गति",
+  "voice-header": "आवाज़",
   "select-a-model": "मॉडल चुनें",
   "show-more-models": "और मॉडल दिखाएं",
   "show-fewer-models": "कम मॉडल दिखाएं",

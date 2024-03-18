@@ -18,6 +18,8 @@
   "seed-header": "Seed",
   "temperature-header": "Temperatur",
   "top-p-header": "Top P",
+  "speed-header": "Hastighet",
+  "voice-header": "Röst",
   "select-a-model": "Välj en modell",
   "show-more-models": "Visa fler modeller",
   "show-fewer-models": "Visa färre modeller",

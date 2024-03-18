@@ -18,6 +18,8 @@
   "seed-header": "Σπόρος",
   "temperature-header": "Θερμοκρασία",
   "top-p-header": "Top P",
+  "speed-header": "Ταχύτητα",
+  "voice-header": "Φωνή",
   "select-a-model": "Επιλέξτε ένα μοντέλο",
   "show-more-models": "Εμφάνιση περισσότερων μοντέλων",
   "show-fewer-models": "Εμφάνιση λιγότερων μοντέλων",

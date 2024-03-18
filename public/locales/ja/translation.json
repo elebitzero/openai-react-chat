@@ -18,6 +18,8 @@
   "seed-header": "シード",
   "temperature-header": "温度",
   "top-p-header": "トップP",
+  "speed-header": "速度",
+  "voice-header": "声",
   "select-a-model": "モデルを選択",
   "show-more-models": "モデルをさらに表示",
   "show-fewer-models": "モデルを減らす",

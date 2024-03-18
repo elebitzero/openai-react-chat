@@ -18,6 +18,8 @@
   "seed-header": "Hạt giống",
   "temperature-header": "Nhiệt độ",
   "top-p-header": "Top P",
+  "speed-header": "Tốc độ",
+  "voice-header": "Giọng nói",
   "select-a-model": "Chọn một mô hình",
   "show-more-models": "Hiển thị thêm mô hình",
   "show-fewer-models": "Hiển thị ít mô hình hơn",

@@ -18,6 +18,8 @@
   "seed-header": "ซีด",
   "temperature-header": "อุณหภูมิ",
   "top-p-header": "ท็อป P",
+  "speed-header": "ความเร็ว",
+  "voice-header": "เสียง",
   "select-a-model": "เลือกรุ่น",
   "show-more-models": "แสดงรุ่นเพิ่มเติม",
   "show-fewer-models": "แสดงรุ่นน้อยลง",
