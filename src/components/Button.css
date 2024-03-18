@@ -1,0 +1,8 @@
+
+.chat-action-button:hover svg path {
+    stroke: black;
+}
+
+.dark .chat-action-button:hover svg path {
+    stroke: white;
+}

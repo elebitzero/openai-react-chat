@@ -8,6 +8,9 @@ interface UserSettings {
   theme: Theme;
   model: string | null;
   instructions: string;
+  speechModel: string | null;
+  speechVoice: string | null;
+  speechSpeed: number | null;
 }
 
 const defaultUserSettings: UserSettings = {
@@ -15,6 +18,9 @@ const defaultUserSettings: UserSettings = {
   theme: 'light',
   model: null,
   instructions: '',
+  speechModel: 'tts-1',
+  speechVoice: 'echo',
+  speechSpeed: 1.0
 };
 
 const determineEffectiveTheme = (userTheme: UserTheme): Theme => {
@@ -42,7 +48,10 @@ export const UserProvider = ({children}: UserProviderProps) => {
     const storedUserTheme: Theme | null = localStorage.getItem('theme') as Theme | null;
     const model = localStorage.getItem('defaultModel');
     const instructions = localStorage.getItem('defaultInstructions') || '';
-
+    const speechModel =  localStorage.getItem('defaultSpeechModel');
+    const speechVoice =  localStorage.getItem('defaultSpeechVoice');
+    const speechSpeed =  Number(localStorage.getItem('defaultSpeechSpeed'));
+    
     const effectiveTheme = determineEffectiveTheme(storedUserTheme || 'system');
 
     return {
@@ -50,6 +59,9 @@ export const UserProvider = ({children}: UserProviderProps) => {
       theme: effectiveTheme,
       model: model || null,
       instructions: instructions,
+      speechModel: speechModel,
+      speechVoice: speechVoice,
+      speechSpeed: speechSpeed
     };
   });
 
@@ -116,6 +128,30 @@ export const UserProvider = ({children}: UserProviderProps) => {
       document.body.classList.remove('dark');
     }
   };
+
+  useEffect(() => {
+    if (userSettings.speechModel === null || userSettings.speechModel === '') {
+      localStorage.removeItem('defaultSpeechModel');
+    } else {
+      localStorage.setItem('defaultSpeechModel', userSettings.speechModel);
+    }
+  }, [userSettings.speechModel]);
+
+  useEffect(() => {
+    if (userSettings.speechVoice === null || userSettings.speechVoice === '') {
+      localStorage.removeItem('defaultSpeechVoice');
+    } else {
+      localStorage.setItem('defaultSpeechVoice', userSettings.speechVoice);
+    }
+  }, [userSettings.speechVoice]);
+
+  useEffect(() => {
+    if (userSettings.speechSpeed === null || userSettings.speechSpeed === undefined || userSettings.speechSpeed < 0.25 || userSettings.speechSpeed > 4.0) {
+      localStorage.removeItem('defaultSpeechSpeed');
+    } else {
+      localStorage.setItem('defaultSpeechSpeed', String(userSettings.speechSpeed));
+    }
+  }, [userSettings.speechSpeed]);
 
   return (
     <UserContext.Provider value={{userSettings, setUserSettings}}>

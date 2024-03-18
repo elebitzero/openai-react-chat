@@ -140,14 +140,6 @@ textarea:focus-visible {
     resize: none;
 }
 
-.copy-button:hover svg path {
-    stroke: black;
-}
-
-.dark .copy-button:hover svg path {
-    stroke: white;
-}
-
 .regenerate-button:hover svg path {
     stroke: black;
 }

@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import {CheckIcon, ClipboardIcon} from "@heroicons/react/24/outline";
 import {iconProps} from "../svg";
 import {useTranslation} from 'react-i18next';
+import "./Button.css"
 
 export enum CopyButtonMode {
     Normal = "normal",
@@ -11,9 +12,10 @@ export enum CopyButtonMode {
 interface CopyButtonProps {
     text: string;
     mode?: CopyButtonMode;
+    className?: string;
 }
 
-const CopyButton = ({text, mode = CopyButtonMode.Normal}: CopyButtonProps) => {
+const CopyButton = ({text, mode = CopyButtonMode.Normal,className=''}: CopyButtonProps) => {
     const { t } = useTranslation();
     const [isCopied, setIsCopied] = useState(false);
 
@@ -45,19 +47,20 @@ const CopyButton = ({text, mode = CopyButtonMode.Normal}: CopyButtonProps) => {
     };
 
     return (
-        <button className="flex ml-auto gap-2" onClick={handleCopyClick}>
-            {isCopied ? (
-                <>
-                    <CheckIcon {...iconProps} />
-                    {mode === CopyButtonMode.Normal ? <span>{t('copied')}</span> : null}
-                </>
-            ) : (
-                <>
-                    <ClipboardIcon {...iconProps} />
-                    {mode === CopyButtonMode.Normal ? <span>{t('copy-code')}</span> : null}
-                </>
-            )}
-        </button>
+      <button className={`chat-action-button text-gray-400 inline-flex items-center justify-center p-2 ml-auto gap-2 ${className}`} onClick={handleCopyClick}>
+          {isCopied ? (
+            <>
+                <CheckIcon {...iconProps} />
+                {mode === CopyButtonMode.Normal ? <span>{t('copied')}</span> : null}
+            </>
+          ) : (
+            <>
+                <ClipboardIcon {...iconProps} />
+                {mode === CopyButtonMode.Normal ? <span>{t('copy-code')}</span> : null}
+            </>
+          )}
+      </button>
+
     );
 };
 

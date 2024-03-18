@@ -129,7 +129,10 @@ const Chat: React.FC<Props> = ({chatBlocks, onChatScroll, allowAutoScroll, model
                   </div>
               </div>
               {chatBlocks.map((block, index) => (
-                <ChatBlock key={`chat-block-${block.id}`} block={block} loading={index === chatBlocks.length - 1 && loading}/>
+                <ChatBlock key={`chat-block-${block.id}`}
+                           block={block}
+                           loading={index === chatBlocks.length - 1 && loading}
+                           isLastBlock={index === chatBlocks.length - 1} />
               ))}
               <div className="w-full h-24 flex-shrink-0"></div>
           </div>
