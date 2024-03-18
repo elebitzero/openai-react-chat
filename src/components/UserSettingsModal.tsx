@@ -1,5 +1,11 @@
 import React, {useState, useContext, useEffect, useRef} from 'react';
-import {XMarkIcon} from "@heroicons/react/24/outline";
+import {
+  CircleStackIcon,
+  Cog6ToothIcon,
+  DocumentTextIcon,
+  SpeakerWaveIcon,
+  XMarkIcon
+} from "@heroicons/react/24/outline";
 import {Theme, UserContext} from '../UserContext';
 import ModelSelect from './ModelSelect';
 import {EditableField} from "./EditableField";
@@ -11,6 +17,7 @@ import {useTranslation} from 'react-i18next';
 import {Transition} from '@headlessui/react';
 import EditableInstructions from './EditableInstructions';
 import SpeechSpeedSlider from './SpeechSpeedSlider';
+import {iconProps} from "../svg";
 
 interface UserSettingsModalProps {
   isVisible: boolean;
@@ -144,20 +151,24 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({isVisible, onClose
             <div id='user-settings-content' className="flex flex-1">
               <div className="border-r border-gray-200 flex flex-col">
                 <div
-                  className={`cursor-pointer p-4 ${activeTab === Tab.GENERAL_TAB ? 'bg-gray-200 dark:bg-gray-700' : ''}`}
-                  onClick={() => setActiveTab(Tab.GENERAL_TAB)}>General
+                  className={`cursor-pointer p-4 flex items-center ${activeTab === Tab.GENERAL_TAB ? 'bg-gray-200 dark:bg-gray-700' : ''}`}
+                  onClick={() => setActiveTab(Tab.GENERAL_TAB)}>
+                  <Cog6ToothIcon className="w-4 h-4 mr-3" aria-hidden="true"/>General
                 </div>
                 <div
-                  className={`cursor-pointer p-4 ${activeTab === Tab.INSTRUCTIONS_TAB ? 'bg-gray-200 dark:bg-gray-700' : ''}`}
-                  onClick={() => setActiveTab(Tab.INSTRUCTIONS_TAB)}>Instructions
+                  className={`cursor-pointer p-4 flex items-center ${activeTab === Tab.INSTRUCTIONS_TAB ? 'bg-gray-200 dark:bg-gray-700' : ''}`}
+                  onClick={() => setActiveTab(Tab.INSTRUCTIONS_TAB)}>
+                  <DocumentTextIcon className="w-4 h-4 mr-3" aria-hidden="true"/>Instructions
                 </div>
                 <div
-                  className={`cursor-pointer p-4 ${activeTab === Tab.SPEECH_TAB ? 'bg-gray-200 dark:bg-gray-700' : ''}`} // Added new Tab
-                  onClick={() => setActiveTab(Tab.SPEECH_TAB)}>Speech
+                  className={`cursor-pointer p-4 flex items-center ${activeTab === Tab.SPEECH_TAB ? 'bg-gray-200 dark:bg-gray-700' : ''}`} // Added new Tab
+                  onClick={() => setActiveTab(Tab.SPEECH_TAB)}>
+                  <SpeakerWaveIcon className="w-4 h-4 mr-3" aria-hidden="true"/>Speech
                 </div>
                 <div
-                  className={`cursor-pointer p-4 ${activeTab === Tab.STORAGE_TAB ? 'bg-gray-200 dark:bg-gray-700' : ''}`}
-                  onClick={() => setActiveTab(Tab.STORAGE_TAB)}>Storage
+                  className={`cursor-pointer p-4 flex items-center ${activeTab === Tab.STORAGE_TAB ? 'bg-gray-200 dark:bg-gray-700' : ''}`}
+                  onClick={() => setActiveTab(Tab.STORAGE_TAB)}>
+                  <CircleStackIcon className="w-4 h-4 mr-3" aria-hidden="true"/>Storage
                 </div>
               </div>
               <div className="flex-1 p-4 flex flex-col">
@@ -266,9 +277,10 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({isVisible, onClose
                 <div className={`${activeTab === Tab.STORAGE_TAB ? 'flex flex-col flex-1' : 'hidden'}`}>
                   <h3 className="text-lg mb-4">Storage</h3>
                   <p>Chats are stored locally in your browser's IndexedDB.</p>
-                  <p>Usage: {renderStorageInfo(formatBytesToMB(storageUsage))} of
-                    {renderStorageInfo(formatBytesToMB(storageQuota))}
-                    ({renderStorageInfo(percentageUsed ? `${percentageUsed.toFixed(2)}%` : undefined)})
+                  <p>
+                    Usage: {`${renderStorageInfo(formatBytesToMB(storageUsage))} of
+                    ${renderStorageInfo(formatBytesToMB(storageQuota))}
+                    (${renderStorageInfo(percentageUsed ? `${percentageUsed.toFixed(2)}%` : undefined)})`}
                   </p>
                   <button onClick={handleDeleteAllConversations}
                           className="mt-4 py-2 px-4 bg-red-500 text-white rounded hover:bg-red-700">Delete All Chats
