@@ -1,7 +1,8 @@
 import React, {forwardRef, useEffect, useImperativeHandle, useRef, useState} from 'react';
 import {ArrowsPointingOutIcon} from "@heroicons/react/24/outline";
 import {iconProps} from "../svg";
-import Button from './Button'; // Adjust the import path as necessary
+import Button from './Button';
+import {useTranslation} from 'react-i18next';
 
 interface EditableInstructionsProps {
   initialValue: string;
@@ -17,6 +18,7 @@ const EditableInstructions = forwardRef(({
                                            className = '',
                                            onChange,
                                          }: EditableInstructionsProps, ref) => {
+  const {t} = useTranslation();
   const textarea1Ref = useRef<HTMLTextAreaElement>(null);
   const textarea2Ref = useRef<HTMLTextAreaElement>(null);
   const currentValueRef = useRef<string>(initialValue);
@@ -118,7 +120,7 @@ const EditableInstructions = forwardRef(({
                 variant="secondary"
                 className="mr-2"
               >
-                Close
+                {t('close-button')}
               </Button>
             </div>
           </div>

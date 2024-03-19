@@ -142,7 +142,7 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({isVisible, onClose
                className="flex flex-col bg-white dark:bg-gray-850 rounded-lg w-full max-w-md mx-auto overflow-hidden"
                style={{minHeight: "640px", minWidth: "43em"}}>
             <div id='user-settings-header' className="flex justify-between items-center border-b border-gray-200 p-4">
-              <h1 className="text-lg font-semibold">Settings</h1>
+              <h1 className="text-lg font-semibold">{t('settings-header')}</h1>
               <button onClick={handleClose}
                       className="text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100">
                 <XMarkIcon className="h-8 w-8" aria-hidden="true"/>
@@ -153,29 +153,29 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({isVisible, onClose
                 <div
                   className={`cursor-pointer p-4 flex items-center ${activeTab === Tab.GENERAL_TAB ? 'bg-gray-200 dark:bg-gray-700' : ''}`}
                   onClick={() => setActiveTab(Tab.GENERAL_TAB)}>
-                  <Cog6ToothIcon className="w-4 h-4 mr-3" aria-hidden="true"/>General
+                  <Cog6ToothIcon className="w-4 h-4 mr-3" aria-hidden="true"/>{t('general-tab')}
                 </div>
                 <div
                   className={`cursor-pointer p-4 flex items-center ${activeTab === Tab.INSTRUCTIONS_TAB ? 'bg-gray-200 dark:bg-gray-700' : ''}`}
                   onClick={() => setActiveTab(Tab.INSTRUCTIONS_TAB)}>
-                  <DocumentTextIcon className="w-4 h-4 mr-3" aria-hidden="true"/>Instructions
+                  <DocumentTextIcon className="w-4 h-4 mr-3" aria-hidden="true"/>{t('instructions-tab')}
                 </div>
                 <div
                   className={`cursor-pointer p-4 flex items-center ${activeTab === Tab.SPEECH_TAB ? 'bg-gray-200 dark:bg-gray-700' : ''}`} // Added new Tab
                   onClick={() => setActiveTab(Tab.SPEECH_TAB)}>
-                  <SpeakerWaveIcon className="w-4 h-4 mr-3" aria-hidden="true"/>Speech
+                  <SpeakerWaveIcon className="w-4 h-4 mr-3" aria-hidden="true"/>{t('speech-tab')}
                 </div>
                 <div
                   className={`cursor-pointer p-4 flex items-center ${activeTab === Tab.STORAGE_TAB ? 'bg-gray-200 dark:bg-gray-700' : ''}`}
                   onClick={() => setActiveTab(Tab.STORAGE_TAB)}>
-                  <CircleStackIcon className="w-4 h-4 mr-3" aria-hidden="true"/>Storage
+                  <CircleStackIcon className="w-4 h-4 mr-3" aria-hidden="true"/>{t('storage-tab')}
                 </div>
               </div>
               <div className="flex-1 p-4 flex flex-col">
                 <div className={`${activeTab === Tab.GENERAL_TAB ? 'flex flex-col flex-1' : 'hidden'}`}>
                   <div className="border-b border-token-border-light pb-3 last-of-type:border-b-0">
                     <div className="flex items-center justify-between setting-panel">
-                      <label htmlFor="theme">Theme</label>
+                      <label htmlFor="theme">{t('theme-label')}</label>
                       <select id='theme' name='theme'
                               className="custom-select dark:custom-select border-gray-300 border rounded p-2
                                 dark:bg-gray-800 dark:text-white dark:border-gray-600"
@@ -183,9 +183,9 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({isVisible, onClose
                               onChange={(e) => {
                                 setUserSettings({...userSettings, userTheme: e.target.value as Theme});
                               }}>
-                        <option value="dark">Dark</option>
-                        <option value="light">Light</option>
-                        <option value="system">System</option>
+                        <option value="dark">{t('dark-option')}</option>
+                        <option value="light">{t('light-option')}</option>
+                        <option value="system">{t('system-option')}</option>
                       </select>
 
                     </div>
@@ -275,7 +275,7 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({isVisible, onClose
                   </div>
                 </div>
                 <div className={`${activeTab === Tab.STORAGE_TAB ? 'flex flex-col flex-1' : 'hidden'}`}>
-                  <h3 className="text-lg mb-4">Storage</h3>
+                  <h3 className="text-lg mb-4">{t('storage-header')}</h3>
                   <p>Chats are stored locally in your browser's IndexedDB.</p>
                   <p>
                     Usage: {`${renderStorageInfo(formatBytesToMB(storageUsage))} of
@@ -283,7 +283,7 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({isVisible, onClose
                     (${renderStorageInfo(percentageUsed ? `${percentageUsed.toFixed(2)}%` : undefined)})`}
                   </p>
                   <button onClick={handleDeleteAllConversations}
-                          className="mt-4 py-2 px-4 bg-red-500 text-white rounded hover:bg-red-700">Delete All Chats
+                          className="mt-4 py-2 px-4 bg-red-500 text-white rounded hover:bg-red-700">{t('delete-all-chats-button')}
                   </button>
                 </div>
               </div>
