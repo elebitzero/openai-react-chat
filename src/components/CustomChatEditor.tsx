@@ -25,8 +25,9 @@ const CustomChatEditor: React.FC = () => {
   const [chatSettings, setChatSettings] = useState<ChatSettings>(initialChatSettings);
 
   useEffect(() => {
-    const stateChatSetting = location.state?.initialChatSetting as ChatSettings | undefined;
+    let stateChatSetting = location.state?.initialChatSetting as ChatSettings | undefined;
     if (stateChatSetting) {
+      stateChatSetting.id = Date.now();
       setChatSettings(stateChatSetting);
     } else if (isEditing && id) {
       const fetchChatSettings = async () => {

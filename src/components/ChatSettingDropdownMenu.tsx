@@ -10,6 +10,7 @@ import ChatSettingsForm from './ChatSettingsForm';
 import {useTranslation} from 'react-i18next';
 import ChatSettingsDB, {deleteChatSetting, updateShowInSidebar} from '../service/ChatSettingsDB';
 import {NotificationService} from "../service/NotificationService";
+import ConversationService from '../service/ConversationService';
 
 interface ChatSettingDropdownMenuProps {
   chatSetting: ChatSettings | undefined;
@@ -50,10 +51,43 @@ const ChatSettingDropdownMenu: React.FC<ChatSettingDropdownMenuProps> = ({
   const onDelete = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.stopPropagation();
     if (chatSetting) {
-      await deleteChatSetting(chatSetting.id);
-      NotificationService.handleSuccess(`Custom Chat ${chatSetting.name} deleted.`);
+      const gid = chatSetting.id;
+      try {
+        const conversationCount = await ConversationService.countConversationsByGid(gid);
+
+        let proceedWithDeletion = true;
+
+        if (conversationCount > 0 && gid > 0) {
+          proceedWithDeletion = confirm(`Deleting this chat setting will also delete ${conversationCount} conversations associated with it. Do you want to proceed?`);
+        }
+
+        if (proceedWithDeletion) {
+          if (gid > 0) {
+            try {
+              await ConversationService.deleteConversationsByGid(gid);
+            } catch (error) {
+              console.error('Failed to delete related conversations:', error);
+              NotificationService.handleError('Failed to delete related conversations. Please try again.');
+              return;
+            }
+          }
+
+          try {
+            await deleteChatSetting(gid);
+            // NotificationService.handleSuccess(`Custom Chat ${chatSetting.name} and associated conversations deleted.`);
+          } catch (error) {
+            console.error('Failed to delete chat setting:', error);
+            NotificationService.handleError('Failed to delete chat setting. Please try again.');
+          }
+        }
+      } catch (error) {
+        console.error('Error during deletion process:', error);
+        NotificationService.handleError('An error occurred. Please try again.');
+      }
     }
   }
+
+
 
   const onHideFromSidebar = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.stopPropagation();

@@ -89,6 +89,19 @@ class ConversationService {
     }
   }
 
+  static async countConversationsByGid(id: number): Promise<number> {
+    return db.conversations
+      .where('gid').equals(id)
+      .count();
+  }
+
+  static async deleteConversationsByGid(id: number): Promise<void> {
+    const conversationsToDelete = db.conversations
+      .where('gid').equals(id)
+
+    await conversationsToDelete.delete();
+  }
+
 }
 
 export default ConversationService;
