@@ -3,6 +3,8 @@
   "model": "Mô hình:",
   "non-applicable": "Không áp dụng",
   "default-label": "(Mặc định)",
+  "deterministic-label": "Xác định",
+  "creative-label": "Sáng tạo",
   "open-settings": "Mở cài đặt",
   "example-chats": "Ví dụ về Trò chuyện Tùy chỉnh",
   "my-chats": "Trò chuyện Tùy chỉnh của Tôi",
@@ -12,6 +14,7 @@
   "hide-sidebar": "Ẩn khỏi thanh bên",
   "icon-header": "Biểu tượng",
   "name-header": "Tên",
+  "enter-name-placeholder": "Nhập tên",
   "description-header": "Mô tả",
   "instructions-header": "Hướng dẫn",
   "model-header": "Mô hình",
@@ -39,5 +42,8 @@
   "close-sidebar": "Đóng thanh bên",
   "open-sidebar": "Mở thanh bên",
   "send-message": "Gửi tin nhắn",
-  "cancel-output": "Hủy bỏ"
+  "cancel-output": "Hủy bỏ",
+  "cancel-button": "Hủy bỏ",
+  "ok-button": "OK",
+  "change-button": "Thay đổi"
 }

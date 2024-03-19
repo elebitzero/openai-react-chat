@@ -3,6 +3,8 @@
   "model": "Модель:",
   "non-applicable": "Н/П",
   "default-label": "(По умолчанию)",
+  "deterministic-label": "Детерминированный",
+  "creative-label": "Творческий",
   "open-settings": "Открыть настройки",
   "example-chats": "Примеры Пользовательских Чатов",
   "my-chats": "Мои Пользовательские Чаты",
@@ -12,6 +14,7 @@
   "hide-sidebar": "Скрыть с боковой панели",
   "icon-header": "Иконка",
   "name-header": "Имя",
+  "enter-name-placeholder": "Введите имя",
   "description-header": "Описание",
   "instructions-header": "Инструкции",
   "model-header": "Модель",
@@ -39,5 +42,8 @@
   "close-sidebar": "Закрыть боковую панель",
   "open-sidebar": "Открыть боковую панель",
   "send-message": "Отправить сообщение",
-  "cancel-output": "Отмена"
+  "cancel-output": "Отмена",
+  "cancel-button": "Отмена",
+  "ok-button": "ОК",
+  "change-button": "Изменить"
 }

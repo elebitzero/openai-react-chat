@@ -3,6 +3,8 @@
   "model": "모델:",
   "non-applicable": "해당 없음",
   "default-label": "(기본값)",
+  "deterministic-label": "결정론적",
+  "creative-label": "창의적",
   "open-settings": "설정 열기",
   "example-chats": "예제 사용자 정의 채팅",
   "my-chats": "내 사용자 정의 채팅",
@@ -12,6 +14,7 @@
   "hide-sidebar": "사이드바에서 숨기기",
   "icon-header": "아이콘",
   "name-header": "이름",
+  "enter-name-placeholder": "이름 입력",
   "description-header": "설명",
   "instructions-header": "지침",
   "model-header": "모델",
@@ -39,5 +42,8 @@
   "close-sidebar": "사이드바 닫기",
   "open-sidebar": "사이드바 열기",
   "send-message": "메시지 보내기",
-  "cancel-output": "취소"
+  "cancel-output": "취소",
+  "cancel-button": "취소",
+  "ok-button": "확인",
+  "change-button": "변경"
 }

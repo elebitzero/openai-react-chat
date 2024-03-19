@@ -3,6 +3,8 @@
   "model": "โมเดล:",
   "non-applicable": "ไม่มีข้อมูล",
   "default-label": "(ค่าเริ่มต้น)",
+  "deterministic-label": "ลักษณะกำหนด",
+  "creative-label": "สร้างสรรค์",
   "open-settings": "เปิดการตั้งค่า",
   "example-chats": "ตัวอย่างแชทที่กำหนดเอง",
   "my-chats": "แชทที่กำหนดเองของฉัน",
@@ -12,6 +14,7 @@
   "hide-sidebar": "ซ่อนจากแถบด้านข้าง",
   "icon-header": "ไอคอน",
   "name-header": "ชื่อ",
+  "enter-name-placeholder": "กรอกชื่อ",
   "description-header": "คำอธิบาย",
   "instructions-header": "คำแนะนำ",
   "model-header": "โมเดล",
@@ -39,5 +42,8 @@
   "close-sidebar": "ปิดแถบข้าง",
   "open-sidebar": "เปิดแถบข้าง",
   "send-message": "ส่งข้อความ",
-  "cancel-output": "ยกเลิก"
+  "cancel-output": "ยกเลิก",
+  "cancel-button": "ยกเลิก",
+  "ok-button": "ตกลง",
+  "change-button": "เปลี่ยน"
 }

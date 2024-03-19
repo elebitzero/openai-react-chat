@@ -3,6 +3,8 @@
   "model": "Modell:",
   "non-applicable": "Ej tillämplig",
   "default-label": "(Standard)",
+  "deterministic-label": "Deterministisk",
+  "creative-label": "Kreativ",
   "open-settings": "Öppna inställningar",
   "example-chats": "Exempel på Anpassade Chattar",
   "my-chats": "Mina Anpassade Chattar",
@@ -12,6 +14,7 @@
   "hide-sidebar": "Dölj från sidofältet",
   "icon-header": "Ikon",
   "name-header": "Namn",
+  "enter-name-placeholder": "Ange namn",
   "description-header": "Beskrivning",
   "instructions-header": "Instruktioner",
   "model-header": "Modell",
@@ -39,5 +42,8 @@
   "close-sidebar": "Stäng sidofältet",
   "open-sidebar": "Öppna sidofältet",
   "send-message": "Skicka meddelande",
-  "cancel-output": "Avbryt"
+  "cancel-output": "Avbryt",
+  "cancel-button": "Avbryt",
+  "ok-button": "OK",
+  "change-button": "Ändra"
 }

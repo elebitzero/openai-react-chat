@@ -3,6 +3,8 @@
   "model": "Model:",
   "non-applicable": "Tdk Berlaku",
   "default-label": "(Bawaan)",
+  "deterministic-label": "Deterministik",
+  "creative-label": "Kreatif",
   "open-settings": "Buka pengaturan",
   "example-chats": "Contoh Chat Kustom",
   "my-chats": "Chat Kustom Saya",
@@ -12,6 +14,7 @@
   "hide-sidebar": "Sembunyikan dari sidebar",
   "icon-header": "Ikon",
   "name-header": "Nama",
+  "enter-name-placeholder": "Masukkan nama",
   "description-header": "Deskripsi",
   "instructions-header": "Instruksi",
   "model-header": "Model",
@@ -39,5 +42,8 @@
   "close-sidebar": "Tutup sidebar",
   "open-sidebar": "Buka sidebar",
   "send-message": "Kirim pesan",
-  "cancel-output": "Batal"
+  "cancel-output": "Batal",
+  "cancel-button": "Batal",
+  "ok-button": "OK",
+  "change-button": "Ubah"
 }

@@ -3,6 +3,8 @@
   "model": "Modello:",
   "non-applicable": "N/A",
   "default-label": "(Predefinito)",
+  "deterministic-label": "Deterministico",
+  "creative-label": "Creativo",
   "open-settings": "Apri impostazioni",
   "example-chats": "Esempio Chat Personalizzate",
   "my-chats": "Le Mie Chat Personalizzate",
@@ -12,6 +14,7 @@
   "hide-sidebar": "Nascondi dalla barra laterale",
   "icon-header": "Icona",
   "name-header": "Nome",
+  "enter-name-placeholder": "Inserisci nome",
   "description-header": "Descrizione",
   "instructions-header": "Istruzioni",
   "model-header": "Modello",
@@ -39,5 +42,8 @@
   "close-sidebar": "Chiudi la barra laterale",
   "open-sidebar": "Apri la barra laterale",
   "send-message": "Invia messaggio",
-  "cancel-output": "Annulla"
+  "cancel-output": "Annulla",
+  "cancel-button": "Annulla",
+  "ok-button": "OK",
+  "change-button": "Cambia"
 }

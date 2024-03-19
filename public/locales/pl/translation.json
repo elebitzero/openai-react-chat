@@ -3,6 +3,8 @@
   "model": "Model:",
   "non-applicable": "N/D",
   "default-label": "(Domyślnie)",
+  "deterministic-label": "Deterministyczny",
+  "creative-label": "Kreatywny",
   "open-settings": "Otwórz ustawienia",
   "example-chats": "Przykładowe Niestandardowe Czaty",
   "my-chats": "Moje Niestandardowe Czaty",
@@ -12,6 +14,7 @@
   "hide-sidebar": "Ukryj z paska bocznego",
   "icon-header": "Ikona",
   "name-header": "Nazwa",
+  "enter-name-placeholder": "Wpisz nazwę",
   "description-header": "Opis",
   "instructions-header": "Instrukcje",
   "model-header": "Model",
@@ -39,5 +42,8 @@
   "close-sidebar": "Zamknij pasek boczny",
   "open-sidebar": "Otwórz pasek boczny",
   "send-message": "Wyślij wiadomość",
-  "cancel-output": "Anuluj"
+  "cancel-output": "Anuluj",
+  "cancel-button": "Anuluj",
+  "ok-button": "OK",
+  "change-button": "Zmień"
 }

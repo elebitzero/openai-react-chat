@@ -3,6 +3,8 @@
   "model": "Μοντέλο:",
   "non-applicable": "Δ/Υ",
   "default-label": "(Προεπιλογή)",
+  "deterministic-label": "Δετερμινιστικό",
+  "creative-label": "Δημιουργικό",
   "open-settings": "Άνοιγμα ρυθμίσεων",
   "example-chats": "Παραδείγματα Προσαρμοσμένων Συνομιλιών",
   "my-chats": "Οι Προσαρμοσμένες Συνομιλίες μου",
@@ -12,6 +14,7 @@
   "hide-sidebar": "Απόκρυψη από την πλευρική στήλη",
   "icon-header": "Εικονίδιο",
   "name-header": "Όνομα",
+  "enter-name-placeholder": "Εισάγετε όνομα",
   "description-header": "Περιγραφή",
   "instructions-header": "Οδηγίες",
   "model-header": "Μοντέλο",
@@ -39,5 +42,8 @@
   "close-sidebar": "Κλείσιμο πλευρικής μπάρας",
   "open-sidebar": "Άνοιγμα πλευρικής μπάρας",
   "send-message": "Αποστολή μηνύματος",
-  "cancel-output": "Άκυρο"
+  "cancel-output": "Άκυρο",
+  "cancel-button": "Άκυρο",
+  "ok-button": "Εντάξει",
+  "change-button": "Αλλαγή"
 }

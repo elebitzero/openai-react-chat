@@ -1,6 +1,7 @@
 import React from 'react';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
+import {useTranslation} from 'react-i18next';
 
 interface TemperatureSliderProps {
   id: string;
@@ -21,6 +22,8 @@ const temperatureMarks = {
 };
 
 const TemperatureSlider: React.FC<TemperatureSliderProps> = ({ value, onValueChange }) => {
+
+  const { t } = useTranslation();
   const handleChange = (value: number | number[] | null) => {
     // Since your application expects a single number, ensure only a number is handled
     if (value === null) {
@@ -40,8 +43,8 @@ const TemperatureSlider: React.FC<TemperatureSliderProps> = ({ value, onValueCha
       <p className='mb-2'>Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
         We recommend altering this or top_p but not both.</p>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2px' }}>
-        <span className='text-gray-600' style={{ alignSelf: 'flex-start', fontSize: '12px' }}>Deterministic</span>
-        <span className='text-gray-600'  style={{ alignSelf: 'flex-end', fontSize: '12px' }}>Creative</span>
+        <span className='text-gray-600' style={{ alignSelf: 'flex-start', fontSize: '12px' }}>{t('deterministic-label')}</span>
+        <span className='text-gray-600'  style={{ alignSelf: 'flex-end', fontSize: '12px' }}>{t('creative-label')}</span>
       </div>
       <Slider
         className={'w-auto mr-2 ml-2 mb-6'}

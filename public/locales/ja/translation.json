@@ -3,6 +3,8 @@
   "model": "モデル:",
   "non-applicable": "該当なし",
   "default-label": "(デフォルト)",
+  "deterministic-label": "決定論的",
+  "creative-label": "創造的",
   "open-settings": "設定を開く",
   "example-chats": "カスタムチャットの例",
   "my-chats": "私のカスタムチャット",
@@ -12,6 +14,7 @@
   "hide-sidebar": "サイドバーから隠す",
   "icon-header": "アイコン",
   "name-header": "名前",
+  "enter-name-placeholder": "名前を入力",
   "description-header": "説明",
   "instructions-header": "指示",
   "model-header": "モデル",
@@ -39,5 +42,8 @@
   "close-sidebar": "サイドバーを閉じる",
   "open-sidebar": "サイドバーを開く",
   "send-message": "メッセージを送信",
-  "cancel-output": "キャンセル"
+  "cancel-output": "キャンセル",
+  "cancel-button": "キャンセル",
+  "ok-button": "OK",
+  "change-button": "変更"
 }

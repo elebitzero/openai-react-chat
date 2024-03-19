@@ -3,6 +3,8 @@
   "model": "模型：",
   "non-applicable": "不适用",
   "default-label": "(默认)",
+  "deterministic-label": "决定性",
+  "creative-label": "创造性",
   "open-settings": "打开设置",
   "example-chats": "自定义聊天示例",
   "my-chats": "我的自定义聊天",
@@ -12,6 +14,7 @@
   "hide-sidebar": "从侧边栏隐藏",
   "icon-header": "图标",
   "name-header": "名称",
+  "enter-name-placeholder": "输入名字",
   "description-header": "描述",
   "instructions-header": "说明",
   "model-header": "模型",
@@ -39,5 +42,8 @@
   "close-sidebar": "关闭侧边栏",
   "open-sidebar": "打开侧边栏",
   "send-message": "发送消息",
-  "cancel-output": "取消"
+  "cancel-output": "取消",
+  "cancel-button": "取消",
+  "ok-button": "确定",
+  "change-button": "更改"
 }
