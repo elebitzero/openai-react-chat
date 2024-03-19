@@ -72,7 +72,7 @@ const ExploreCustomChats: React.FC = () => {
           </div>
           <div>
             <div className="font-medium">Create a Custom Chat</div>
-            <div className="text-sm text-gray-600">Customize Chat Settings for a specific purpose.</div>
+            <div className="text-sm text-gray-600 dark:text-gray-400">Customize Chat Settings for a specific purpose.</div>
           </div>
         </button>
         <ChatSettingsList chatSettings={myChats}/>
