@@ -74,7 +74,7 @@ export function EditableField<T>({
           </span>
           {!readOnly && (
             <button className="text-blue-500 hover:text-blue-700 text-sm" onClick={handleEdit}>
-              Change
+              {t('change-button')}
             </button>
           )}
         </div>
@@ -83,11 +83,11 @@ export function EditableField<T>({
           <EditorComponent id={id} onValueChange={handleTempValueChange} value={tempValue} />
           <div className="flex justify-end space-x-2 mt-2">
             <button className="text-blue-500 hover:text-blue-700 text-sm" onClick={handleCancel}>
-              Cancel
+              {t('cancel-button')}
             </button>
             {!readOnly && (
               <button className="text-blue-500 hover:text-blue-700 text-sm" onClick={handleOk}>
-                OK
+                {t('ok-button')}
               </button>
             )}
           </div>

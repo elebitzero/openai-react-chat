@@ -80,7 +80,7 @@ const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({ chatSettings, readO
                     value={formData.name}
                     required={!readOnly}
                     onChange={handleInputChange}
-                    placeholder="Enter name"
+                    placeholder={t('enter-name-placeholder')}
                     autoComplete="name"
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 />}
