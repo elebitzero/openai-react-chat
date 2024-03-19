@@ -89,7 +89,7 @@ const EditableInstructions = forwardRef(({
         defaultValue={initialValue}
         placeholder={placeholder}
         onChange={handleChange}
-        className="resize-y overflow-y-auto w-full shadow appearance-none py-2 px-3 text-gray-700
+        className="resize-none overflow-y-auto w-full shadow appearance-none py-2 px-3 text-gray-700
                     dark:text-gray-300 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline
                     border border-gray-300 dark:border-gray-600 flex-1"
         spellCheck={false}
