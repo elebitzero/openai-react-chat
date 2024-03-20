@@ -18,6 +18,7 @@ import {Transition} from '@headlessui/react';
 import EditableInstructions from './EditableInstructions';
 import SpeechSpeedSlider from './SpeechSpeedSlider';
 import {iconProps} from "../svg";
+import { useConfirmDialog } from './ConfirmDialog';
 
 interface UserSettingsModalProps {
   isVisible: boolean;
@@ -36,6 +37,7 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({isVisible, onClose
   const dialogRef = useRef<HTMLDivElement>(null);
   const {userSettings, setUserSettings} = useContext(UserContext);
   const [activeTab, setActiveTab] = useState<Tab>(Tab.GENERAL_TAB);
+  const { showConfirmDialog, ConfirmDialog } = useConfirmDialog();
 
   const [storageUsage, setStorageUsage] = useState<number | undefined>();
   const [storageQuota, setStorageQuota] = useState<number | undefined>();
@@ -58,25 +60,25 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({isVisible, onClose
   };
 
   const handleDeleteAllConversations = async () => {
-    // Confirmation dialog to prevent accidental deletion
-    const isConfirmed = window.confirm('Are you sure you want to delete all conversations? This action cannot be undone.');
-
-    if (isConfirmed) {
-      try {
-        await ConversationService.deleteAllConversations();
-        onDeleteAllConversations();
-        NotificationService.handleSuccess("All conversations have been successfully deleted.");
-      } catch (error) {
-        console.error('Failed to delete all conversations:', error);
-        if (error instanceof Error) {
-          NotificationService.handleUnexpectedError(error, "Failed to delete all conversations");
-        } else {
-          // Handle the case where error is not an Error instance
-          // Perhaps log this situation or display a generic message
-          NotificationService.handleUnexpectedError(new Error('An unknown error occurred'), "Failed to delete all conversations");
+    showConfirmDialog({
+      message: 'Are you sure you want to delete all conversations? This action cannot be undone.',
+      confirmText: 'Delete',
+      confirmButtonVariant: 'critical',
+      onConfirm: async () => {
+        try {
+          await ConversationService.deleteAllConversations();
+          onDeleteAllConversations();
+          NotificationService.handleSuccess("All conversations have been successfully deleted.");
+        } catch (error) {
+          console.error('Failed to delete all conversations:', error);
+          if (error instanceof Error) {
+            NotificationService.handleUnexpectedError(error, "Failed to delete all conversations");
+          } else {
+            NotificationService.handleUnexpectedError(new Error('An unknown error occurred'), "Failed to delete all conversations");
+          }
         }
-      }
-    }
+      },
+    })
   };
 
   const handleClose = () => {
@@ -276,15 +278,23 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({isVisible, onClose
                 </div>
                 <div className={`${activeTab === Tab.STORAGE_TAB ? 'flex flex-col flex-1' : 'hidden'}`}>
                   <h3 className="text-lg mb-4">{t('storage-header')}</h3>
-                  <p>Chats are stored locally in your browser's IndexedDB.</p>
-                  <p>
-                    Usage: {`${renderStorageInfo(formatBytesToMB(storageUsage))} of
+                  <div className="setting-panel">
+                    <p>Chats are stored locally in your browser's IndexedDB.</p>
+                    <p>
+                      Usage: {`${renderStorageInfo(formatBytesToMB(storageUsage))} of
                     ${renderStorageInfo(formatBytesToMB(storageQuota))}
                     (${renderStorageInfo(percentageUsed ? `${percentageUsed.toFixed(2)}%` : undefined)})`}
-                  </p>
-                  <button onClick={handleDeleteAllConversations}
-                          className="mt-4 py-2 px-4 bg-red-500 text-white rounded hover:bg-red-700">{t('delete-all-chats-button')}
-                  </button>
+                    </p>
+                  </div>
+                  <div className="flex items-center justify-between setting-panel">
+                    <span>{''}</span>
+                    <div>
+                      <button onClick={handleDeleteAllConversations}
+                              className="mt-4 py-2 px-4 bg-red-500 text-white rounded hover:bg-red-700">{t('delete-all-chats-button')}
+                      </button>
+                      {ConfirmDialog}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

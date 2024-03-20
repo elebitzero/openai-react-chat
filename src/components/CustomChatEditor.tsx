@@ -66,18 +66,18 @@ const CustomChatEditor: React.FC = () => {
       <ChatSettingsForm chatSettings={chatSettings} onChange={onChange}/>
       <div className="flex justify-end space-x-4 px-8 mt-4 w-full md:max-w-2xl lg:max-w-3xl xl:max-w-4xl mx-auto">
         <Button
-          onClick={handleCancel}
-          variant="secondary"
-          className="mr-2"
-        >
-          {t('cancel-button')}
-        </Button>
-        <Button
           onClick={handleSave}
           disabled={!chatSettings.name}
           variant="primary"
         >
           {isEditing ? t('save-button') : t('create-button')}
+        </Button>
+        <Button
+          onClick={handleCancel}
+          variant="secondary"
+          className="mr-2"
+        >
+          {t('cancel-button')}
         </Button>
       </div>
     </div>

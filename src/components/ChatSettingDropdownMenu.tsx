@@ -11,6 +11,7 @@ import {useTranslation} from 'react-i18next';
 import ChatSettingsDB, {deleteChatSetting, updateShowInSidebar} from '../service/ChatSettingsDB';
 import {NotificationService} from "../service/NotificationService";
 import ConversationService from '../service/ConversationService';
+import {useConfirmDialog} from "./ConfirmDialog";
 
 interface ChatSettingDropdownMenuProps {
   chatSetting: ChatSettings | undefined;
@@ -26,6 +27,7 @@ const ChatSettingDropdownMenu: React.FC<ChatSettingDropdownMenuProps> = ({
                                                                            className,
                                                                          }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const { showConfirmDialog, ConfirmDialog } = useConfirmDialog();
   const navigate = useNavigate();
   const {t} = useTranslation();
 
@@ -48,41 +50,51 @@ const ChatSettingDropdownMenu: React.FC<ChatSettingDropdownMenuProps> = ({
     }
   }
 
+  const performDeleteChatSetting = async (gid:number) => {
+    try {
+      if (gid > 0) {
+        try {
+          await ConversationService.deleteConversationsByGid(gid);
+        } catch (error) {
+          console.error('Failed to delete related conversations:', error);
+          NotificationService.handleError('Failed to delete related conversations. Please try again.');
+          return;
+        }
+      }
+
+      try {
+        await deleteChatSetting(gid);
+      } catch (error) {
+        console.error('Failed to delete chat setting:', error);
+        NotificationService.handleError('Failed to delete chat setting. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error during deletion process::', error);
+      if (error instanceof Error) {
+        NotificationService.handleUnexpectedError(error, "Failed to delete all conversations");
+      } else {
+        NotificationService.handleUnexpectedError(new Error('An unknown error occurred'), "Failed to delete all conversations");
+      }
+    }
+  }
+
   const onDelete = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.stopPropagation();
     if (chatSetting) {
       const gid = chatSetting.id;
-      try {
-        const conversationCount = await ConversationService.countConversationsByGid(gid);
+      const conversationCount = await ConversationService.countConversationsByGid(gid);
 
-        let proceedWithDeletion = true;
-
-        if (conversationCount > 0 && gid > 0) {
-          proceedWithDeletion = confirm(`Deleting this chat setting will also delete ${conversationCount} conversations associated with it. Do you want to proceed?`);
-        }
-
-        if (proceedWithDeletion) {
-          if (gid > 0) {
-            try {
-              await ConversationService.deleteConversationsByGid(gid);
-            } catch (error) {
-              console.error('Failed to delete related conversations:', error);
-              NotificationService.handleError('Failed to delete related conversations. Please try again.');
-              return;
-            }
-          }
-
-          try {
-            await deleteChatSetting(gid);
-            // NotificationService.handleSuccess(`Custom Chat ${chatSetting.name} and associated conversations deleted.`);
-          } catch (error) {
-            console.error('Failed to delete chat setting:', error);
-            NotificationService.handleError('Failed to delete chat setting. Please try again.');
-          }
-        }
-      } catch (error) {
-        console.error('Error during deletion process:', error);
-        NotificationService.handleError('An error occurred. Please try again.');
+      if (conversationCount > 0 && gid > 0) {
+        showConfirmDialog({
+          message: `Deleting this chat setting will also delete ${conversationCount} conversations associated with it. Do you want to proceed?`,
+          confirmText: 'Delete',
+          confirmButtonVariant: 'critical',
+          onConfirm: async () => {
+            await performDeleteChatSetting(gid);
+          },
+        })
+      } else {
+        performDeleteChatSetting(gid);
       }
     }
   }
@@ -248,6 +260,7 @@ const ChatSettingDropdownMenu: React.FC<ChatSettingDropdownMenuProps> = ({
           )}
         </Menu>
       </div>
+      {ConfirmDialog}
       <Transition.Root show={isDialogOpen} as={Fragment}>
         <Dialog
           as="div"
