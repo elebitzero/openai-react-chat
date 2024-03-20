@@ -65,7 +65,7 @@ const MarkdownBlock: React.FC<ChatBlockProps> = ({markdown, role, loading}) => {
         ) : (
             <div className="border border-gray-200 dark:border-gray-800 rounded-md codeBlockContainer dark:bg-gray-850">
                 <div
-                    className="flex items-center relative text-gray-900 dark:text-gray-200 bg-gray-100 dark:bg-gray-850 px-4 py-1.5 text-xs font-sans justify-between rounded-t-md">
+                    className="flex items-center relative text-gray-900 dark:text-gray-200 bg-gray-200 dark:bg-gray-850 px-4 py-1.5 text-xs font-sans justify-between rounded-t-md">
                     <span>{language}</span>
                     <CopyButton text={children}/>
                 </div>
