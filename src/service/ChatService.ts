@@ -80,7 +80,7 @@ export class ChatService {
         };
     }
 
-    static async sendMessageStreamed(chatSettings: ChatSettings,messages: ChatMessage[], callback: (content: string) => void): Promise<any> {
+    static async sendMessageStreamed(chatSettings: ChatSettings, messages: ChatMessage[], callback: (content: string) => void): Promise<any> {
         const debouncedCallback = this.debounceCallback(callback);
         this.abortController = new AbortController();
         let endpoint = CHAT_COMPLETIONS_ENDPOINT;
@@ -118,9 +118,9 @@ export class ChatService {
             });
         } catch (error) {
             if (error instanceof Error && error.name === 'AbortError') {
-                NotificationService.handleUnexpectedError(error,'Stream reading was aborted.');
+                NotificationService.handleUnexpectedError(error, 'Stream reading was aborted.');
             } else if (error instanceof Error) {
-                NotificationService.handleUnexpectedError(error,'Error reading streamed response.');
+                NotificationService.handleUnexpectedError(error, 'Error reading streamed response.');
             } else {
                 console.error('An unexpected error occurred');
             }
@@ -186,13 +186,13 @@ export class ChatService {
                         chunk.choices.forEach(choice => {
                             if (choice.delta && choice.delta.content) {  // Check if delta and content exist
                                 const content = choice.delta.content;
-                                        try {
-                                            accumulatedContet += content;
-                                        } catch (err) {
-                                            if (err instanceof Error) {
-                                                console.error(err.message);
-                                            }
-                                            console.log('error in client. continuing...')
+                                try {
+                                    accumulatedContet += content;
+                                } catch (err) {
+                                    if (err instanceof Error) {
+                                        console.error(err.message);
+                                    }
+                                    console.log('error in client. continuing...')
                                 }
                             } else if (choice?.finish_reason === 'stop') {
                                 // done
@@ -209,7 +209,7 @@ export class ChatService {
                 if (error instanceof Error && error.name === 'AbortError') {
                     // User aborted the stream, so no need to propagate an error.
                 } else if (error instanceof Error) {
-                    NotificationService.handleUnexpectedError(error,'Error reading streamed response.');
+                    NotificationService.handleUnexpectedError(error, 'Error reading streamed response.');
                 } else {
                     console.error('An unexpected error occurred');
                 }
@@ -250,21 +250,21 @@ export class ChatService {
             .catch(err => {
                 throw new Error(err.message || err);
             })
-          .then(data => {
-              const models: OpenAIModel[] = data.data;
-              // Filter, enrich with contextWindow from the imported constant, and sort
-              return models
-                .filter(model => model.id.startsWith("gpt-"))
-                .map(model => {
-                    const details = modelDetails[model.id] || { contextWindowSize: 0, knowledgeCutoffDate: '' };
-                    return {
-                        ...model,
-                        context_window: details.contextWindowSize,
-                        knowledge_cutoff: details.knowledgeCutoffDate
-                    };
-                })
-                .sort((a, b) => b.id.localeCompare(a.id));
-          });
+            .then(data => {
+                const models: OpenAIModel[] = data.data;
+                // Filter, enrich with contextWindow from the imported constant, and sort
+                return models
+                    .filter(model => model.id.startsWith("gpt-"))
+                    .map(model => {
+                        const details = modelDetails[model.id] || {contextWindowSize: 0, knowledgeCutoffDate: ''};
+                        return {
+                            ...model,
+                            context_window: details.contextWindowSize,
+                            knowledge_cutoff: details.knowledgeCutoffDate
+                        };
+                    })
+                    .sort((a, b) => b.id.localeCompare(a.id));
+            });
         return this.models;
     };
 }

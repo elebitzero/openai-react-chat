@@ -41,8 +41,8 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
                                                      allowNone = false,
                                                      allowNoneLabel = '(None)',
                                                  }) => {
-    const { userSettings, setUserSettings } = useContext(UserContext);
-    const { t } = useTranslation();
+    const {userSettings, setUserSettings} = useContext(UserContext);
+    const {t} = useTranslation();
     const [models, setModels] = useState<OpenAIModel[]>([]);
     const [options, setOptions] = useState<SelectOption[]>([]);
     const [selectedOption, setSelectedOption] = useState<SelectOption>();
@@ -54,7 +54,7 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
     const isDarkMode = () => userSettings.userTheme === 'dark';
 
     const getColor = (state: OptionProps<SelectOption, false>) => {
-        if (state.data.value === 'more' || state.data.value === 'less' ) {
+        if (state.data.value === 'more' || state.data.value === 'less') {
             return 'var(--primary)';
         } else {
             return isDarkMode() ? 'white' : 'black';
@@ -104,13 +104,13 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
         } else {
             setLoading(true);
             ChatService.getModels()
-              .then(data => {
-                  setModels(data);
-              })
-              .catch(err => {
-                  console.error('Error fetching model list', err);
-              })
-              .finally(() => setLoading(false));
+                .then(data => {
+                    setModels(data);
+                })
+                .catch(err => {
+                    console.error('Error fetching model list', err);
+                })
+                .finally(() => setLoading(false));
         }
     }, [externalModels]);
 
@@ -120,8 +120,7 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
 
     useEffect(() => {
         if (models && models.length > 0) {
-            const defaultOptions = models.filter(model => !/-\d{4}$/.test(model.id)).
-              filter(model => !/-\d{4}-preview$/.test(model.id));
+            const defaultOptions = models.filter(model => !/-\d{4}$/.test(model.id)).filter(model => !/-\d{4}-preview$/.test(model.id));
 
             const newOptions = [
                 ...defaultOptions.map((model) => getModelOption(model)),
@@ -153,7 +152,7 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
                 setSelectedOption(newOptions[0]);
             }
         }
-    }, [models,value]);
+    }, [models, value]);
 
     useEffect(() => {
         if (selectedOption) {
@@ -163,7 +162,7 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
 
 
     const formatContextWindow = (context_window: number) => {
-        return Math.round(context_window / 1000)+'k';
+        return Math.round(context_window / 1000) + 'k';
     }
 
     const handleModelChange = (option: SingleValue<SelectOption> | MultiValue<SelectOption>,
@@ -177,14 +176,22 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
         if (option) {
             if (option.value === "more") {
                 setOptions([
-                    ...models.map((model) => ({value: model.id, label: model.id, info: formatContextWindow(model.context_window)})),
+                    ...models.map((model) => ({
+                        value: model.id,
+                        label: model.id,
+                        info: formatContextWindow(model.context_window)
+                    })),
                     {value: "less", label: SHOW_FEWER_MODELS, info: ''}
                 ]);
                 setMenuIsOpen(true);
             } else if (option.value === "less") {
                 const defaultOptions = models.filter(model => !/-\d{4}$/.test(model.id));
                 setOptions([
-                    ...defaultOptions.map((model) => ({value: model.id, label: model.id, info: formatContextWindow(model.context_window)})),
+                    ...defaultOptions.map((model) => ({
+                        value: model.id,
+                        label: model.id,
+                        info: formatContextWindow(model.context_window)
+                    })),
                     {value: "more", label: SHOW_MORE_MODELS, info: ''}
                 ]);
                 setMenuIsOpen(true);
@@ -195,7 +202,7 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
                     info: option.info
                 });
                 if (onModelSelect) {
-                onModelSelect(option.value);
+                    onModelSelect(option.value);
                 }
                 setMenuIsOpen(false);
             }
@@ -204,30 +211,38 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
         }
     };
 
-    const customSingleValue: React.FC<SingleValueProps<SelectOption>> = ({ children, ...props }) => (
-      <components.SingleValue {...props}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span>{props.data.label}</span>
-              <Tooltip title={t('context-window')} side="right" sideOffset={10}>
-                  <span style={{marginLeft: '10px', fontSize: '0.85rem', color: getInfoColor()}}>{props.data.info}</span>
-              </Tooltip>
-          </div>
-      </components.SingleValue>
+    const customSingleValue: React.FC<SingleValueProps<SelectOption>> = ({children, ...props}) => (
+        <components.SingleValue {...props}>
+            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                <span>{props.data.label}</span>
+                <Tooltip title={t('context-window')} side="right" sideOffset={10}>
+                    <span style={{
+                        marginLeft: '10px',
+                        fontSize: '0.85rem',
+                        color: getInfoColor()
+                    }}>{props.data.info}</span>
+                </Tooltip>
+            </div>
+        </components.SingleValue>
     );
 
     const customOption: React.FC<OptionProps<SelectOption, false>> = (props) => (
-      <components.Option {...props}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span>{props.data.label}</span>
-              <Tooltip title={t('context-window')} side="right" sideOffset={10}>
-                  <span style={{marginLeft: '10px', fontSize: '0.85rem', color: getInfoColor()}}>{props.data.info}</span>
-              </Tooltip>
-          </div>
-      </components.Option>
+        <components.Option {...props}>
+            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                <span>{props.data.label}</span>
+                <Tooltip title={t('context-window')} side="right" sideOffset={10}>
+                    <span style={{
+                        marginLeft: '10px',
+                        fontSize: '0.85rem',
+                        color: getInfoColor()
+                    }}>{props.data.info}</span>
+                </Tooltip>
+            </div>
+        </components.Option>
     );
 
     return (
-      <div className='model-toggle'>
+        <div className='model-toggle'>
             <Select
                 className='model-toggle-select'
                 options={options}

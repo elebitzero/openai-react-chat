@@ -35,7 +35,7 @@ function rehypeInlineCodeProperty() {
 }
 
 const MarkdownBlock: React.FC<ChatBlockProps> = ({markdown, role, loading}) => {
-    const { userSettings, setUserSettings } = useContext(UserContext);
+    const {userSettings, setUserSettings} = useContext(UserContext);
 
     function inlineCodeBlock({value, language}: { value: string; language: string | undefined }) {
         return (
@@ -70,9 +70,9 @@ const MarkdownBlock: React.FC<ChatBlockProps> = ({markdown, role, loading}) => {
                 </div>
                 <div className="overflow-y-auto">
                     <SyntaxHighlighter
-                      language={language}
-                      style={userSettings.theme === 'dark' ? coldarkDark : oneLight}
-                      customStyle={{ margin: '0'}}
+                        language={language}
+                        style={userSettings.theme === 'dark' ? coldarkDark : oneLight}
+                        customStyle={{margin: '0'}}
                     >
                         {value}
                     </SyntaxHighlighter>

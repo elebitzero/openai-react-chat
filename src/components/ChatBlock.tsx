@@ -29,7 +29,7 @@ const ChatBlock: React.FC<Props> = ({block, loading, isLastBlock}) => {
 
 
     useEffect(() => {
-        if(isEdit){
+        if (isEdit) {
             textareaRef.current?.focus();
             textareaRef.current?.setSelectionRange(0, 0);
         }
@@ -73,58 +73,62 @@ const ChatBlock: React.FC<Props> = ({block, loading, isLastBlock}) => {
     };
 
     return (
-      <div key={`chat-block-${block.id}`}
-           className={`group w-full text-gray-800 dark:text-gray-100 border-b border-black/10 dark:border-gray-900/50
+        <div key={`chat-block-${block.id}`}
+             className={`group w-full text-gray-800 dark:text-gray-100 border-b border-black/10 dark:border-gray-900/50
             ${block.role === 'assistant' ? 'bg-custom-gray dark:bg-gray-900' : 'bg-white dark:bg-gray-850'}`}>
-          <div className="text-base md:max-w-2xl lg:max-w-3xl xl:max-w-4xl 2xl:max-w-5xl 3xl:max-w-6xl 4xl:max-w7xl p-2 flex lg:px-0 m-auto flex-col">
-              <div className="w-full flex">
-                  <div className="w-[30px] flex flex-col relative items-end mr-4">
-                      <div className="relative flex h-[30px] w-[30px] p-0 rounded-sm items-center justify-center">
-                          {block.role === 'user' ? (
-                            <UserCircleIcon width={24} height={24}/>
-                          ) : block.role === 'assistant' ? (
-                            <SparklesIcon key={`open-ai-logo-${block.id}`}/>
-                          ) : null}
-                      </div>
-                  </div>
-                  <div className="relative flex w-[calc(100%-50px)] flex-col gap-1 md:gap-3 lg:w-full">
-                      <div id={`message-block-${block.id}`} className="flex flex-grow flex-col gap-3" style={errorStyles}>
-                          <div
-                            className="min-h-[20px] flex flex-col items-start gap-4">
-                              {isEdit ? (
-                                  <textarea
-                                    spellCheck={false}
-                                    tabIndex={0}
-                                    ref={textareaRef}
-                                    style={{ height: savedHeight ?? undefined , lineHeight: '1.33', fontSize: '1rem'}}
-                                    className="border border-black/10 bg-white dark:border-gray-900/50 dark:bg-gray-700 w-full m-0 p-0 pr-7 pl-2 md:pl-0 resize-none bg-transparent dark:bg-transparent  focus:ring-0 focus-visible:ring-0 outline-none shadow-none"
-                                    onChange={handleTextChange}
-                                    onKeyDown={checkForSpecialKey}
-                                    value={editedBlockContent}
-                                  ></textarea>
-                                )
-                                : (
-                                  <div ref={contentRef}  className="markdown prose w-full break-words dark:prose-invert light">
-                                      {block.role === 'user' ? (
-                                        <UserContentBlock text={block.content}/>
-                                      ) : (
-                                        <MarkdownBlock markdown={block.content} role={block.role} loading={loading}/>
-                                      )}
-                                  </div>)}
-
-                          </div>
-                      </div>
-                  </div>
-              </div>
-              {!(isLastBlock && loading) && (
-                <div id={`action-block-${block.id}`} className="flex justify-start items-center ml-10">
-                    {block.role === 'assistant' && (
-                      <TextToSpeechButton content={block.content}/>
-                    )}
-                    <div className="copy-button">
-                        <CopyButton mode={CopyButtonMode.Compact} text={block.content}/>
+            <div
+                className="text-base md:max-w-2xl lg:max-w-3xl xl:max-w-4xl 2xl:max-w-5xl 3xl:max-w-6xl 4xl:max-w7xl p-2 flex lg:px-0 m-auto flex-col">
+                <div className="w-full flex">
+                    <div className="w-[30px] flex flex-col relative items-end mr-4">
+                        <div className="relative flex h-[30px] w-[30px] p-0 rounded-sm items-center justify-center">
+                            {block.role === 'user' ? (
+                                <UserCircleIcon width={24} height={24}/>
+                            ) : block.role === 'assistant' ? (
+                                <SparklesIcon key={`open-ai-logo-${block.id}`}/>
+                            ) : null}
+                        </div>
                     </div>
-                    {/*          {block.role === 'assistant' && (
+                    <div className="relative flex w-[calc(100%-50px)] flex-col gap-1 md:gap-3 lg:w-full">
+                        <div id={`message-block-${block.id}`} className="flex flex-grow flex-col gap-3"
+                             style={errorStyles}>
+                            <div
+                                className="min-h-[20px] flex flex-col items-start gap-4">
+                                {isEdit ? (
+                                        <textarea
+                                            spellCheck={false}
+                                            tabIndex={0}
+                                            ref={textareaRef}
+                                            style={{height: savedHeight ?? undefined, lineHeight: '1.33', fontSize: '1rem'}}
+                                            className="border border-black/10 bg-white dark:border-gray-900/50 dark:bg-gray-700 w-full m-0 p-0 pr-7 pl-2 md:pl-0 resize-none bg-transparent dark:bg-transparent  focus:ring-0 focus-visible:ring-0 outline-none shadow-none"
+                                            onChange={handleTextChange}
+                                            onKeyDown={checkForSpecialKey}
+                                            value={editedBlockContent}
+                                        ></textarea>
+                                    )
+                                    : (
+                                        <div ref={contentRef}
+                                             className="markdown prose w-full break-words dark:prose-invert light">
+                                            {block.role === 'user' ? (
+                                                <UserContentBlock text={block.content}/>
+                                            ) : (
+                                                <MarkdownBlock markdown={block.content} role={block.role}
+                                                               loading={loading}/>
+                                            )}
+                                        </div>)}
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {!(isLastBlock && loading) && (
+                    <div id={`action-block-${block.id}`} className="flex justify-start items-center ml-10">
+                        {block.role === 'assistant' && (
+                            <TextToSpeechButton content={block.content}/>
+                        )}
+                        <div className="copy-button">
+                            <CopyButton mode={CopyButtonMode.Compact} text={block.content}/>
+                        </div>
+                        {/*          {block.role === 'assistant' && (
                     <div className="regenerate-button text-gray-400 visible">
                         <button className="flex gap-2" onClick={handleRegenerate}>
                             <ArrowPathRoundedSquareIcon {...iconProps}/>
@@ -136,10 +140,10 @@ const ChatBlock: React.FC<Props> = ({block, loading, isLastBlock}) => {
                           <PencilSquareIcon {...iconProps}/>
                       </button>
                   </div>*/}
-                </div>
-              )}
-          </div>
-      </div>
+                    </div>
+                )}
+            </div>
+        </div>
     );
 };
 

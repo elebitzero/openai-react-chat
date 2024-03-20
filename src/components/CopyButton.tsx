@@ -15,8 +15,8 @@ interface CopyButtonProps {
     className?: string;
 }
 
-const CopyButton = ({text, mode = CopyButtonMode.Normal,className=''}: CopyButtonProps) => {
-    const { t } = useTranslation();
+const CopyButton = ({text, mode = CopyButtonMode.Normal, className = ''}: CopyButtonProps) => {
+    const {t} = useTranslation();
     const [isCopied, setIsCopied] = useState(false);
 
     useEffect(() => {
@@ -47,19 +47,21 @@ const CopyButton = ({text, mode = CopyButtonMode.Normal,className=''}: CopyButto
     };
 
     return (
-      <button className={`chat-action-button text-gray-400 inline-flex items-center justify-center p-2 ml-auto gap-2 ${className}`} onClick={handleCopyClick}>
-          {isCopied ? (
-            <>
-                <CheckIcon {...iconProps} />
-                {mode === CopyButtonMode.Normal ? <span>{t('copied')}</span> : null}
-            </>
-          ) : (
-            <>
-                <ClipboardIcon {...iconProps} />
-                {mode === CopyButtonMode.Normal ? <span>{t('copy-code')}</span> : null}
-            </>
-          )}
-      </button>
+        <button
+            className={`chat-action-button text-gray-400 inline-flex items-center justify-center p-2 ml-auto gap-2 ${className}`}
+            onClick={handleCopyClick}>
+            {isCopied ? (
+                <>
+                    <CheckIcon {...iconProps} />
+                    {mode === CopyButtonMode.Normal ? <span>{t('copied')}</span> : null}
+                </>
+            ) : (
+                <>
+                    <ClipboardIcon {...iconProps} />
+                    {mode === CopyButtonMode.Normal ? <span>{t('copy-code')}</span> : null}
+                </>
+            )}
+        </button>
 
     );
 };

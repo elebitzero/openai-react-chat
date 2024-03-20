@@ -32,9 +32,8 @@ export interface MessageBoxHandles {
 }
 
 
-
 const MessageBox = forwardRef<MessageBoxHandles, MessageBoxProps>(({loading, setLoading, callApp}, ref) => {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
     const [textValue, setTextValue] = useState('');
     const [isTextEmpty, setIsTextEmpty] = useState(true);
     const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -177,7 +176,7 @@ const MessageBox = forwardRef<MessageBoxHandles, MessageBoxProps>(({loading, set
         const newlineCount = (pastedText.match(/\n/g) || []).length;
 
         // Check if there are MAX_ROWS or more newlines
-        if (newlineCount >= MAX_ROWS || pastedText.length > 80*MAX_ROWS) {
+        if (newlineCount >= MAX_ROWS || pastedText.length > 80 * MAX_ROWS) {
             event.preventDefault();
             const modifiedText = `${SNIPPET_MARKERS.begin}\n${pastedText}\n${SNIPPET_MARKERS.end}\n`;
             insertTextAtCursorPosition(modifiedText);
@@ -243,16 +242,16 @@ const MessageBox = forwardRef<MessageBoxHandles, MessageBoxProps>(({loading, set
                             onPaste={handlePaste}
                         ></textarea>
                         {loading ? (
-                          <Tooltip title={t('cancel-output')} side="top" sideOffset={0}>
-                              <button onClick={handleCancel} className="absolute p-1 top-0 right-2">
-                                  <StopCircleIcon className="h-9 w-9"/>
-                              </button>
-                          </Tooltip>
+                            <Tooltip title={t('cancel-output')} side="top" sideOffset={0}>
+                                <button onClick={handleCancel} className="absolute p-1 top-0 right-2">
+                                    <StopCircleIcon className="h-9 w-9"/>
+                                </button>
+                            </Tooltip>
                         ) : (
-                          <SubmitButton
-                            disabled={isTextEmpty || loading}
-                            loading={loading}
-                          />
+                            <SubmitButton
+                                disabled={isTextEmpty || loading}
+                                loading={loading}
+                            />
                         )}
                     </div>
                 </div>

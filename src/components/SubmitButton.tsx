@@ -10,7 +10,7 @@ interface SubmitButtonProps {
 }
 
 export const SubmitButton: React.FC<SubmitButtonProps> = ({loading, disabled}) => {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
     const strokeColor = disabled ? 'currentColor' : 'white';
 
     return (
