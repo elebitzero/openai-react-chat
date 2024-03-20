@@ -6,6 +6,7 @@
   "deterministic-label": "Déterministe",
   "creative-label": "Créatif",
   "open-settings": "Ouvrir les paramètres",
+  "custom-chats-header": "Chats Personnalisés",
   "example-chats": "Exemples de Chats Personnalisés",
   "my-chats": "Mes Chats Personnalisés",
   "menu-about": "À propos",
@@ -58,6 +59,8 @@
   "send-message": "Envoyer un message",
   "cancel-output": "Annuler",
   "cancel-button": "Annuler",
+  "save-button": "Enregistrer",
+  "create-button": "Créer",
   "ok-button": "OK",
   "change-button": "Changer",
   "close-button": "Fermer"

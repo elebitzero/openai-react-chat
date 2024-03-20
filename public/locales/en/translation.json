@@ -5,6 +5,7 @@
   "deterministic-label": "Deterministic",
   "creative-label": "Creative",
   "open-settings": "Open settings",
+  "custom-chats-header": "Custom Chats",
   "example-chats": "Example Custom Chats",
   "my-chats": "My Custom Chats",
   "menu-about": "About",
@@ -58,6 +59,8 @@
   "send-message": "Send message",
   "cancel-output": "Cancel",
   "cancel-button": "Cancel",
+  "save-button": "Save",
+  "create-button": "Create",
   "ok-button": "OK",
   "change-button": "Change",
   "close-button": "Close"

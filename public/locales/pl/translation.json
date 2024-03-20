@@ -6,6 +6,7 @@
   "deterministic-label": "Deterministyczny",
   "creative-label": "Kreatywny",
   "open-settings": "Otwórz ustawienia",
+  "custom-chats-header": "Niestandardowe Czaty",
   "example-chats": "Przykładowe Niestandardowe Czaty",
   "my-chats": "Moje Niestandardowe Czaty",
   "menu-about": "O",
@@ -58,6 +59,8 @@
   "send-message": "Wyślij wiadomość",
   "cancel-output": "Anuluj",
   "cancel-button": "Anuluj",
+  "save-button": "Zapisz",
+  "create-button": "Utwórz",
   "ok-button": "OK",
   "change-button": "Zmień",
   "close-button": "Zamknij"

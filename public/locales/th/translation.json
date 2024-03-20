@@ -6,6 +6,7 @@
   "deterministic-label": "ลักษณะกำหนด",
   "creative-label": "สร้างสรรค์",
   "open-settings": "เปิดการตั้งค่า",
+  "custom-chats-header": "แชทแบบกำหนดเอง",
   "example-chats": "ตัวอย่างแชทที่กำหนดเอง",
   "my-chats": "แชทที่กำหนดเองของฉัน",
   "menu-about": "เกี่ยวกับ",
@@ -58,6 +59,8 @@
   "send-message": "ส่งข้อความ",
   "cancel-output": "ยกเลิก",
   "cancel-button": "ยกเลิก",
+  "save-button": "บันทึก",
+  "create-button": "สร้าง",
   "ok-button": "ตกลง",
   "change-button": "เปลี่ยน",
   "close-button": "ปิด"

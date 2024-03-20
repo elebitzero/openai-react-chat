@@ -6,6 +6,7 @@
   "deterministic-label": "Deterministik",
   "creative-label": "Kreatif",
   "open-settings": "Buka pengaturan",
+  "custom-chats-header": "Obrolan Kustom",
   "example-chats": "Contoh Chat Kustom",
   "my-chats": "Chat Kustom Saya",
   "menu-about": "Tentang",
@@ -58,6 +59,8 @@
   "send-message": "Kirim pesan",
   "cancel-output": "Batal",
   "cancel-button": "Batal",
+  "save-button": "Simpan",
+  "create-button": "Buat",
   "ok-button": "OK",
   "change-button": "Ubah",
   "close-button": "Tutup"

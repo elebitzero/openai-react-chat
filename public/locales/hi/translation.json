@@ -6,6 +6,7 @@
   "deterministic-label": "नियतात्मक",
   "creative-label": "रचनात्मक",
   "open-settings": "सेटिंग्स खोलें",
+  "custom-chats-header": "कस्टम चैट्स",
   "example-chats": "उदाहरण कस्टम चैट्स",
   "my-chats": "मेरी कस्टम चैट्स",
   "menu-about": "के बारे में",
@@ -58,6 +59,8 @@
   "send-message": "संदेश भेजें",
   "cancel-output": "रद्द करें",
   "cancel-button": "रद्द करें",
+  "save-button": "सहेजें",
+  "create-button": "सृजन करें",
   "ok-button": "ठीक है",
   "change-button": "परिवर्तन",
   "close-button": "बंद करें"

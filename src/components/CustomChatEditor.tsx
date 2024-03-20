@@ -4,6 +4,7 @@ import ChatSettingsForm from "./ChatSettingsForm";
 import { ChatSettings } from "../models/ChatSettings";
 import chatSettingsDB, {getChatSettingsById} from "../service/ChatSettingsDB";
 import Button from "./Button";
+import {useTranslation} from 'react-i18next';
 
 const CustomChatEditor: React.FC = () => {
   const navigate = useNavigate();
@@ -22,6 +23,7 @@ const CustomChatEditor: React.FC = () => {
     temperature: null,
     top_p: null
   };
+  const {t} = useTranslation();
   const [chatSettings, setChatSettings] = useState<ChatSettings>(initialChatSettings);
 
   useEffect(() => {
@@ -68,14 +70,14 @@ const CustomChatEditor: React.FC = () => {
           variant="secondary"
           className="mr-2"
         >
-          Cancel
+          {t('cancel-button')}
         </Button>
         <Button
           onClick={handleSave}
           disabled={!chatSettings.name}
           variant="primary"
         >
-          {isEditing ? 'Save' : 'Create'}
+          {isEditing ? t('save-button') : t('create-button')}
         </Button>
       </div>
     </div>

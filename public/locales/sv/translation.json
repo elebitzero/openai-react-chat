@@ -6,6 +6,7 @@
   "deterministic-label": "Deterministisk",
   "creative-label": "Kreativ",
   "open-settings": "Öppna inställningar",
+  "custom-chats-header": "Anpassade Chattar",
   "example-chats": "Exempel på Anpassade Chattar",
   "my-chats": "Mina Anpassade Chattar",
   "menu-about": "Om",
@@ -58,6 +59,8 @@
   "send-message": "Skicka meddelande",
   "cancel-output": "Avbryt",
   "cancel-button": "Avbryt",
+  "save-button": "Spara",
+  "create-button": "Skapa",
   "ok-button": "OK",
   "change-button": "Ändra",
   "close-button": "Stäng"

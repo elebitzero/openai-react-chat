@@ -6,6 +6,7 @@
   "deterministic-label": "決定論的",
   "creative-label": "創造的",
   "open-settings": "設定を開く",
+  "custom-chats-header": "カスタムチャット",
   "example-chats": "カスタムチャットの例",
   "my-chats": "私のカスタムチャット",
   "menu-about": "約",
@@ -58,6 +59,8 @@
   "send-message": "メッセージを送信",
   "cancel-output": "キャンセル",
   "cancel-button": "キャンセル",
+  "save-button": "保存",
+  "create-button": "作成",
   "ok-button": "OK",
   "change-button": "変更",
   "close-button": "閉じる"

@@ -6,6 +6,7 @@
   "deterministic-label": "Детерминированный",
   "creative-label": "Творческий",
   "open-settings": "Открыть настройки",
+  "custom-chats-header": "Пользовательские Чаты",
   "example-chats": "Примеры Пользовательских Чатов",
   "my-chats": "Мои Пользовательские Чаты",
   "menu-about": "О программе",
@@ -58,6 +59,8 @@
   "send-message": "Отправить сообщение",
   "cancel-output": "Отмена",
   "cancel-button": "Отмена",
+  "save-button": "Сохранить",
+  "create-button": "Создать",
   "ok-button": "ОК",
   "change-button": "Изменить",
   "close-button": "Закрыть"

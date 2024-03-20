@@ -6,6 +6,7 @@
   "deterministic-label": "决定性",
   "creative-label": "创造性",
   "open-settings": "打开设置",
+  "custom-chats-header": "自定义聊天",
   "example-chats": "自定义聊天示例",
   "my-chats": "我的自定义聊天",
   "menu-about": "关于",
@@ -58,6 +59,8 @@
   "send-message": "发送消息",
   "cancel-output": "取消",
   "cancel-button": "取消",
+  "save-button": "保存",
+  "create-button": "创建",
   "ok-button": "确定",
   "change-button": "更改",
   "close-button": "关闭"

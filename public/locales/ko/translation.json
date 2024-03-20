@@ -6,6 +6,7 @@
   "deterministic-label": "결정론적",
   "creative-label": "창의적",
   "open-settings": "설정 열기",
+  "custom-chats-header": "사용자 정의 채팅",
   "example-chats": "예제 사용자 정의 채팅",
   "my-chats": "내 사용자 정의 채팅",
   "menu-about": "정보",
@@ -58,6 +59,8 @@
   "send-message": "메시지 보내기",
   "cancel-output": "취소",
   "cancel-button": "취소",
+  "save-button": "저장",
+  "create-button": "생성",
   "ok-button": "확인",
   "change-button": "변경",
   "close-button": "닫기"

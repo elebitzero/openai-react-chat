@@ -358,7 +358,7 @@ const Sidebar: React.FC<SidebarProps> = ({className, isSidebarCollapsed, toggleS
                 </div>
                 <Link to="/explore" className="flex items-center m-2 dark:bg-gray-900 dark:text-gray-100 text-gray-900">
                   <Squares2X2Icon  {...iconProps} className="mt-1 mr-2" />
-                  <span>Custom Chats</span>
+                  <span>{t('custom-chats-header')}</span>
                 </Link>
                 <ChatShortcuts/>
                 <div className="flex flex-row items-center mb-2 relative">

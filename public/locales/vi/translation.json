@@ -6,6 +6,7 @@
   "deterministic-label": "Xác định",
   "creative-label": "Sáng tạo",
   "open-settings": "Mở cài đặt",
+  "custom-chats-header": "Trò Chuyện Tùy Chỉnh",
   "example-chats": "Ví dụ về Trò chuyện Tùy chỉnh",
   "my-chats": "Trò chuyện Tùy chỉnh của Tôi",
   "menu-about": "Về",
@@ -58,6 +59,8 @@
   "send-message": "Gửi tin nhắn",
   "cancel-output": "Hủy bỏ",
   "cancel-button": "Hủy bỏ",
+  "save-button": "Lưu",
+  "create-button": "Tạo",
   "ok-button": "OK",
   "change-button": "Thay đổi",
   "close-button": "Đóng"

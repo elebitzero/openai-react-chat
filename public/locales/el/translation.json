@@ -6,6 +6,7 @@
   "deterministic-label": "Δετερμινιστικό",
   "creative-label": "Δημιουργικό",
   "open-settings": "Άνοιγμα ρυθμίσεων",
+  "custom-chats-header": "Προσαρμοσμένες Συνομιλίες",
   "example-chats": "Παραδείγματα Προσαρμοσμένων Συνομιλιών",
   "my-chats": "Οι Προσαρμοσμένες Συνομιλίες μου",
   "menu-about": "Σχετικά",
@@ -58,6 +59,8 @@
   "send-message": "Αποστολή μηνύματος",
   "cancel-output": "Άκυρο",
   "cancel-button": "Άκυρο",
+  "save-button": "Αποθήκευση",
+  "create-button": "Δημιουργία",
   "ok-button": "Εντάξει",
   "change-button": "Αλλαγή",
   "close-button": "Κλείσιμο"
