@@ -1,5 +1,4 @@
 import Dexie from 'dexie';
-import { ChatSettings } from '../models/ChatSettings';
 
 export interface Conversation {
   id: number;

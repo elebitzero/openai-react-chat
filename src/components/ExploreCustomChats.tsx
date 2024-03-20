@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { PlusIcon } from '@heroicons/react/24/outline';
+import React, {useEffect, useState} from 'react';
+import {useNavigate} from 'react-router-dom';
+import {PlusIcon} from '@heroicons/react/24/outline';
 import ChatSettingsList from './ChatSettingsList';
-import chatSettingsDB, { ChatSettingsChangeEvent, chatSettingsEmitter } from '../service/ChatSettingsDB';
-import { ChatSettings } from '../models/ChatSettings';
-import { useTranslation } from 'react-i18next';
+import chatSettingsDB, {ChatSettingsChangeEvent, chatSettingsEmitter} from '../service/ChatSettingsDB';
+import {ChatSettings} from '../models/ChatSettings';
+import {useTranslation} from 'react-i18next';
 
 const ExploreCustomChats: React.FC = () => {
   const [exampleChats, setExampleChats] = useState<ChatSettings[]>([]);

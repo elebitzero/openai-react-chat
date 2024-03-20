@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { useParams, useNavigate, useLocation } from "react-router-dom";
+import React, {useEffect, useState} from "react";
+import {useLocation, useNavigate, useParams} from "react-router-dom";
 import ChatSettingsForm from "./ChatSettingsForm";
-import { ChatSettings } from "../models/ChatSettings";
+import {ChatSettings} from "../models/ChatSettings";
 import chatSettingsDB, {getChatSettingsById} from "../service/ChatSettingsDB";
 import Button from "./Button";
 import {useTranslation} from 'react-i18next';

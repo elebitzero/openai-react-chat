@@ -1,5 +1,5 @@
 import {toast} from "react-toastify";
-import { Theme, UserTheme } from "../UserContext";
+import {Theme, UserTheme} from "../UserContext";
 
 export class NotificationService {
 

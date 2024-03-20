@@ -1,14 +1,12 @@
-import React, {useState, ChangeEvent, useEffect, useContext} from 'react';
-import AvatarFieldEditor, { ImageSource } from "./AvatarFieldEditor";
+import React, {ChangeEvent, useEffect, useState} from 'react';
+import AvatarFieldEditor, {ImageSource} from "./AvatarFieldEditor";
 import 'rc-slider/assets/index.css';
 import ModelSelect from './ModelSelect';
-import { toast } from "react-toastify";
 import TemperatureSlider from './TemperatureSlider';
 import TopPSlider from './TopPSlider';
-import { ChatSettings } from '../models/ChatSettings';
-import { EditableField } from './EditableField';
+import {ChatSettings} from '../models/ChatSettings';
+import {EditableField} from './EditableField';
 import {useTranslation} from 'react-i18next';
-import {UserContext} from "../UserContext";
 import {NotificationService} from "../service/NotificationService";
 import FormLabel from "./FormLabel";
 

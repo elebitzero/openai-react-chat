@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState, useContext} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import {ChatService} from "../service/ChatService";
 import Chat from "./Chat";
 import {ChatCompletion, ChatMessage, MessageType, Role} from "../models/ChatCompletion";
@@ -13,8 +13,8 @@ import {DEFAULT_INSTRUCTIONS, MAX_TITLE_LENGTH} from "../constants/appConstants"
 import {ChatSettings} from '../models/ChatSettings';
 import chatSettingsDB, {chatSettingsEmitter, updateShowInSidebar} from '../service/ChatSettingsDB';
 import ChatSettingDropdownMenu from "./ChatSettingDropdownMenu";
-import ConversationService, { Conversation } from '../service/ConversationService';
-import { UserContext } from '../UserContext';
+import ConversationService, {Conversation} from '../service/ConversationService';
+import {UserContext} from '../UserContext';
 import {NotificationService} from '../service/NotificationService';
 import CustomChatSplash from './CustomChatSplash';
 

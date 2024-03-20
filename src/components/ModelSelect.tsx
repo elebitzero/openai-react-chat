@@ -2,9 +2,7 @@ import React, {useContext, useEffect, useState} from 'react';
 import Select, {
     ActionMeta,
     components,
-    ControlProps,
-    CSSObjectWithLabel,
-    GroupBase, MultiValue,
+    MultiValue,
     OptionProps,
     SingleValue,
     SingleValueProps,
@@ -12,7 +10,6 @@ import Select, {
 } from 'react-select';
 import {OpenAIModel} from '../models/model';
 import {ChatService} from '../service/ChatService';
-import {NotificationService} from '../service/NotificationService';
 import {useTranslation} from 'react-i18next';
 import Tooltip from "./Tooltip";
 import {DEFAULT_MODEL} from "../constants/appConstants";

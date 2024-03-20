@@ -1,4 +1,4 @@
-import React, {createContext, ReactNode, useContext, useEffect, useState} from 'react';
+import React, {createContext, ReactNode, useEffect, useState} from 'react';
 
 export type UserTheme = 'light' | 'dark' | 'system';
 export type Theme = 'light' | 'dark';

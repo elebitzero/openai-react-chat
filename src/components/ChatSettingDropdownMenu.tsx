@@ -1,14 +1,21 @@
 import React, {Fragment, useState} from 'react';
 import {Dialog, Menu, Transition} from '@headlessui/react';
 import {
-  ChevronDownIcon, InformationCircleIcon,
-  PencilSquareIcon, Cog6ToothIcon, XMarkIcon, TrashIcon, EyeIcon, EyeSlashIcon, DocumentDuplicateIcon
+    ChevronDownIcon,
+    Cog6ToothIcon,
+    DocumentDuplicateIcon,
+    EyeIcon,
+    EyeSlashIcon,
+    InformationCircleIcon,
+    PencilSquareIcon,
+    TrashIcon,
+    XMarkIcon
 } from '@heroicons/react/24/outline';
 import {useNavigate} from 'react-router-dom';
 import {ChatSettings} from '../models/ChatSettings';
 import ChatSettingsForm from './ChatSettingsForm';
 import {useTranslation} from 'react-i18next';
-import ChatSettingsDB, {deleteChatSetting, updateShowInSidebar} from '../service/ChatSettingsDB';
+import {deleteChatSetting, updateShowInSidebar} from '../service/ChatSettingsDB';
 import {NotificationService} from "../service/NotificationService";
 import ConversationService from '../service/ConversationService';
 import {useConfirmDialog} from "./ConfirmDialog";

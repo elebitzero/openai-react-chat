@@ -1,4 +1,4 @@
-import React, {useState, useContext, useEffect, useRef} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import {
   CircleStackIcon,
   Cog6ToothIcon,
@@ -17,8 +17,7 @@ import {useTranslation} from 'react-i18next';
 import {Transition} from '@headlessui/react';
 import EditableInstructions from './EditableInstructions';
 import SpeechSpeedSlider from './SpeechSpeedSlider';
-import {iconProps} from "../svg";
-import { useConfirmDialog } from './ConfirmDialog';
+import {useConfirmDialog} from './ConfirmDialog';
 
 interface UserSettingsModalProps {
   isVisible: boolean;

@@ -1,5 +1,5 @@
 import Dexie from 'dexie';
-import { ChatSettings } from '../models/ChatSettings';
+import {ChatSettings} from '../models/ChatSettings';
 import initialData from './chatSettingsData.json';
 import {EventEmitter} from "./EventEmitter";
 

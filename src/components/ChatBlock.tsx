@@ -1,8 +1,5 @@
 import React, {ChangeEvent, KeyboardEvent, useEffect, useRef, useState} from 'react';
-import {
-    SparklesIcon,
-    UserCircleIcon
-} from "@heroicons/react/24/outline";
+import {SparklesIcon, UserCircleIcon} from "@heroicons/react/24/outline";
 import MarkdownBlock from './MarkdownBlock';
 import CopyButton, {CopyButtonMode} from "./CopyButton";
 import {ChatMessage, MessageType} from "../models/ChatCompletion";

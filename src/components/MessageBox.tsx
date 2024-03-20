@@ -1,14 +1,14 @@
 // MessageBox.tsx
 import React, {
-  ChangeEvent,
-  FormEvent,
-  forwardRef,
-  KeyboardEvent,
-  useCallback,
-  useEffect,
-  useImperativeHandle,
-  useRef,
-  useState
+    ChangeEvent,
+    FormEvent,
+    forwardRef,
+    KeyboardEvent,
+    useCallback,
+    useEffect,
+    useImperativeHandle,
+    useRef,
+    useState
 } from 'react';
 import {MAX_ROWS, SNIPPET_MARKERS} from '../constants/appConstants';
 import {SubmitButton} from "./SubmitButton";

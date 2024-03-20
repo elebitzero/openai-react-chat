@@ -1,4 +1,4 @@
-import React, { useState, ReactElement } from 'react';
+import React, {ReactElement, useState} from 'react';
 import FormLabel from "./FormLabel";
 import {useTranslation} from 'react-i18next';
 

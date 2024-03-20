@@ -1,6 +1,5 @@
 import React from 'react';
 import {ChatSettings} from '../models/ChatSettings';
-import AvatarFieldEditor from './AvatarFieldEditor';
 import CubeIcon from "@heroicons/react/24/outline/CubeIcon";
 
 interface CustomChatSplashProps {

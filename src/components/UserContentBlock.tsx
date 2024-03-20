@@ -1,7 +1,5 @@
-import React, {CSSProperties, useState} from 'react';
+import React from 'react';
 import {SNIPPET_MARKERS} from "../constants/appConstants";
-import {ChevronDownIcon, ChevronUpIcon} from "@heroicons/react/24/outline";
-import {useTranslation} from 'react-i18next';
 import FoldableTextSection from './FoldableTextSection';
 
 interface UserContentBlockProps {

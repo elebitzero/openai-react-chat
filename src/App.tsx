@@ -1,10 +1,9 @@
 import React, {useState} from 'react';
-import {Routes, Route, Navigate, BrowserRouter, useSearchParams} from 'react-router-dom';
+import {BrowserRouter, Navigate, Route, Routes} from 'react-router-dom';
 import {I18nextProvider} from 'react-i18next';
 import i18n from './i18n';
 import Sidebar from "./components/SideBar";
 import MainPage from "./components/MainPage";
-import ChatSettingsForm from './components/ChatSettingsForm';
 import './App.css';
 import {ToastContainer} from "react-toastify";
 import ExploreCustomChats from "./components/ExploreCustomChats";

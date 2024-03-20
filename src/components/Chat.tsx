@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState, useContext} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import ChatBlock from "./ChatBlock";
 import ModelSelect from "./ModelSelect";
 import {OpenAIModel} from "../models/model";
@@ -9,9 +9,9 @@ import Tooltip from "./Tooltip";
 import {Conversation} from "../service/ConversationService";
 import {OPENAI_DEFAULT_SYSTEM_PROMPT} from "../config";
 import {DEFAULT_INSTRUCTIONS} from "../constants/appConstants";
-import { UserContext } from '../UserContext';
-import {InformationCircleIcon, PaperAirplaneIcon} from "@heroicons/react/24/outline";
-import { NotificationService } from '../service/NotificationService';
+import {UserContext} from '../UserContext';
+import {InformationCircleIcon} from "@heroicons/react/24/outline";
+import {NotificationService} from '../service/NotificationService';
 
 interface Props {
     chatBlocks: ChatMessage[];

@@ -4,7 +4,7 @@ import {visit} from 'unist-util-visit';
 import "./MarkdownBlock.css";
 
 // import SyntaxHighlighter from 'react-syntax-highlighter';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter';
 import CopyButton from "./CopyButton";
 import {Root} from "hast";
 import gfm from "remark-gfm";
@@ -13,8 +13,7 @@ import remarkMath from 'remark-math'
 import rehypeKatex from 'rehype-katex'
 import 'katex/dist/katex.min.css'
 import {UserContext} from "../UserContext";
-import { coldarkDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
-import { oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism'
+import {coldarkDark, oneLight} from 'react-syntax-highlighter/dist/esm/styles/prism'
 
 interface ChatBlockProps {
     markdown: string;

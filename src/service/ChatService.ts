@@ -1,9 +1,9 @@
 import {modelDetails, OpenAIModel} from "../models/model";
-import {ChatCompletionRequest, ChatCompletion, ChatMessage} from "../models/ChatCompletion";
+import {ChatCompletion, ChatCompletionRequest, ChatMessage} from "../models/ChatCompletion";
 import {OPENAI_API_KEY} from "../config";
 import {CustomError} from "./CustomError";
 import {CHAT_COMPLETIONS_ENDPOINT, MODELS_ENDPOINT} from "../constants/apiEndpoints";
-import { ChatSettings } from "../models/ChatSettings";
+import {ChatSettings} from "../models/ChatSettings";
 import {CHAT_STREAM_DEBOUNCE_TIME, DEFAULT_MODEL} from "../constants/appConstants";
 import {NotificationService} from '../service/NotificationService';
 

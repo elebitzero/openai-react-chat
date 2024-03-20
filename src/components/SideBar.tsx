@@ -2,21 +2,21 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Link, useLocation, useNavigate} from 'react-router-dom';
 import {conversationsEmitter} from '../service/EventEmitter';
 import {
-  ChatBubbleLeftIcon,
-  CheckIcon,
-  Cog8ToothIcon,
-  MagnifyingGlassIcon,
-  PencilSquareIcon,
-  PlusIcon,
-  Squares2X2Icon,
-  TrashIcon,
-  XMarkIcon
+    ChatBubbleLeftIcon,
+    CheckIcon,
+    Cog8ToothIcon,
+    MagnifyingGlassIcon,
+    PencilSquareIcon,
+    PlusIcon,
+    Squares2X2Icon,
+    TrashIcon,
+    XMarkIcon
 } from "@heroicons/react/24/outline";
 import {CloseSideBarIcon, iconProps, OpenSideBarIcon} from "../svg";
 import {useTranslation} from 'react-i18next';
 import Tooltip from "./Tooltip";
 import UserSettingsModal from './UserSettingsModal';
-import ConversationService, { Conversation } from "../service/ConversationService";
+import ConversationService, {Conversation} from "../service/ConversationService";
 import ChatShortcuts from './ChatShortcuts';
 
 interface SidebarProps {
