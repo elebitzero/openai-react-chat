@@ -37,7 +37,7 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({isVisible, onClose
   const dialogRef = useRef<HTMLDivElement>(null);
   const {userSettings, setUserSettings} = useContext(UserContext);
   const [activeTab, setActiveTab] = useState<Tab>(Tab.GENERAL_TAB);
-  const { showConfirmDialog, ConfirmDialog } = useConfirmDialog();
+  const { showConfirmDialog, ConfirmDialog, isOpen} = useConfirmDialog();
 
   const [storageUsage, setStorageUsage] = useState<number | undefined>();
   const [storageQuota, setStorageQuota] = useState<number | undefined>();
@@ -90,13 +90,13 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({isVisible, onClose
 
   useEffect(() => {
     const closeModalOnOutsideClick = (event: MouseEvent) => {
-      if (dialogRef.current && !dialogRef.current.contains(event.target as Node)) {
+      if (!isOpen && dialogRef.current && !dialogRef.current.contains(event.target as Node)) {
         handleClose();
       }
     };
 
     const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
+      if (!isOpen && event.key === 'Escape') {
         handleClose();
       }
     };

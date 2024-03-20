@@ -107,6 +107,7 @@ export const useConfirmDialog = () => {
         confirmButtonVariant={dialogProps.confirmButtonVariant}
       />
     ) : null,
+    isOpen
   };
 };
 
