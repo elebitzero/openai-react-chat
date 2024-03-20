@@ -1,19 +1,13 @@
 import React, {ChangeEvent, KeyboardEvent, useEffect, useRef, useState} from 'react';
 import {
-    ArrowPathRoundedSquareIcon,
-    CheckIcon,
-    ClipboardIcon, PencilSquareIcon,
     SparklesIcon,
     UserCircleIcon
 } from "@heroicons/react/24/outline";
 import MarkdownBlock from './MarkdownBlock';
 import CopyButton, {CopyButtonMode} from "./CopyButton";
 import {ChatMessage, MessageType} from "../models/ChatCompletion";
-import {ExclamationCircleIcon} from "@heroicons/react/24/solid";
 import UserContentBlock from "./UserContentBlock";
-import {iconProps} from "../svg";
 import TextToSpeechButton from "./TextToSpeechButton";
-import {SpeechSettings} from "../models/SpeechSettings";
 
 interface Props {
     block: ChatMessage;
@@ -89,18 +83,11 @@ const ChatBlock: React.FC<Props> = ({block, loading, isLastBlock}) => {
               <div className="w-full flex">
                   <div className="w-[30px] flex flex-col relative items-end mr-4">
                       <div className="relative flex h-[30px] w-[30px] p-0 rounded-sm items-center justify-center">
-                          {/* Main Icon */}
                           {block.role === 'user' ? (
                             <UserCircleIcon width={24} height={24}/>
                           ) : block.role === 'assistant' ? (
                             <SparklesIcon key={`open-ai-logo-${block.id}`}/>
                           ) : null}
-                          {/* Decorator Icon */}
-                          {block.messageType === MessageType.Error && (
-                            <div className="absolute bottom-0 right-0 transform translate-x-33 translate-y-33">
-                                <ExclamationCircleIcon className="text-red-500" width={12} height={12}/>
-                            </div>
-                          )}
                       </div>
                   </div>
                   <div className="relative flex w-[calc(100%-50px)] flex-col gap-1 md:gap-3 lg:w-full">
