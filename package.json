@@ -12,7 +12,7 @@
     "@heroicons/react": "^2.1.1",
     "@radix-ui/react-tooltip": "^1.0.7",
     "autoprefixer": "^10.4.19",
-    "dexie": "^3.2.6",
+    "dexie": "^3.2.7",
     "github-markdown-css": "^5.5.1",
     "hast": "^1.0.0",
     "highlight.js": "^11.9.0",
