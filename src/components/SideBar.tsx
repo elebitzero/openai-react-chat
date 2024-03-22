@@ -122,12 +122,8 @@ const Sidebar: React.FC<SidebarProps> = ({className, isSidebarCollapsed, toggleS
   }, [lastUpdate]);
 
   const loadConversations = () => {
-    ConversationService.loadRecentConversationsTitleOnly().then(fetchedConversations => {
-      const modifiedConversations = fetchedConversations.map(conversation => ({
-        ...conversation,
-        messages: "[]"
-      }));
-      setConversations(modifiedConversations);
+    ConversationService.loadRecentConversationsTitleOnly().then(conversations => {
+      setConversations(conversations);
     }).catch(error => {
       console.error("Error loading conversations:", error);
     });

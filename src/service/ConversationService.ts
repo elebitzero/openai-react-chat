@@ -96,16 +96,20 @@ class ConversationService {
   static async loadRecentConversationsTitleOnly(): Promise<Conversation[]> {
     try {
       const conversations = await db.conversations
-          .orderBy('timestamp')
-          .reverse()
-          .limit(NUM_INITIAL_CONVERSATIONS)
-          .toArray();
+        .orderBy('timestamp')
+        .reverse()
+        .limit(NUM_INITIAL_CONVERSATIONS)
+        .toArray(conversations => conversations.map(conversation => {
+          const conversationWithEmptyMessages = {...conversation, messages: "[]"};
+          return conversationWithEmptyMessages;
+        }));
       return conversations;
     } catch (error) {
       console.error("Error loading recent conversations:", error);
       throw error;
     }
   }
+
 
   static async countConversationsByGid(id: number): Promise<number> {
     return db.conversations
