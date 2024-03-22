@@ -8,20 +8,20 @@ i18n
     .use(initReactI18next)
     .use(LanguageDetector)
     .init({
-        fallbackLng: 'en',
-        detection: {
-            order: ['navigator', 'querystring', 'cookie', 'localStorage', 'htmlTag', 'path'],
-        },
-        //debug: true,
-        interpolation: {
-            escapeValue: false,
-        },
-        backend: {
-            loadPath: '/locales/{{lng}}/{{ns}}.json',
-        },
-        react: {
-            useSuspense: false,
-        },
+      fallbackLng: 'en',
+      detection: {
+        order: ['navigator', 'querystring', 'cookie', 'localStorage', 'htmlTag', 'path'],
+      },
+      //debug: true,
+      interpolation: {
+        escapeValue: false,
+      },
+      backend: {
+        loadPath: '/locales/{{lng}}/{{ns}}.json',
+      },
+      react: {
+        useSuspense: false,
+      },
     });
 
 export default i18n;

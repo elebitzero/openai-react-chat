@@ -1,6 +1,6 @@
 .chat-settings-grid {
-    display: grid;
-    grid-column-gap: 15px;
-    grid-row-gap: 15px;
-    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  display: grid;
+  grid-column-gap: 15px;
+  grid-row-gap: 15px;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
 }

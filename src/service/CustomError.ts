@@ -1,8 +1,8 @@
 export class CustomError extends Error {
-    responseJson: any;
+  responseJson: any;
 
-    constructor(message: string, responseJson: any) {
-        super(message);
-        this.responseJson = responseJson;
-    }
+  constructor(message: string, responseJson: any) {
+    super(message);
+    this.responseJson = responseJson;
+  }
 }

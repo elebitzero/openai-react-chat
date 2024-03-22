@@ -1,5 +1,5 @@
 export interface SpeechSettings {
-    id: string;
-    voice: string;
-    speed: number;
+  id: string;
+  voice: string;
+  speed: number;
 }

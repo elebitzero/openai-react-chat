@@ -1,9 +1,9 @@
 .setting-panel {
-    padding: 10px;
-    margin-bottom: 15px;
-    border-bottom: 1px solid #eee;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #eee;
 }
 
 .setting-panel:last-child {
-    border-bottom: none;
+  border-bottom: none;
 }

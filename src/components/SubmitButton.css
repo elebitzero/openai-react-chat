@@ -1,16 +1,16 @@
 /* SubmitButton.module.css */
 @keyframes ellipsis-pulse {
-    0%, 100% {
-        transform: translateY(0);
-    }
-    25% {
-        transform: translateY(-4px);
-    }
-    75% {
-        transform: translateY(4px);
-    }
+  0%, 100% {
+    transform: translateY(0);
+  }
+  25% {
+    transform: translateY(-4px);
+  }
+  75% {
+    transform: translateY(4px);
+  }
 }
 
 .animate-ellipsis-pulse {
-    animation: ellipsis-pulse 1s linear infinite;
+  animation: ellipsis-pulse 1s linear infinite;
 }
