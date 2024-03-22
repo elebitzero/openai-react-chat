@@ -19,20 +19,26 @@ const TextToSpeechButton: React.FC<TextToSpeechButtonProps> = ({content}) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [audioUrl, setAudioUrl] = useState('');
   const audioRef = useRef(new Audio());
-  // Use UserContext to get userSettings
   const {userSettings} = useContext(UserContext);
 
-  // Construct speechSettings from userSettings with defaults
   const speechSettings: SpeechSettings = {
     id: userSettings.speechModel || 'tts-1',
     voice: userSettings.speechVoice || 'alloy',
     speed: userSettings.speechSpeed || 1.0,
   };
 
+  const preprocessContent = (content: string) => {
+    // Remove code blocks
+    content = content.replace(/```[\s\S]*?```/g, '');
+    return content;
+  };
+
+
   const fetchAudio = async () => {
     setIsLoading(true);
     try {
-      const url = await SpeechService.textToSpeech(content, speechSettings);
+      const processedContent = preprocessContent(content);
+      const url = await SpeechService.textToSpeech(processedContent, speechSettings);
       setAudioUrl(url);
       audioRef.current.src = url;
       audioRef.current.play();
@@ -71,22 +77,28 @@ const TextToSpeechButton: React.FC<TextToSpeechButtonProps> = ({content}) => {
                   isLoading || isPlaying ? 'active' : ''
               }`}>
         {isLoading ? (
-            <Tooltip title={t('loading-ttd-button')} side="top" sideOffset={0}>
+          <Tooltip title={t('loading-ttd-button')} side="top" sideOffset={0}>
+            <div>
               <RotatingLines
-                  ariaLabel="loading-indicator"
-                  width="16"
-                  strokeWidth="1"
-                  strokeColor="black"
+                ariaLabel="loading-indicator"
+                width="16"
+                strokeWidth="1"
+                strokeColor="black"
               />
-            </Tooltip>
+            </div>
+          </Tooltip>
         ) : isPlaying ? (
-            <Tooltip title={t('stop-read-aloud-button')} side="top" sideOffset={0}>
-              <StopCircleIcon  {...iconProps}  />
-            </Tooltip>
+          <Tooltip title={t('stop-read-aloud-button')} side="top" sideOffset={0}>
+            <div>{/* Tooltip requires a DOM element.*/}
+              <StopCircleIcon {...iconProps} />
+            </div>
+          </Tooltip>
         ) : (
-            <Tooltip title={t('read-aloud-button')} side="top" sideOffset={0}>
-              <SpeakerWaveIcon {...iconProps}  />
-            </Tooltip>
+          <Tooltip title={t('read-aloud-button')} side="top" sideOffset={0}>
+            <div>{/* Tooltip requires a DOM element.*/}
+              <SpeakerWaveIcon {...iconProps} />
+            </div>
+          </Tooltip>
         )}
       </button>
   );
