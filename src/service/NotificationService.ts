@@ -14,14 +14,15 @@ export class NotificationService {
         return userTheme;
     };
 
-    static handleUnexpectedError(err: Error = new Error(), title: string = '') {
+    static handleUnexpectedError(err: Error = new Error(), title: string = '', toastId?: string) {
         const messagePrefix = title ? `${title}: ` : 'Unexpected error: ';
         const message = `${messagePrefix}${err.message || 'No error message provided'}`;
 
         toast.error(message, {
+            toastId: toastId || 'error',
             position: "top-center",
             autoClose: 5000,
-            hideProgressBar: false,
+            hideProgressBar: true,
             closeOnClick: true,
             pauseOnHover: true,
             draggable: true,
@@ -30,11 +31,12 @@ export class NotificationService {
         });
     }
 
-    static handleError(title: string = '') {
+    static handleError(title: string = '', toastId?: string) {
         toast.error(title, {
+            toastId: toastId || 'error',
             position: "top-center",
             autoClose: 5000,
-            hideProgressBar: false,
+            hideProgressBar: true,
             closeOnClick: true,
             pauseOnHover: true,
             draggable: true,
@@ -43,12 +45,12 @@ export class NotificationService {
         });
     }
 
-
-    static handleSuccess(title: string) {
+    static handleSuccess(title: string, toastId?: string) {
         toast.success(title, {
+            toastId: toastId || 'success',
             position: "top-center",
             autoClose: 5000,
-            hideProgressBar: false,
+            hideProgressBar: true,
             closeOnClick: true,
             pauseOnHover: true,
             draggable: true,

@@ -5,11 +5,10 @@ import {ChatCompletion, ChatMessage, MessageType, Role} from "../models/ChatComp
 import {ScrollToBottomButton} from "./ScrollToBottomButton";
 import {OPENAI_DEFAULT_SYSTEM_PROMPT} from "../config";
 import {CustomError} from "../service/CustomError";
-import {conversationsEmitter} from "../service/EventEmitter";
 import {useLocation, useNavigate, useParams} from "react-router-dom";
 import {useTranslation} from 'react-i18next';
 import MessageBox, {MessageBoxHandles} from "./MessageBox";
-import {DEFAULT_INSTRUCTIONS, MAX_TITLE_LENGTH} from "../constants/appConstants";
+import {CONVERSATION_NOT_FOUND, DEFAULT_INSTRUCTIONS, MAX_TITLE_LENGTH} from "../constants/appConstants";
 import {ChatSettings} from '../models/ChatSettings';
 import chatSettingsDB, {chatSettingsEmitter, updateShowInSidebar} from '../service/ChatSettingsDB';
 import ChatSettingDropdownMenu from "./ChatSettingDropdownMenu";
@@ -177,7 +176,9 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
                         }
                         clearTextArea();
                     } else {
-                        console.error("Conversation not found.");
+                        const errorMessage: string = 'Conversation '+location.pathname+' not found';
+                        NotificationService.handleError(errorMessage,CONVERSATION_NOT_FOUND);
+                        navigate('/');
                     }
                 });
         } else {
@@ -214,7 +215,6 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
         };
         setConversation(conversation);
         ConversationService.addConversation(conversation);
-        conversationsEmitter.emit('newConversation', conversation);
         if (gid) {
             navigate(`/g/${gid}/c/${conversation.id}`);
             updateShowInSidebar(Number(gid), 1);

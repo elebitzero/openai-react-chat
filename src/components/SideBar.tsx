@@ -1,6 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Link, useLocation, useNavigate} from 'react-router-dom';
-import {conversationsEmitter} from '../service/EventEmitter';
 import {
     ChatBubbleLeftIcon,
     CheckIcon,
@@ -16,8 +15,9 @@ import {CloseSideBarIcon, iconProps, OpenSideBarIcon} from "../svg";
 import {useTranslation} from 'react-i18next';
 import Tooltip from "./Tooltip";
 import UserSettingsModal from './UserSettingsModal';
-import ConversationService, {Conversation} from "../service/ConversationService";
+import ConversationService, {Conversation, ConversationChangeEvent, conversationsEmitter} from "../service/ConversationService";
 import ChatShortcuts from './ChatShortcuts';
+import {ChatSettingsChangeEvent} from "../service/ChatSettingsDB";
 
 interface SidebarProps {
     className: string;
@@ -66,24 +66,44 @@ const Sidebar: React.FC<SidebarProps> = ({className, isSidebarCollapsed, toggleS
         handleSelectedConversation(itemId)
     }, [currentPath]);
 
-    const handleNewConversation = (conversation: Conversation) => {
-        setSelectedId(conversation.id);
-        setConversations(prevConversations => [conversation, ...prevConversations]);
+    const handleConversationChange = (event: ConversationChangeEvent) => {
 
-        if (scrollContainerRef.current) {
-            if ("scrollTop" in scrollContainerRef.current) {
-                scrollContainerRef.current.scrollTop = 0;
+        if (event.action === 'add') {
+            const conversation = event.conversation!;
+            setSelectedId(conversation.id);
+            setConversations(prevConversations => [conversation, ...prevConversations]);
+
+            if (scrollContainerRef.current) {
+                if ("scrollTop" in scrollContainerRef.current) {
+                    scrollContainerRef.current.scrollTop = 0;
+                }
+            }
+        } else if (event.action === 'edit') {
+            if (event.id === 0) {
+                console.error("invali state, cannot edit id = 0");
+            } else {
+                setConversations(prevConversations => prevConversations.map(conv => {
+                    if(conv.id === event.id && event.conversation) {
+                        return event.conversation;
+                    }
+                    return conv;
+                }));
+            }
+        } else if (event.action === 'delete') {
+            if (event.id === 0) {
+                loadConversations();
+            } else {
+                setConversations(prevConversations => prevConversations.filter(conv => conv.id !== event.id));
             }
         }
     };
 
     useEffect(() => {
         loadConversations();
-
-        conversationsEmitter.on('newConversation', handleNewConversation);
+        conversationsEmitter.on('conversationChangeEvent', handleConversationChange);
 
         return () => {
-            conversationsEmitter.off('newConversation', handleNewConversation);
+            conversationsEmitter.off('conversationChangeEvent', handleConversationChange);
         };
 
     }, []);

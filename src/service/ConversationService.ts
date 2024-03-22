@@ -1,4 +1,5 @@
 import Dexie from 'dexie';
+import {EventEmitter} from "./EventEmitter";
 
 export interface Conversation {
     id: number;
@@ -9,6 +10,12 @@ export interface Conversation {
     systemPrompt: string,
     messages: string; // JSON string of messages
     marker?: boolean;
+}
+
+export interface ConversationChangeEvent {
+    action: 'add' | 'edit' | 'delete',
+    id: number,
+    conversation?: Conversation, // not set on delete
 }
 
 class ConversationDB extends Dexie {
@@ -30,9 +37,6 @@ const db = new ConversationDB();
 const NUM_INITIAL_CONVERSATIONS = 200;
 
 class ConversationService {
-    static async deleteAllConversations(): Promise<void> {
-        await db.conversations.clear();
-    }
 
     static async getConversationById(id: number): Promise<Conversation | undefined> {
         return db.conversations.get(id);
@@ -61,19 +65,32 @@ class ConversationService {
 
     static async addConversation(conversation: Conversation): Promise<void> {
         await db.conversations.add(conversation);
+        let event: ConversationChangeEvent = {action: 'add', id: conversation.id, conversation:conversation};
+        conversationsEmitter.emit('conversationChangeEvent', event);
     }
 
     static async updateConversation(conversation: Conversation): Promise<void> {
-        db.conversations.put(conversation);
+        await db.conversations.put(conversation);
+        let event: ConversationChangeEvent = {action: 'edit', id: conversation.id, conversation:conversation};
+        conversationsEmitter.emit('conversationChangeEvent', event);
     }
 
     static async updateConversationPartial(conversation: Conversation, changes: any): Promise<number> {
+        // todo: currently not emitting event for this case
         return db.conversations
             .update(conversation.id, changes)
     }
 
     static async deleteConversation(id: number): Promise<void> {
         await db.conversations.delete(id);
+        let event: ConversationChangeEvent = {action: 'delete', id: id};
+        conversationsEmitter.emit('conversationChangeEvent', event);
+    }
+
+    static async deleteAllConversations(): Promise<void> {
+        await db.conversations.clear();
+        let event: ConversationChangeEvent = {action: 'delete', id: 0};
+        conversationsEmitter.emit('conversationChangeEvent', event);
     }
 
     static async loadRecentConversationsTitleOnly(): Promise<Conversation[]> {
@@ -101,8 +118,11 @@ class ConversationService {
             .where('gid').equals(id)
 
         await conversationsToDelete.delete();
+        let event: ConversationChangeEvent = {action: 'delete', id: 0};
+        conversationsEmitter.emit('conversationChangeEvent', event);
     }
 
 }
 
+export const conversationsEmitter = new EventEmitter<ConversationChangeEvent>();
 export default ConversationService;

@@ -22,6 +22,3 @@ export class EventEmitter<T = any> {
         }
     }
 }
-
-
-export const conversationsEmitter = new EventEmitter<Conversation>();
