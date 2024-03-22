@@ -5,6 +5,7 @@ import './globalStyles.css';
 import 'react-toastify/dist/ReactToastify.css';
 import {UserProvider} from "./UserContext";
 import App from "./App";
+import './i18n'; // sideEffects: true
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 

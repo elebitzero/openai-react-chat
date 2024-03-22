@@ -13,11 +13,10 @@ interface TooltipProps {
 const Tooltip: React.FC<TooltipProps> = ({title, children, side, sideOffset}) => {
   const {userSettings, setUserSettings} = useContext(UserContext);
 
-  // Determine arrow color based on the theme
   const arrowClassName =
       userSettings.theme === 'dark'
-          ? "fill-current text-gray-100" // Adjust color for dark mode
-          : "fill-current text-gray-900"; // Adjust color for light mode
+          ? "dark:text-gray-100"
+          : "text-gray-900";
 
   return (
       <RadixTooltip.Provider delayDuration={400}>

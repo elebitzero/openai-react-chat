@@ -7,6 +7,7 @@ import {UserContext} from '../UserContext';
 import {iconProps} from "../svg";
 import {useTranslation} from "react-i18next";
 import "./Button.css";
+import Tooltip from './Tooltip';
 
 interface TextToSpeechButtonProps {
   content: string;
@@ -66,18 +67,26 @@ const TextToSpeechButton: React.FC<TextToSpeechButtonProps> = ({content}) => {
 
   return (
       <button onClick={handleClick} disabled={isLoading}
-              className="chat-action-button text-gray-400 inline-flex items-center justify-center p-2">
+              className={`chat-action-button text-gray-400 inline-flex items-center justify-center p-2 ${
+                  isLoading || isPlaying ? 'active' : ''
+              }`}>
         {isLoading ? (
-            <RotatingLines
-                ariaLabel="loading-indicator"
-                width="16"
-                strokeWidth="1"
-                strokeColor="black"
-            />
+            <Tooltip title={t('loading-ttd-button')} side="top" sideOffset={0}>
+              <RotatingLines
+                  ariaLabel="loading-indicator"
+                  width="16"
+                  strokeWidth="1"
+                  strokeColor="black"
+              />
+            </Tooltip>
         ) : isPlaying ? (
-            <StopCircleIcon {...iconProps}  />
+            <Tooltip title={t('stop-read-aloud-button')} side="top" sideOffset={0}>
+              <StopCircleIcon  {...iconProps}  />
+            </Tooltip>
         ) : (
-            <SpeakerWaveIcon {...iconProps}  />
+            <Tooltip title={t('read-aloud-button')} side="top" sideOffset={0}>
+              <SpeakerWaveIcon {...iconProps}  />
+            </Tooltip>
         )}
       </button>
   );
