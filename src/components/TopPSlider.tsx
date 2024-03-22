@@ -38,7 +38,7 @@ const TopPSlider: React.FC<TopPSliderProps> = ({value, onValueChange}) => {
     };
 
     return (
-        <div>
+        <div id="top_p">
             <p className='mb-2'>
                 An alternative to sampling with temperature, called nucleus sampling, where the model considers the
                 results of

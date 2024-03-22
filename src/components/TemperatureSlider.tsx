@@ -40,7 +40,7 @@ const TemperatureSlider: React.FC<TemperatureSliderProps> = ({value, onValueChan
     };
 
     return (
-        <div>
+        <div id="temperature">
             <p className='mb-2'>Higher values like 0.8 will make the output more random, while lower values like 0.2
                 will make it more focused and deterministic.
                 We recommend altering this or top_p but not both.</p>

@@ -17,6 +17,7 @@ export type EditableFieldProps<T> = {
     editorComponent: React.ComponentType<EditorComponentProps<T>>;
     onValueChange: (value: T) => void;
     readOnly?: boolean;
+    isModalLabel?: boolean;
 };
 
 export function EditableField<T>({
@@ -27,7 +28,8 @@ export function EditableField<T>({
                                      defaultValueLabel,
                                      editorComponent: EditorComponent,
                                      onValueChange,
-                                     readOnly = false,
+                                     readOnly,
+                                     isModalLabel,
                                  }: EditableFieldProps<T>): ReactElement {
     const [isEditing, setIsEditing] = useState(false);
     const effectiveValue = value !== undefined && value !== null ? value : defaultValue;
@@ -66,7 +68,7 @@ export function EditableField<T>({
 
     return (
         <div className="mb-4">
-            <FormLabel readOnly={readOnly} label={label} htmlFor={!readOnly ? id : undefined} value={value}/>
+            <FormLabel readOnly={readOnly} isEditing={isEditing} label={label} htmlFor={id} value={value} isModalLabel={isModalLabel}/>
             {!isEditing ? (
                 <div className="flex items-center">
           <span className="text-gray-600 dark:text-gray-400 text-sm mr-2">

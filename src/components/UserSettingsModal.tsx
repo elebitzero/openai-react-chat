@@ -196,15 +196,11 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({isVisible, onClose
 
                                         </div>
                                         <div className="flex items-center justify-between setting-panel">
-                                            {userSettings.model ? (
-                                                <label htmlFor="model">{t('model-header')}</label>
-                                            ) : (
-                                                <span>{t('model-header')}</span>
-                                            )}
                                             <EditableField<string | null>
                                                 readOnly={false}
+                                                isModalLabel={true}
                                                 id="model"
-                                                label=""
+                                                label={t('model-header')}
                                                 value={userSettings.model}
                                                 defaultValue={null}
                                                 defaultValueLabel={'gpt-4-turbo-preview'}
@@ -268,15 +264,11 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({isVisible, onClose
                                             </select>
                                         </div>
                                         <div className="setting-panel flex items-center justify-between">
-                                            {userSettings.speechSpeed ? (
-                                                <label htmlFor="speed">{t('speed-header')}</label>
-                                            ) : (
-                                                <span>{t('speed-header')}</span>
-                                            )}
                                             <EditableField<number | null>
                                                 readOnly={false}
+                                                isModalLabel={true}
                                                 id="speed"
-                                                label=""
+                                                label={t('speed-header')}
                                                 value={userSettings.speechSpeed}
                                                 defaultValue={1.0}
                                                 defaultValueLabel="1.0"

@@ -33,7 +33,7 @@ const SpeechSpeedSlider: React.FC<SpeechSpeedSliderProps> = ({value, onValueChan
     };
 
     return (
-        <div>
+        <div id="speed">
             <p className='mb-2'>Adjust the speech speed to your preference. Lower values will slow down the speech,
                 while higher values will speed it up.</p>
             <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '2px'}}>
