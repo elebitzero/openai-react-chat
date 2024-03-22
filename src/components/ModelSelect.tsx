@@ -15,6 +15,7 @@ import Tooltip from "./Tooltip";
 import {DEFAULT_MODEL} from "../constants/appConstants";
 import './ModelSelect.css'
 import {UserContext} from "../UserContext";
+import {EyeIcon} from '@heroicons/react/24/outline';
 
 interface ModelSelectProps {
   onModelSelect?: (value: string | null) => void;
@@ -25,12 +26,13 @@ interface ModelSelectProps {
   value: string | null;
 }
 
-type SelectOption = { label: string; value: string; info: string };
+type SelectOption = { label: string; value: string; info: string; image_support: boolean};
 
 const NONE_MODEL = {
   value: null,
   label: '(None)',
-  info: '?k'
+  info: '?k',
+  image_support: false
 };
 
 const ModelSelect: React.FC<ModelSelectProps> = ({
@@ -104,18 +106,18 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
     } else {
       setLoading(true);
       ChatService.getModels()
-          .then(data => {
-            setModels(data);
-          })
-          .catch(err => {
-            console.error('Error fetching model list', err);
-          })
-          .finally(() => setLoading(false));
+        .then(data => {
+          setModels(data);
+        })
+        .catch(err => {
+          console.error('Error fetching model list', err);
+        })
+        .finally(() => setLoading(false));
     }
   }, [externalModels]);
 
   function getModelOption(model: OpenAIModel) {
-    return {value: model.id, label: model.id, info: formatContextWindow(model.context_window)};
+    return {value: model.id, label: model.id, info: formatContextWindow(model.context_window), image_support:model.image_support};
   }
 
   useEffect(() => {
@@ -124,7 +126,7 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
 
       const newOptions = [
         ...defaultOptions.map((model) => getModelOption(model)),
-        {value: "more", label: SHOW_MORE_MODELS, info: ''}
+        {value: "more", label: SHOW_MORE_MODELS, info: '', image_support: false}
       ];
       setOptions(newOptions);
       let defaultModelId = DEFAULT_MODEL;
@@ -179,9 +181,10 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
           ...models.map((model) => ({
             value: model.id,
             label: model.id,
-            info: formatContextWindow(model.context_window)
+            info: formatContextWindow(model.context_window),
+            image_support: model.image_support
           })),
-          {value: "less", label: SHOW_FEWER_MODELS, info: ''}
+          {value: "less", label: SHOW_FEWER_MODELS, info: '',  image_support: false}
         ]);
         setMenuIsOpen(true);
       } else if (option.value === "less") {
@@ -190,16 +193,18 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
           ...defaultOptions.map((model) => ({
             value: model.id,
             label: model.id,
-            info: formatContextWindow(model.context_window)
+            info: formatContextWindow(model.context_window),
+            image_support: model.image_support
           })),
-          {value: "more", label: SHOW_MORE_MODELS, info: ''}
+          {value: "more", label: SHOW_MORE_MODELS, info: '',  image_support: false}
         ]);
         setMenuIsOpen(true);
       } else {
         setSelectedOption({
           value: option.value,
           label: option.label,
-          info: option.info
+          info: option.info,
+          image_support: option.image_support
         });
         if (onModelSelect) {
           onModelSelect(option.value);
@@ -212,55 +217,79 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
   };
 
   const customSingleValue: React.FC<SingleValueProps<SelectOption>> = ({children, ...props}) => (
-      <components.SingleValue {...props}>
-        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-          <span>{props.data.label}</span>
+    <components.SingleValue {...props}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+        {/* Model Label */}
+        <span>{props.data.label}</span>
+
+        {/* Right-aligned Container for Icon and Info */}
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          {/* EyeIcon - shown only when image_support is true */}
+          {props.data.image_support && (
+            <EyeIcon className="eye-icon" style={{ width: '1em', height: '1em', marginRight: '0.5rem', color: 'gray', marginTop: '2px'  }} />
+          )}
+
+          {/* Model Info with Tooltip */}
           <Tooltip title={t('context-window')} side="right" sideOffset={10}>
-                    <span style={{
-                      marginLeft: '10px',
-                      fontSize: '0.85rem',
-                      color: getInfoColor()
-                    }}>{props.data.info}</span>
+          <span style={{
+            fontSize: '0.85rem',
+            color: getInfoColor(),
+          }}>
+            {props.data.info}
+          </span>
           </Tooltip>
         </div>
-      </components.SingleValue>
+      </div>
+    </components.SingleValue>
   );
 
   const customOption: React.FC<OptionProps<SelectOption, false>> = (props) => (
-      <components.Option {...props}>
-        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-          <span>{props.data.label}</span>
+    <components.Option {...props}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+        {/* Model Label */}
+        <span>{props.data.label}</span>
+
+        {/* Right-aligned Container for the Info and EyeIcon */}
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          {/* EyeIcon - shown only when image_support is true */}
+          {props.data.image_support && (
+            <EyeIcon className="eye-icon" style={{ width: '1em', height: '1em', marginRight: '0.5rem', color: 'gray', marginTop: '2px'  }} />
+          )}
+
+          {/* Model Info with Tooltip */}
           <Tooltip title={t('context-window')} side="right" sideOffset={10}>
-                    <span style={{
-                      marginLeft: '10px',
-                      fontSize: '0.85rem',
-                      color: getInfoColor()
-                    }}>{props.data.info}</span>
+          <span style={{
+            fontSize: '0.85rem',
+            color: getInfoColor(),
+          }}>
+            {props.data.info}
+          </span>
           </Tooltip>
         </div>
-      </components.Option>
+      </div>
+    </components.Option>
   );
 
   return (
-      <div className='model-toggle'>
-        <Select
-            className='model-toggle-select'
-            options={options}
-            value={selectedOption}
-            onChange={handleModelChange}
-            isSearchable={true}
-            placeholder={t('select-a-model')}
-            isLoading={loading}
-            styles={customStyles}
-            components={{
-              Option: customOption,
-              SingleValue: customSingleValue,
-            }}
-            menuIsOpen={menuIsOpen}
-            onMenuClose={() => setMenuIsOpen(false)}
-            onMenuOpen={() => setMenuIsOpen(true)}
-        />
-      </div>
+    <div className='model-toggle'>
+      <Select
+        className='model-toggle-select'
+        options={options}
+        value={selectedOption}
+        onChange={handleModelChange}
+        isSearchable={true}
+        placeholder={t('select-a-model')}
+        isLoading={loading}
+        styles={customStyles}
+        components={{
+          Option: customOption,
+          SingleValue: customSingleValue,
+        }}
+        menuIsOpen={menuIsOpen}
+        onMenuClose={() => setMenuIsOpen(false)}
+        onMenuOpen={() => setMenuIsOpen(true)}
+      />
+    </div>
   );
 };
 

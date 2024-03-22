@@ -256,11 +256,12 @@ export class ChatService {
           return models
               .filter(model => model.id.startsWith("gpt-"))
               .map(model => {
-                const details = modelDetails[model.id] || {contextWindowSize: 0, knowledgeCutoffDate: ''};
+                const details = modelDetails[model.id] || {contextWindowSize: 0, knowledgeCutoffDate: '', imageSupport: false};
                 return {
                   ...model,
                   context_window: details.contextWindowSize,
-                  knowledge_cutoff: details.knowledgeCutoffDate
+                  knowledge_cutoff: details.knowledgeCutoffDate,
+                  image_support: details.imageSupport
                 };
               })
               .sort((a, b) => b.id.localeCompare(a.id));
