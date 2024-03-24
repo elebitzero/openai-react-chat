@@ -62,6 +62,10 @@
   "save-button": "저장",
   "create-button": "생성",
   "ok-button": "확인",
+  "copy-button": "복사",
   "change-button": "변경",
-  "close-button": "닫기"
+  "close-button": "닫기",
+  "read-aloud-button": "읽어주기",
+  "stop-read-aloud-button": "취소",
+  "loading-tts-button": "로딩 중..."
 }

@@ -62,6 +62,10 @@
   "save-button": "บันทึก",
   "create-button": "สร้าง",
   "ok-button": "ตกลง",
+  "copy-button": "คัดลอก",
   "change-button": "เปลี่ยน",
-  "close-button": "ปิด"
+  "close-button": "ปิด",
+  "read-aloud-button": "อ่านออกเสียง",
+  "stop-read-aloud-button": "ยกเลิก",
+  "loading-tts-button": "กำลังโหลด..."
 }

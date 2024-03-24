@@ -62,6 +62,10 @@
   "save-button": "保存",
   "create-button": "创建",
   "ok-button": "确定",
+  "copy-button": "复制",
   "change-button": "更改",
-  "close-button": "关闭"
+  "close-button": "关闭",
+  "read-aloud-button": "朗读",
+  "stop-read-aloud-button": "取消",
+  "loading-tts-button": "正在加载..."
 }

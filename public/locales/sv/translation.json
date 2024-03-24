@@ -62,6 +62,10 @@
   "save-button": "Spara",
   "create-button": "Skapa",
   "ok-button": "OK",
+  "copy-button": "Kopiera",
   "change-button": "Ändra",
-  "close-button": "Stäng"
+  "close-button": "Stäng",
+  "read-aloud-button": "Läs högt",
+  "stop-read-aloud-button": "Avbryt",
+  "loading-tts-button": "Laddar..."
 }

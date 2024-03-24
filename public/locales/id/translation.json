@@ -62,6 +62,10 @@
   "save-button": "Simpan",
   "create-button": "Buat",
   "ok-button": "OK",
+  "copy-button": "Salin",
   "change-button": "Ubah",
-  "close-button": "Tutup"
+  "close-button": "Tutup",
+  "read-aloud-button": "Bacakan",
+  "stop-read-aloud-button": "Batal",
+  "loading-tts-button": "Memuat..."
 }

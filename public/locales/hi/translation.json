@@ -62,6 +62,10 @@
   "save-button": "सहेजें",
   "create-button": "सृजन करें",
   "ok-button": "ठीक है",
+  "copy-button": "कॉपी करें",
   "change-button": "परिवर्तन",
-  "close-button": "बंद करें"
+  "close-button": "बंद करें",
+  "read-aloud-button": "जोर से पढ़ें",
+  "stop-read-aloud-button": "रद्द करें",
+  "loading-tts-button": "लोड हो रहा है..."
 }

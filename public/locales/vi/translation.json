@@ -62,6 +62,10 @@
   "save-button": "Lưu",
   "create-button": "Tạo",
   "ok-button": "OK",
+  "copy-button": "Sao chép",
   "change-button": "Thay đổi",
-  "close-button": "Đóng"
+  "close-button": "Đóng",
+  "read-aloud-button": "Đọc to",
+  "stop-read-aloud-button": "Hủy bỏ",
+  "loading-tts-button": "Đang tải..."
 }

@@ -62,6 +62,10 @@
   "save-button": "Сохранить",
   "create-button": "Создать",
   "ok-button": "ОК",
+  "copy-button": "Копировать",
   "change-button": "Изменить",
-  "close-button": "Закрыть"
+  "close-button": "Закрыть",
+  "read-aloud-button": "Прочитать вслух",
+  "stop-read-aloud-button": "Отмена",
+  "loading-tts-button": "Загрузка..."
 }

@@ -62,6 +62,10 @@
   "save-button": "Zapisz",
   "create-button": "Utwórz",
   "ok-button": "OK",
+  "copy-button": "Kopiuj",
   "change-button": "Zmień",
-  "close-button": "Zamknij"
+  "close-button": "Zamknij",
+  "read-aloud-button": "Czytaj na głos",
+  "stop-read-aloud-button": "Anuluj",
+  "loading-tts-button": "Ładowanie..."
 }
