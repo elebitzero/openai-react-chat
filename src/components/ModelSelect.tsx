@@ -16,6 +16,7 @@ import {DEFAULT_MODEL} from "../constants/appConstants";
 import './ModelSelect.css'
 import {UserContext} from "../UserContext";
 import {EyeIcon} from '@heroicons/react/24/outline';
+import AnchoredHint from './AnchoredHint';
 
 interface ModelSelectProps {
   onModelSelect?: (value: string | null) => void;
@@ -52,6 +53,14 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
   const SHOW_MORE_MODELS = t('show-more-models');
   const SHOW_FEWER_MODELS = t('show-fewer-models');
   const [menuIsOpen, setMenuIsOpen] = useState(false);
+  const [hintVisible, setHintVisible] = useState(false);
+
+  const showHint = () => {
+    setHintVisible(true);
+  };
+  const hideHint = () => {
+    setHintVisible(false);
+  };
 
   const isDarkMode = () => userSettings.userTheme === 'dark';
 
@@ -271,25 +280,35 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
   );
 
   return (
-    <div className='model-toggle'>
-      <Select
-        className='model-toggle-select'
-        options={options}
-        value={selectedOption}
-        onChange={handleModelChange}
-        isSearchable={true}
-        placeholder={t('select-a-model')}
-        isLoading={loading}
-        styles={customStyles}
-        components={{
-          Option: customOption,
-          SingleValue: customSingleValue,
-        }}
-        menuIsOpen={menuIsOpen}
-        onMenuClose={() => setMenuIsOpen(false)}
-        onMenuOpen={() => setMenuIsOpen(true)}
-      />
-    </div>
+    <AnchoredHint
+      content={
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span>Switch to a </span><EyeIcon className="w-5 h-5" aria-hidden="true" /><span>model which supports images.</span>
+        </div>
+      }
+      open={hintVisible}
+      close={hideHint}
+    >
+      <div className='model-toggle'>
+        <Select
+          className='model-toggle-select'
+          options={options}
+          value={selectedOption}
+          onChange={handleModelChange}
+          isSearchable={true}
+          placeholder={t('select-a-model')}
+          isLoading={loading}
+          styles={customStyles}
+          components={{
+            Option: customOption,
+            SingleValue: customSingleValue,
+          }}
+          menuIsOpen={menuIsOpen}
+          onMenuClose={() => setMenuIsOpen(false)}
+          onMenuOpen={() => setMenuIsOpen(true)}
+        />
+      </div>
+    </AnchoredHint>
   );
 };
 

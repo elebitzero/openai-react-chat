@@ -1,4 +1,3 @@
-import {Conversation} from "./ConversationService";
 
 export class EventEmitter<T = any> {
   events: { [key: string]: ((data: T) => void)[] } = {};

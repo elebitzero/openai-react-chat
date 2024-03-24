@@ -1,11 +1,12 @@
 import {modelDetails, OpenAIModel} from "../models/model";
-import {ChatCompletion, ChatCompletionRequest, ChatMessage} from "../models/ChatCompletion";
+import {ChatCompletion, ChatCompletionMessage, ChatCompletionRequest, ChatMessage, ChatMessagePart, Role} from "../models/ChatCompletion";
 import {OPENAI_API_KEY} from "../config";
 import {CustomError} from "./CustomError";
 import {CHAT_COMPLETIONS_ENDPOINT, MODELS_ENDPOINT} from "../constants/apiEndpoints";
 import {ChatSettings} from "../models/ChatSettings";
 import {CHAT_STREAM_DEBOUNCE_TIME, DEFAULT_MODEL} from "../constants/appConstants";
 import {NotificationService} from '../service/NotificationService';
+import { FileData } from "../models/FileData";
 
 interface CompletionChunk {
   id: string;
@@ -27,6 +28,35 @@ export class ChatService {
   private static models: Promise<OpenAIModel[]> | null = null;
   static abortController: AbortController | null = null;
 
+
+   static mapChatMessagesToCompletionMessages = (modelId: string, messages: ChatMessage[]): ChatCompletionMessage[] => {
+    return messages.map((message) => {
+      const contentParts: ChatMessagePart[] = [{
+        type: 'text',
+        text: message.content
+      }];
+
+      if (modelId.includes('vision') && message.fileData) {
+        message.fileData.forEach((file) => {
+          const fileUrl = file.data;
+          if (fileUrl) {
+            contentParts.push({
+              type: file.type,
+              image_url: {
+                url: fileUrl
+              }
+            });
+          }
+        });
+      }
+      return {
+        role: message.role,
+        content: contentParts,
+      };
+    });
+  }
+
+
   static async sendMessage(messages: ChatMessage[], modelId: string): Promise<ChatCompletion> {
     let endpoint = CHAT_COMPLETIONS_ENDPOINT;
     let headers = {
@@ -34,13 +64,11 @@ export class ChatService {
       "Authorization": `Bearer ${OPENAI_API_KEY}`
     };
 
-    // Map to a new array with the messageType removed
-    const messagesWithoutMessageType =
-        messages.map(({messageType, id: number, ...rest}) => rest);
+    const mappedMessages = ChatService.mapChatMessagesToCompletionMessages(modelId,messages);
 
     const requestBody: ChatCompletionRequest = {
       model: modelId,
-      messages: messagesWithoutMessageType,
+      messages: mappedMessages,
     };
     const response = await fetch(endpoint, {
       method: "POST",
@@ -60,7 +88,7 @@ export class ChatService {
   private static callDeferred: number | null = null;
   private static accumulatedContent: string = ""; // To accumulate content between debounced calls
 
-  static debounceCallback(callback: (content: string) => void, delay: number = CHAT_STREAM_DEBOUNCE_TIME) {
+  static debounceCallback(callback: (content: string, fileData: FileData[]) => void, delay: number = CHAT_STREAM_DEBOUNCE_TIME) {
     return (content: string) => {
       this.accumulatedContent += content; // Accumulate content on each call
       const now = Date.now();
@@ -71,7 +99,7 @@ export class ChatService {
       }
 
       this.callDeferred = window.setTimeout(() => {
-        callback(this.accumulatedContent); // Pass the accumulated content to the original callback
+        callback(this.accumulatedContent,[]); // Pass the accumulated content to the original callback
         this.lastCallbackTime = Date.now();
         this.accumulatedContent = ""; // Reset the accumulated content after the callback is called
       }, delay - timeSinceLastCall < 0 ? 0 : delay - timeSinceLastCall);  // Ensure non-negative delay
@@ -80,7 +108,7 @@ export class ChatService {
     };
   }
 
-  static async sendMessageStreamed(chatSettings: ChatSettings, messages: ChatMessage[], callback: (content: string) => void): Promise<any> {
+  static async sendMessageStreamed(chatSettings: ChatSettings, messages: ChatMessage[], callback: (content: string,fileData: FileData[]) => void): Promise<any> {
     const debouncedCallback = this.debounceCallback(callback);
     this.abortController = new AbortController();
     let endpoint = CHAT_COMPLETIONS_ENDPOINT;
@@ -89,13 +117,9 @@ export class ChatService {
       "Authorization": `Bearer ${OPENAI_API_KEY}`
     };
 
-    // Map to a new array with the messageType removed
-    const messagesWithoutMessageType =
-        messages.map(({messageType, id: number, ...rest}) => rest);
-
     const requestBody: ChatCompletionRequest = {
       model: DEFAULT_MODEL,
-      messages: messagesWithoutMessageType,
+      messages: [],
       stream: true,
     };
 
@@ -106,6 +130,9 @@ export class ChatService {
       requestBody.top_p = top_p ?? requestBody.top_p;
       requestBody.seed = seed ?? requestBody.seed;
     }
+
+    const mappedMessages = ChatService.mapChatMessagesToCompletionMessages(requestBody.model,messages);
+    requestBody.messages = mappedMessages;
 
 
     let response: Response;

@@ -67,5 +67,6 @@
   "close-button": "Close",
   "read-aloud-button": "Read Aloud",
   "stop-read-aloud-button": "Cancel",
-  "loading-tts-button": "Loading..."
+  "loading-tts-button": "Loading...",
+  "model-does-not-support-images": "Model does not support images."
 }

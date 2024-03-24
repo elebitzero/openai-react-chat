@@ -10,39 +10,46 @@ import React, {
   useRef,
   useState
 } from 'react';
-import {MAX_ROWS, SNIPPET_MARKERS} from '../constants/appConstants';
+import {IMAGE_MIME_TYPES, MAX_IMAGE_ATTACHMENTS_PER_MESSAGE, MAX_ROWS, SNIPPET_MARKERS, TEXT_MIME_TYPES} from '../constants/appConstants';
 import {SubmitButton} from "./SubmitButton";
 import {useTranslation} from 'react-i18next';
 import {ChatService} from "../service/ChatService";
-import {StopCircleIcon} from "@heroicons/react/24/outline";
+import {PaperClipIcon, StopCircleIcon} from "@heroicons/react/24/outline";
 import Tooltip from "./Tooltip";
+import FileDataPreview from './FileDataPreview';
+import { FileData } from '../models/FileData';
+import {ChatMessage} from "../models/ChatCompletion";
 
 interface MessageBoxProps {
   callApp: Function;
   loading: boolean;
   setLoading: (loading: boolean) => void;
+  allowImageAttachment: string;
 }
 
 // Extend the ref type to include the methods you want to expose
 export interface MessageBoxHandles {
-  clearTextValue: () => void;
+  clearInputValue: () => void;
   getTextValue: () => string;
   resizeTextArea: () => void;
   focusTextarea: () => void;
 }
 
 
-const MessageBox = forwardRef<MessageBoxHandles, MessageBoxProps>(({loading, setLoading, callApp}, ref) => {
+const MessageBox =
+  forwardRef<MessageBoxHandles, MessageBoxProps>(
+    ({loading, setLoading, callApp, allowImageAttachment}, ref) => {
   const {t} = useTranslation();
   const [textValue, setTextValue] = useState('');
   const [isTextEmpty, setIsTextEmpty] = useState(true);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const resizeTimeoutRef = useRef<number | null>(null);
+  const [fileData, setFileData] = useState<FileData[]>([]);
 
   useImperativeHandle(ref, () => ({
     // Method to clear the textarea
-    clearTextValue: () => {
-      clearValueAndUndoHistory(textAreaRef)
+    clearInputValue: () => {
+      clearValueAndUndoHistory(textAreaRef);
     },
     getTextValue: () => {
       return textValue;
@@ -107,6 +114,7 @@ const MessageBox = forwardRef<MessageBoxHandles, MessageBoxProps>(({loading, set
   }, [textValue, debouncedResize]);
 
   function clearValueAndUndoHistory(textAreaRef: React.RefObject<HTMLTextAreaElement>) {
+    setFileData([]);
     setTextValue('');
     setIsTextEmpty(true);
     // Clear the current value of the textarea
@@ -159,6 +167,43 @@ const MessageBox = forwardRef<MessageBoxHandles, MessageBoxProps>(({loading, set
   };
 
   const handlePaste = (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
+
+    if (event.clipboardData && event.clipboardData.items) {
+      const items = event.clipboardData.items;
+
+      for (const item of items) {
+        if (item.type.indexOf("image") === 0 && allowImageAttachment !== 'no') {
+          event.preventDefault();
+
+          const file = item.getAsFile();
+
+          if (file) {
+            const reader = new FileReader();
+
+            reader.onload = (loadEvent) => {
+              if (loadEvent.target !== null) {
+                const base64Data = loadEvent.target.result;
+
+                if (typeof base64Data === 'string') {
+                  setFileData((prevData) => [...prevData, {
+                    data: base64Data,
+                    type: file.type,
+                    source: 'pasted',
+                    filename: 'pasted-image', // Optional, or create a more descriptive name
+                  }]);
+                  if (allowImageAttachment == 'warn') {
+                    // todo: could warn user
+                  }
+                }
+              }
+            };
+
+            reader.readAsDataURL(file);
+          }
+        }
+      }
+    }
+
     // Get the pasted text from the clipboard
     const pastedText = event.clipboardData.getData('text/plain');
 
@@ -195,7 +240,7 @@ const MessageBox = forwardRef<MessageBoxHandles, MessageBoxProps>(({loading, set
       } else {
         if (!loading) {
           e.preventDefault();
-          callApp(textValue);
+          callApp(textValue,(allowImageAttachment === 'yes') ? fileData : []);
         }
       }
     }
@@ -208,14 +253,93 @@ const MessageBox = forwardRef<MessageBoxHandles, MessageBoxProps>(({loading, set
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    callApp(textValue);
+    callApp(textValue,(allowImageAttachment === 'yes') ? fileData : []);
     if (textAreaRef.current) {
       textAreaRef.current.style.height = 'auto';
     }
   };
-  const handleCancel = () => {
+  const handleCancel = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+
     ChatService.cancelStream();
     setLoading(false);
+  };
+
+
+  const handleAttachment = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    // Create an input element of type file
+    const fileInput = document.createElement('input');
+    fileInput.setAttribute('type', 'file');
+    fileInput.setAttribute('multiple', '');
+    const acceptedMimeTypes = ((allowImageAttachment !== 'no') ? IMAGE_MIME_TYPES : [] ).concat(TEXT_MIME_TYPES).join(',');
+    fileInput.setAttribute('accept', acceptedMimeTypes);
+    fileInput.click();
+
+    // Event listener for file selection
+    fileInput.onchange = (e) => {
+      const files = fileInput.files;
+      if (files) {
+        Array.from(files).forEach((file) => {
+          const reader = new FileReader();
+
+          // Check if the file is an image
+          if (file.type.startsWith('image/')) {
+            if(fileData.length >= MAX_IMAGE_ATTACHMENTS_PER_MESSAGE) {
+              return;
+            }
+
+            reader.onloadend = () => {
+              const base64String = reader.result as string;
+              const newFileData: FileData = {
+                data: base64String,
+                type: file.type,
+                source: 'filename',
+                filename: file.name,
+              };
+              setFileData((prev) => [...prev, newFileData]);
+              if (allowImageAttachment == 'warn') {
+                // todo: could warn user
+              }
+            };
+            reader.readAsDataURL(file);
+          }
+          // Else, if the file is a text file
+          else if (file.type.startsWith('text/')) {
+            reader.onloadend = () => {
+              const textContent = reader.result as string;
+              const formattedText = `File: ${file.name}:\n${SNIPPET_MARKERS.begin}\n${textContent}\n${SNIPPET_MARKERS.end}\n`;
+              insertTextAtCursorPosition(formattedText);
+
+              // Focus the textarea and place the cursor at the end of the text
+              if (textAreaRef.current) {
+                const textArea = textAreaRef.current;
+                textArea.focus();
+
+                const newCursorPos = textArea.value.length;
+
+                // Use setTimeout to ensure the operation happens in the next tick after render reflow
+                setTimeout(() => {
+                  textArea.selectionStart = newCursorPos;
+                  textArea.selectionEnd = newCursorPos;
+                  handleAutoResize();
+                  textArea.scrollTop = textArea.scrollHeight;
+                }, 0);
+              }
+            };
+            reader.readAsText(file);
+          }
+        });
+      }
+    };
+  };
+
+
+  const handleRemoveFileData = (index: number) => {
+    setFileData(fileData.filter((_, i) => i !== index));
   };
 
   return (
@@ -226,33 +350,56 @@ const MessageBox = forwardRef<MessageBoxHandles, MessageBoxProps>(({loading, set
           <div className="relative flex h-full flex-1 md:flex-col">
             <div style={{borderRadius: "1rem"}}
                  className="flex flex-col w-full py-2 flex-grow md:py-3 md:pl-4 relative border border-black/10 bg-white dark:border-gray-900/50 dark:text-white dark:bg-gray-850 shadow-xs">
-                        <textarea
-                            id="sendMessageInput"
-                            name="message"
-                            tabIndex={0}
-                            data-id="request-:r4:-1"
-                            ref={textAreaRef}
-                            style={{maxHeight: "200px", overflowY: "auto"}}
-                            rows={1}
-                            placeholder={t('send-a-message')}
-                            className="m-0 w-full resize-none border-0 bg-transparent p-0 pr-7 focus:ring-0 focus-visible:ring-0 outline-none shadow-none dark:bg-transparent pl-2 md:pl-0"
-                            value={textValue}
-                            onKeyDown={checkForSpecialKey}
-                            onChange={handleTextChange}
-                            onPaste={handlePaste}
-                        ></textarea>
-              {loading ? (
-                  <Tooltip title={t('cancel-output')} side="top" sideOffset={0}>
-                    <button onClick={handleCancel} className="absolute p-1 top-0 right-2">
-                      <StopCircleIcon className="h-9 w-9"/>
-                    </button>
-                  </Tooltip>
-              ) : (
-                  <SubmitButton
+              {/* FileDataPreview Full Width at the Top */}
+              {fileData.length > 0 && (
+                <div className="w-full">
+                  <FileDataPreview fileData={fileData} removeFileData={handleRemoveFileData} allowImageAttachment={allowImageAttachment == 'yes'}/>
+                </div>
+              )}
+              {/* Container for Textarea and Buttons */}
+              <div className="flex items-center w-full relative">
+                {/* Attachment Button */}
+                <div className="flex items-center justify-start">
+                  <button
+                    onClick={(e) => handleAttachment(e)}
+                    className="p-1">
+                    <PaperClipIcon className="h-6 w-6" />
+                  </button>
+                </div>
+
+                {/* Textarea */}
+                <textarea
+                  id="sendMessageInput"
+                  name="message"
+                  tabIndex={0}
+                  ref={textAreaRef}
+                  rows={1}
+                  className="flex-auto m-0 resize-none border-0 bg-transparent px-2 py-2 focus:ring-0 focus-visible:ring-0 outline-none shadow-none dark:bg-transparent"
+                  placeholder={t('send-a-message')}
+                  value={textValue}
+                  onKeyDown={checkForSpecialKey}
+                  onChange={handleTextChange}
+                  onPaste={handlePaste}
+                ></textarea>
+
+                {/* Cancel/Submit Button */}
+                <div className="flex items-center justify-end">
+                  {loading ? (
+                    <Tooltip title={t('cancel-output')} side="top" sideOffset={0}>
+                      <button
+                        onClick={(e) => handleCancel(e)}
+                        className="p-1">
+                        <StopCircleIcon className="h-6 w-6"/>
+                      </button>
+                    </Tooltip>
+                  ) : (
+                    <SubmitButton
                       disabled={isTextEmpty || loading}
                       loading={loading}
-                  />
-              )}
+                    />
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </form>

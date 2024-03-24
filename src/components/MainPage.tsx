@@ -16,6 +16,7 @@ import ConversationService, {Conversation} from '../service/ConversationService'
 import {UserContext} from '../UserContext';
 import {NotificationService} from '../service/NotificationService';
 import CustomChatSplash from './CustomChatSplash';
+import { FileData } from '../models/FileData';
 
 export const updateConversationMessages = async (id: number, updatedMessages: any[]) => {
   const conversation = await ConversationService.getConversationById(id);
@@ -155,7 +156,7 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
   const newConversation = () => {
     setConversation(null);
     setShowScrollButton(false);
-    clearTextArea();
+    clearInputArea();
     setMessages([]);
     messageBoxRef.current?.focusTextarea();
   }
@@ -174,7 +175,7 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
               } else {
                 setMessages(messages);
               }
-              clearTextArea();
+              clearInputArea();
             } else {
               const errorMessage: string = 'Conversation ' + location.pathname + ' not found';
               NotificationService.handleError(errorMessage, CONVERSATION_NOT_FOUND);
@@ -199,7 +200,7 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
     return title.substring(0, Math.min(firstNewLineIndex, MAX_TITLE_LENGTH));
   }
 
-  function startConversation(message: string) {
+  function startConversation(message: string, fileData: FileData[]) {
     const id = Date.now();
     const timestamp = Date.now();
     let shortenedText = getTitle(message);
@@ -227,22 +228,25 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
     setModel(value);
   };
 
-  const callApp = (message: string) => {
+  const callApp = (message: string,fileData: FileData[]) => {
     if (!conversation) {
-      startConversation(message);
+      startConversation(message,fileData);
     }
     setAllowAutoScroll(true);
-    addMessage(Role.User, MessageType.Normal, message, sendMessage);
+    addMessage(Role.User, MessageType.Normal, message, fileData, sendMessage);
   }
 
-  const addMessage = (role: Role, messageType: MessageType, content: string, callback?: (callback: ChatMessage[]) => void) => {
+  const addMessage = (role: Role, messageType: MessageType, message: string, fileData: FileData[], callback?: (callback: ChatMessage[]) => void) => {
+
+    let content: string = message;
 
     setMessages((prevMessages: ChatMessage[]) => {
       const message: ChatMessage = {
         id: prevMessages.length + 1,
         role: role,
         messageType: messageType,
-        content: content
+        content: content,
+        fileData: fileData,
       };
       return [...prevMessages, message];
     });
@@ -251,7 +255,8 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
       id: messages.length + 1,
       role: role,
       messageType: messageType,
-      content: content
+      content: content,
+      fileData: fileData,
     };
     const updatedMessages = [...messages, newMessage];
     if (callback) {
@@ -274,7 +279,7 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
 
   function sendMessage(updatedMessages: ChatMessage[]) {
     setLoading(true);
-    clearTextArea();
+    clearInputArea();
     let systemPrompt = getFirstValidString(conversation?.systemPrompt, chatSettings?.instructions, userSettings.instructions, OPENAI_DEFAULT_SYSTEM_PROMPT, DEFAULT_INSTRUCTIONS);
     let messages: ChatMessage[] = [{
       role: Role.System,
@@ -291,7 +296,7 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
               if (err instanceof CustomError) {
                 const message: string = err.message;
                 setLoading(false);
-                addMessage(Role.Assistant, MessageType.Error, message);
+                addMessage(Role.Assistant, MessageType.Error, message,[]);
               } else {
                 NotificationService.handleUnexpectedError(err, 'Failed to send message to openai.');
               }
@@ -301,7 +306,7 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
     });
   }
 
-  function handleStreamedResponse(content: string) {
+  function handleStreamedResponse(content: string,fileData: FileData[]) {
     setMessages(prevMessages => {
       let isNew: boolean = false;
       try {
@@ -324,7 +329,8 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
           id: prevMessages.length + 1,
           role: Role.Assistant,
           messageType: MessageType.Normal,
-          content: content
+          content: content,
+          fileData: fileData,
         };
         return [...prevMessages, message];
       } else {
@@ -350,8 +356,8 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
     }
   };
 
-  const clearTextArea = () => {
-    messageBoxRef.current?.clearTextValue();
+  const clearInputArea = () => {
+    messageBoxRef.current?.clearInputValue();
   };
 
   const getTextAreaValue = () => {
@@ -388,7 +394,13 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
                 </div>
             )}
             {/* MessageBox remains at the bottom */}
-            <MessageBox ref={messageBoxRef} callApp={callApp} loading={loading} setLoading={setLoading}/>
+            <MessageBox
+              ref={messageBoxRef}
+              callApp={callApp}
+              loading={loading}
+              setLoading={setLoading}
+              allowImageAttachment= {model?.includes('vision') ? 'yes' : (!conversation ? 'warn' : 'no')}
+            />
           </main>
         </div>
       </div>

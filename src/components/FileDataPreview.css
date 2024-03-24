@@ -1,0 +1,8 @@
+.file-data-tile .remove-file-button {
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.file-data-tile:hover .remove-file-button {
+  opacity: 1;
+}

@@ -12,3 +12,23 @@ export const DEFAULT_INSTRUCTIONS = 'You are a helpful assistant.';
 
 
 export const CONVERSATION_NOT_FOUND = 'conversation-not-found';
+
+export const MAX_IMAGE_ATTACHMENTS_PER_MESSAGE = 10;
+export const IMAGE_MIME_TYPES = [
+  'image/jpeg',
+  'image/png',
+  'image/gif',
+  'image/webp',
+  'image/svg+xml'
+];
+
+export const TEXT_MIME_TYPES = [
+  'text/plain',
+  'text/csv',
+  'text/html',
+  'text/css',
+  'text/javascript',
+  'text/xml',
+  'application/json',
+  'text/markdown'
+];

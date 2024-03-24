@@ -1,9 +1,27 @@
+import { FileData } from "./FileData";
+
 // Ref: https://platform.openai.com/docs/api-reference/chat/create
+export enum Role {
+  System = 'system',
+  User = 'user',
+  Assistant = 'assistant',
+}
+
+export interface ChatMessagePart {
+  type: string,
+  text?: string;
+  image_url?: {
+    url: string
+  }
+}
+
+export interface ChatCompletionMessage {
+  role: Role,
+  content: ChatMessagePart[];
+}
+
 export interface ChatCompletionRequest {
-  messages: {
-    role: string;
-    content: string;
-  }[];
+  messages: ChatCompletionMessage[];
   model: string;
   frequency_penalty?: number | null;
   presence_penalty?: number | null;
@@ -48,6 +66,7 @@ export interface ChatMessage {
   role: Role;
   messageType: MessageType;
   content: string;
+  fileData: FileData[];
   name?: string;
 }
 
@@ -55,12 +74,6 @@ export interface ChatCompletionChoice {
   message: ChatMessage;
   finish_reason: string;
   index: number;
-}
-
-export enum Role {
-  System = 'system',
-  User = 'user',
-  Assistant = 'assistant',
 }
 
 export function getRole(roleString: string): Role {
