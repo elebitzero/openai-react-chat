@@ -15,7 +15,7 @@ const Tooltip: React.FC<TooltipProps> = ({title, children, side, sideOffset}) =>
 
   const arrowClassName =
       userSettings.theme === 'dark'
-          ? "dark:text-gray-100"
+          ? "dark:text-gray-100 dark:tooltip-arrow"
           : "text-gray-900";
 
   return (
