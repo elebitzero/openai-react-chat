@@ -47,7 +47,7 @@ const UserContentBlock: React.FC<UserContentBlockProps> = ({text, fileData}) => 
 
   return (
     <div>
-      {fileData.length > 0 &&
+      {fileData && fileData.length > 0 &&
         <FileDataPreview fileData={fileData} readOnly={true} />}
       <div>{content}</div>
     </div>
