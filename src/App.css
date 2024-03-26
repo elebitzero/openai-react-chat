@@ -91,6 +91,10 @@ textarea:focus-visible {
   fill: white;
 }
 
+.sidebar-collapsed-margin {
+  margin-left: 3em;
+}
+
 .streaming-dot {
   animation: blink 1s linear infinite;
 }

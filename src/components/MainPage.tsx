@@ -375,7 +375,7 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
           <main
               className="relative h-full transition-width flex flex-col overflow-hidden items-stretch flex-1">
             {gid ? (
-                <div className="inline-block absolute top-0 left-0 z-50">
+                <div className={`inline-block absolute top-0 left-0 z-50 ${isSidebarCollapsed ? 'sidebar-collapsed-margin' : ''}`}>
                   <ChatSettingDropdownMenu chatSetting={chatSettings}/>
                 </div>
             ) : null
