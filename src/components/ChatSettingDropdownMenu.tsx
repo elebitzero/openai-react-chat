@@ -130,7 +130,8 @@ const ChatSettingDropdownMenu: React.FC<ChatSettingDropdownMenuProps> = ({
             {({open}) => (
                 <>
                   <Menu.Button
-                      className="inline-flex px-3 py-2 text-md font-medium text-gray-700 bg-white dark:text-gray-200 dark:bg-gray-800 rounded-md shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none items-center">
+                      style={{ paddingTop: '.625rem', paddingBottom: '.625rem' }}
+                      className="inline-flex px-3 text-md font-medium text-gray-700 bg-white dark:text-gray-200 dark:bg-gray-800 rounded-md shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none items-center">
                     <span>{showTitle && chatSetting ? chatSetting.name : ''}</span>
                     <ChevronDownIcon
                         className={`${open ? 'transform rotate-180' : ''} w-5 h-5`}
