@@ -19,6 +19,7 @@ import Tooltip from "./Tooltip";
 import FileDataPreview from './FileDataPreview';
 import { FileData } from '../models/FileData';
 import {ChatMessage} from "../models/ChatCompletion";
+import { preprocessImage } from '../utils/ImageUtils';
 
 interface MessageBoxProps {
   callApp: Function;
@@ -185,12 +186,14 @@ const MessageBox =
                 const base64Data = loadEvent.target.result;
 
                 if (typeof base64Data === 'string') {
-                  setFileData((prevData) => [...prevData, {
-                    data: base64Data,
-                    type: file.type,
-                    source: 'pasted',
-                    filename: 'pasted-image', // Optional, or create a more descriptive name
-                  }]);
+                  preprocessImage(file, (base64Data, processedFile) => {
+                    setFileData((prevData) => [...prevData, {
+                      data: base64Data,
+                      type: processedFile.type,
+                      source: 'pasted',
+                      filename: 'pasted-image',
+                    }]);
+                  });
                   if (allowImageAttachment == 'warn') {
                     // todo: could warn user
                   }
@@ -284,31 +287,27 @@ const MessageBox =
       const files = fileInput.files;
       if (files) {
         Array.from(files).forEach((file) => {
-          const reader = new FileReader();
-
           // Check if the file is an image
           if (file.type.startsWith('image/')) {
-            if(fileData.length >= MAX_IMAGE_ATTACHMENTS_PER_MESSAGE) {
+            if (fileData.length >= MAX_IMAGE_ATTACHMENTS_PER_MESSAGE) {
               return;
             }
-
-            reader.onloadend = () => {
-              const base64String = reader.result as string;
-              const newFileData: FileData = {
-                data: base64String,
-                type: file.type,
+            preprocessImage(file, (base64Data, processedFile) => {
+              setFileData((prev) => [...prev, {
+                data: base64Data,
+                type: processedFile.type,
                 source: 'filename',
-                filename: file.name,
-              };
-              setFileData((prev) => [...prev, newFileData]);
+                filename: processedFile.name,
+              }]);
               if (allowImageAttachment == 'warn') {
                 // todo: could warn user
               }
-            };
-            reader.readAsDataURL(file);
+            });
           }
           // Else, if the file is a text file
           else if (file.type.startsWith('text/')) {
+            const reader = new FileReader();
+
             reader.onloadend = () => {
               const textContent = reader.result as string;
               const formattedText = `File: ${file.name}:\n${SNIPPET_MARKERS.begin}\n${textContent}\n${SNIPPET_MARKERS.end}\n`;
