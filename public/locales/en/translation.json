@@ -1,6 +1,7 @@
 {
   "system": "System:",
   "model": "Model:",
+  "non-applicable": "N/A",
   "default-label": "(Default)",
   "deterministic-label": "Deterministic",
   "creative-label": "Creative",
