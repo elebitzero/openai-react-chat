@@ -1,15 +1,15 @@
 import React from 'react';
 import {SNIPPET_MARKERS} from "../constants/appConstants";
 import FoldableTextSection from './FoldableTextSection';
-import { FileData } from '../models/FileData';
+import { FileData, FileDataRef } from '../models/FileData';
 import FileDataPreview from './FileDataPreview';
 
 interface UserContentBlockProps {
   text: string;
-  fileData: FileData[];
+  fileDataRef: FileDataRef[];
 }
 
-const UserContentBlock: React.FC<UserContentBlockProps> = ({text, fileData}) => {
+const UserContentBlock: React.FC<UserContentBlockProps> = ({text, fileDataRef}) => {
   const preformattedTextStyles: React.CSSProperties = {
     whiteSpace: 'pre-wrap',
     wordBreak: 'break-word',
@@ -47,8 +47,8 @@ const UserContentBlock: React.FC<UserContentBlockProps> = ({text, fileData}) => 
 
   return (
     <div>
-      {fileData && fileData.length > 0 &&
-        <FileDataPreview fileData={fileData} readOnly={true} />}
+      {fileDataRef && fileDataRef.length > 0 &&
+        <FileDataPreview fileDataRef={fileDataRef} readOnly={true} />}
       <div>{content}</div>
     </div>
   );

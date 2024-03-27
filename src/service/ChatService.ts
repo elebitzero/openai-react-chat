@@ -6,7 +6,7 @@ import {CHAT_COMPLETIONS_ENDPOINT, MODELS_ENDPOINT} from "../constants/apiEndpoi
 import {ChatSettings} from "../models/ChatSettings";
 import {CHAT_STREAM_DEBOUNCE_TIME, DEFAULT_MODEL} from "../constants/appConstants";
 import {NotificationService} from '../service/NotificationService';
-import { FileData } from "../models/FileData";
+import { FileData, FileDataRef } from "../models/FileData";
 
 interface CompletionChunk {
   id: string;
@@ -36,12 +36,12 @@ export class ChatService {
         text: message.content
       }];
 
-      if (modelId.includes('vision') && message.fileData) {
-        message.fileData.forEach((file) => {
-          const fileUrl = file.data;
+      if (modelId.includes('vision') && message.fileDataRef) {
+        message.fileDataRef.forEach((fileRef) => {
+          const fileUrl = fileRef.fileData!.data;
           if (fileUrl) {
             contentParts.push({
-              type: file.type,
+              type: fileRef.fileData!.type,
               image_url: {
                 url: fileUrl
               }
@@ -88,7 +88,7 @@ export class ChatService {
   private static callDeferred: number | null = null;
   private static accumulatedContent: string = ""; // To accumulate content between debounced calls
 
-  static debounceCallback(callback: (content: string, fileData: FileData[]) => void, delay: number = CHAT_STREAM_DEBOUNCE_TIME) {
+  static debounceCallback(callback: (content: string, fileDataRef: FileDataRef[]) => void, delay: number = CHAT_STREAM_DEBOUNCE_TIME) {
     return (content: string) => {
       this.accumulatedContent += content; // Accumulate content on each call
       const now = Date.now();
@@ -108,7 +108,7 @@ export class ChatService {
     };
   }
 
-  static async sendMessageStreamed(chatSettings: ChatSettings, messages: ChatMessage[], callback: (content: string,fileData: FileData[]) => void): Promise<any> {
+  static async sendMessageStreamed(chatSettings: ChatSettings, messages: ChatMessage[], callback: (content: string,fileDataRef: FileDataRef[]) => void): Promise<any> {
     const debouncedCallback = this.debounceCallback(callback);
     this.abortController = new AbortController();
     let endpoint = CHAT_COMPLETIONS_ENDPOINT;

@@ -1,4 +1,4 @@
-import { FileData } from "./FileData";
+import { FileDataRef } from "./FileData";
 
 // Ref: https://platform.openai.com/docs/api-reference/chat/create
 export enum Role {
@@ -66,8 +66,8 @@ export interface ChatMessage {
   role: Role;
   messageType: MessageType;
   content: string;
-  fileData: FileData[];
   name?: string;
+  fileDataRef?: FileDataRef[];
 }
 
 export interface ChatCompletionChoice {

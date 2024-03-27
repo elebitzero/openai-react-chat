@@ -17,7 +17,7 @@ import {ChatService} from "../service/ChatService";
 import {PaperClipIcon, StopCircleIcon} from "@heroicons/react/24/outline";
 import Tooltip from "./Tooltip";
 import FileDataPreview from './FileDataPreview';
-import { FileData } from '../models/FileData';
+import { FileData, FileDataRef } from '../models/FileData';
 import {ChatMessage} from "../models/ChatCompletion";
 import { preprocessImage } from '../utils/ImageUtils';
 
@@ -45,7 +45,7 @@ const MessageBox =
   const [isTextEmpty, setIsTextEmpty] = useState(true);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const resizeTimeoutRef = useRef<number | null>(null);
-  const [fileData, setFileData] = useState<FileData[]>([]);
+  const [fileDataRef, setFileDataRef] = useState<FileDataRef[]>([]);
 
   useImperativeHandle(ref, () => ({
     // Method to clear the textarea
@@ -115,7 +115,7 @@ const MessageBox =
   }, [textValue, debouncedResize]);
 
   function clearValueAndUndoHistory(textAreaRef: React.RefObject<HTMLTextAreaElement>) {
-    setFileData([]);
+    setFileDataRef([]);
     setTextValue('');
     setIsTextEmpty(true);
     // Clear the current value of the textarea
@@ -187,12 +187,15 @@ const MessageBox =
 
                 if (typeof base64Data === 'string') {
                   preprocessImage(file, (base64Data, processedFile) => {
-                    setFileData((prevData) => [...prevData, {
-                      data: base64Data,
-                      type: processedFile.type,
-                      source: 'pasted',
-                      filename: 'pasted-image',
-                    }]);
+                    setFileDataRef((prevData) => [...prevData, {
+                      id: 0,
+                      fileData : {
+                        data: base64Data,
+                        type: processedFile.type,
+                        source: 'pasted',
+                        filename: 'pasted-image',
+                      }
+                  }]);
                   });
                   if (allowImageAttachment == 'warn') {
                     // todo: could warn user
@@ -243,7 +246,7 @@ const MessageBox =
       } else {
         if (!loading) {
           e.preventDefault();
-          callApp(textValue,(allowImageAttachment === 'yes') ? fileData : []);
+          callApp(textValue,(allowImageAttachment === 'yes') ? fileDataRef : []);
         }
       }
     }
@@ -256,7 +259,7 @@ const MessageBox =
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    callApp(textValue,(allowImageAttachment === 'yes') ? fileData : []);
+    callApp(textValue,(allowImageAttachment === 'yes') ? fileDataRef : []);
     if (textAreaRef.current) {
       textAreaRef.current.style.height = 'auto';
     }
@@ -289,16 +292,19 @@ const MessageBox =
         Array.from(files).forEach((file) => {
           // Check if the file is an image
           if (file.type.startsWith('image/')) {
-            if (fileData.length >= MAX_IMAGE_ATTACHMENTS_PER_MESSAGE) {
+            if (fileDataRef.length >= MAX_IMAGE_ATTACHMENTS_PER_MESSAGE) {
               return;
             }
             preprocessImage(file, (base64Data, processedFile) => {
-              setFileData((prev) => [...prev, {
-                data: base64Data,
-                type: processedFile.type,
-                source: 'filename',
-                filename: processedFile.name,
-              }]);
+              setFileDataRef((prev) => [...prev, {
+                id: 0,
+                fileData: {
+                  data: base64Data,
+                  type: processedFile.type,
+                  source: 'filename',
+                  filename: processedFile.name,
+                }
+            }]);
               if (allowImageAttachment == 'warn') {
                 // todo: could warn user
               }
@@ -337,8 +343,8 @@ const MessageBox =
   };
 
 
-  const handleRemoveFileData = (index: number) => {
-    setFileData(fileData.filter((_, i) => i !== index));
+  const handleRemoveFileData = (index: number,fileRef: FileDataRef) => {
+    setFileDataRef(fileDataRef.filter((_, i) => i !== index));
   };
 
   return (
@@ -350,9 +356,9 @@ const MessageBox =
             <div style={{borderRadius: "1rem"}}
                  className="flex flex-col w-full py-2 flex-grow md:py-3 md:pl-4 relative border border-black/10 bg-white dark:border-gray-900/50 dark:text-white dark:bg-gray-850 shadow-xs">
               {/* FileDataPreview Full Width at the Top */}
-              {fileData.length > 0 && (
+              {fileDataRef.length > 0 && (
                 <div className="w-full">
-                  <FileDataPreview fileData={fileData} removeFileData={handleRemoveFileData} allowImageAttachment={allowImageAttachment == 'yes'}/>
+                  <FileDataPreview fileDataRef={fileDataRef} removeFileData={handleRemoveFileData} allowImageAttachment={allowImageAttachment == 'yes'}/>
                 </div>
               )}
               {/* Container for Textarea and Buttons */}

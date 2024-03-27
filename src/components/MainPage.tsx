@@ -16,15 +16,7 @@ import ConversationService, {Conversation} from '../service/ConversationService'
 import {UserContext} from '../UserContext';
 import {NotificationService} from '../service/NotificationService';
 import CustomChatSplash from './CustomChatSplash';
-import { FileData } from '../models/FileData';
-
-export const updateConversationMessages = async (id: number, updatedMessages: any[]) => {
-  const conversation = await ConversationService.getConversationById(id);
-  if (conversation) {
-    conversation.messages = JSON.stringify(updatedMessages);
-    await ConversationService.updateConversation(conversation);
-  }
-}
+import { FileDataRef } from '../models/FileData';
 
 function getFirstValidString(...args: (string | undefined | null)[]): string {
   for (const arg of args) {
@@ -104,7 +96,7 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
     if (conversation && conversation.id) {
       // Only update if there are messages
       if (messages.length > 0) {
-        updateConversationMessages(conversation.id, messages);
+        ConversationService.updateConversation(conversation,messages);
       }
     }
   }, [messages]);
@@ -164,24 +156,26 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
     if (id && id.length > 0) {
       let n = Number(id);
       ConversationService.getConversationById(n)
-          .then(conversation => {
-            if (conversation) {
-              setConversation(conversation);
-              const messages: ChatMessage[] = JSON.parse(conversation.messages);
-              if (messages.length == 0) {
-                // Race condition: the navigate to /c/id and the updating of the messages state
-                // are happening at the same time.
-                console.warn('possible state problem');
-              } else {
-                setMessages(messages);
+        .then(conversation => {
+          if (conversation) {
+            setConversation(conversation);
+            clearInputArea();
+            ConversationService.getChatMessages(conversation).then((messages: ChatMessage[]) => {
+                if (messages.length == 0) {
+                  // Race condition: the navigate to /c/id and the updating of the messages state
+                  // are happening at the same time.
+                  console.warn('possible state problem');
+                } else {
+                  setMessages(messages);
+                }
               }
-              clearInputArea();
-            } else {
-              const errorMessage: string = 'Conversation ' + location.pathname + ' not found';
-              NotificationService.handleError(errorMessage, CONVERSATION_NOT_FOUND);
-              navigate('/');
-            }
-          });
+            )
+          } else {
+            const errorMessage: string = 'Conversation ' + location.pathname + ' not found';
+            NotificationService.handleError(errorMessage, CONVERSATION_NOT_FOUND);
+            navigate('/');
+          }
+        });
     } else {
       newConversation();
     }
@@ -200,7 +194,7 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
     return title.substring(0, Math.min(firstNewLineIndex, MAX_TITLE_LENGTH));
   }
 
-  function startConversation(message: string, fileData: FileData[]) {
+  function startConversation(message: string, fileDataRef: FileDataRef[]) {
     const id = Date.now();
     const timestamp = Date.now();
     let shortenedText = getTitle(message);
@@ -228,15 +222,15 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
     setModel(value);
   };
 
-  const callApp = (message: string,fileData: FileData[]) => {
+  const callApp = (message: string,fileDataRef: FileDataRef[]) => {
     if (!conversation) {
-      startConversation(message,fileData);
+      startConversation(message,fileDataRef);
     }
     setAllowAutoScroll(true);
-    addMessage(Role.User, MessageType.Normal, message, fileData, sendMessage);
+    addMessage(Role.User, MessageType.Normal, message, fileDataRef, sendMessage);
   }
 
-  const addMessage = (role: Role, messageType: MessageType, message: string, fileData: FileData[], callback?: (callback: ChatMessage[]) => void) => {
+  const addMessage = (role: Role, messageType: MessageType, message: string, fileDataRef: FileDataRef[], callback?: (callback: ChatMessage[]) => void) => {
 
     let content: string = message;
 
@@ -246,7 +240,7 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
         role: role,
         messageType: messageType,
         content: content,
-        fileData: fileData,
+        fileDataRef: fileDataRef,
       };
       return [...prevMessages, message];
     });
@@ -256,7 +250,7 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
       role: role,
       messageType: messageType,
       content: content,
-      fileData: fileData,
+      fileDataRef: fileDataRef,
     };
     const updatedMessages = [...messages, newMessage];
     if (callback) {
@@ -306,7 +300,7 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
     });
   }
 
-  function handleStreamedResponse(content: string,fileData: FileData[]) {
+  function handleStreamedResponse(content: string,fileDataRef: FileDataRef[]) {
     setMessages(prevMessages => {
       let isNew: boolean = false;
       try {
@@ -330,7 +324,7 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
           role: Role.Assistant,
           messageType: MessageType.Normal,
           content: content,
-          fileData: fileData,
+          fileDataRef: fileDataRef,
         };
         return [...prevMessages, message];
       } else {

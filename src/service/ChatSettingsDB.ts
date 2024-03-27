@@ -32,6 +32,9 @@ class ChatSettingsDB extends Dexie {
         chatSetting.showInSidebar = chatSetting.showInSidebar ? 1 : 0;
       });
     });
+    this.version(4).stores({
+      chatSettings: '&id, name, description, model, showInSidebar'
+    })
     this.chatSettings = this.table("chatSettings");
 
     this.on('populate', () => {

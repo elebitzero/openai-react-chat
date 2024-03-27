@@ -109,7 +109,7 @@ const ChatBlock: React.FC<Props> = ({block, loading, isLastBlock}) => {
                           <div ref={contentRef}
                                className="markdown prose w-full break-words dark:prose-invert light">
                             {block.role === 'user' ? (
-                                <UserContentBlock text={block.content} fileData={block.fileData}/>
+                                <UserContentBlock text={block.content} fileDataRef={(block.fileDataRef) ? block.fileDataRef : []}/>
                             ) : (
                                 <MarkdownBlock markdown={block.content} role={block.role}
                                                loading={loading}/>
