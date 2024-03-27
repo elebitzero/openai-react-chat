@@ -45,23 +45,27 @@ interface UserProviderProps {
 
 export const UserProvider = ({children}: UserProviderProps) => {
   const [userSettings, setUserSettings] = useState<UserSettings>(() => {
-    const storedUserTheme: Theme | null = localStorage.getItem('theme') as Theme | null;
-    const model = localStorage.getItem('defaultModel');
-    const instructions = localStorage.getItem('defaultInstructions') || '';
-    const speechModel = localStorage.getItem('defaultSpeechModel');
-    const speechVoice = localStorage.getItem('defaultSpeechVoice');
-    const speechSpeed = Number(localStorage.getItem('defaultSpeechSpeed'));
+    const storedUserTheme = localStorage.getItem('theme');
+    const userTheme: UserTheme = (storedUserTheme === 'light' || storedUserTheme === 'dark' || storedUserTheme === 'system') ? storedUserTheme : defaultUserSettings.userTheme;
 
-    const effectiveTheme = determineEffectiveTheme(storedUserTheme || 'system');
+    const model = localStorage.getItem('defaultModel') || defaultUserSettings.model;
+    const instructions = localStorage.getItem('defaultInstructions') || defaultUserSettings.instructions;
+    const speechModel = localStorage.getItem('defaultSpeechModel') || defaultUserSettings.speechModel;
+    const speechVoice = localStorage.getItem('defaultSpeechVoice') || defaultUserSettings.speechVoice;
+
+    const speechSpeedRaw = localStorage.getItem('defaultSpeechSpeed');
+    const speechSpeed = speechSpeedRaw !== null ? Number(speechSpeedRaw) : defaultUserSettings.speechSpeed;
+
+    const effectiveTheme = determineEffectiveTheme(userTheme);
 
     return {
-      userTheme: storedUserTheme || 'system',
+      userTheme: userTheme,
       theme: effectiveTheme,
-      model: model || null,
-      instructions: instructions,
-      speechModel: speechModel,
-      speechVoice: speechVoice,
-      speechSpeed: speechSpeed
+      model,
+      instructions,
+      speechModel,
+      speechVoice,
+      speechSpeed
     };
   });
 
