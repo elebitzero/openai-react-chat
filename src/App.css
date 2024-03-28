@@ -201,6 +201,12 @@ textarea:focus-visible {
   border-radius: 9999px;
 }
 
+/* For Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #888 transparent; /* Thumb and track color */
+}
+
 code, pre {
   font-family: Söhne Mono, Monaco, Andale Mono, Ubuntu Mono, monospace !important
 }
