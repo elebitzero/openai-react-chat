@@ -69,5 +69,6 @@
   "read-aloud-button": "Read Aloud",
   "stop-read-aloud-button": "Cancel",
   "loading-tts-button": "Loading...",
-  "model-does-not-support-images": "Model does not support images."
+  "model-does-not-support-images": "Model does not support images.",
+  "tts-test-label": "Test"
 }

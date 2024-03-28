@@ -13,11 +13,24 @@ interface TextToSpeechButtonProps {
   content: string;
 }
 
+const simpleChecksum = (s: string) => {
+  let checksum = 0;
+  for (let i = 0; i < s.length; i++) {
+    checksum = (checksum + s.charCodeAt(i) * (i + 1)) % 65535;
+  }
+  return checksum;
+};
+
+const generateIdentifier = (content: string, settings: SpeechSettings) => {
+  return `${simpleChecksum(content)}-${settings.id}-${settings.voice}-${settings.speed}`;
+};
+
 const TextToSpeechButton: React.FC<TextToSpeechButtonProps> = ({content}) => {
   const {t} = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [audioUrl, setAudioUrl] = useState('');
+  const [lastIdentifier, setLastIdentifier] = useState('');
   const audioRef = useRef(new Audio());
   const {userSettings} = useContext(UserContext);
 
@@ -27,48 +40,51 @@ const TextToSpeechButton: React.FC<TextToSpeechButtonProps> = ({content}) => {
     speed: userSettings.speechSpeed || 1.0,
   };
 
+  const currentIdentifier = generateIdentifier(content, speechSettings);
+
   const preprocessContent = (content: string) => {
-    // Remove code blocks
-    content = content.replace(/```[\s\S]*?```/g, '');
+    content = content.replace(/```[\s\S]*?```/g, ''); // Simple preprocessing to remove code blocks
     return content;
   };
 
 
   const fetchAudio = async () => {
+    if (currentIdentifier !== lastIdentifier) {
     setIsLoading(true);
     try {
       const processedContent = preprocessContent(content);
       const url = await SpeechService.textToSpeech(processedContent, speechSettings);
+        audioRef.current.src = url;
       setAudioUrl(url);
-      audioRef.current.src = url;
+        setLastIdentifier(currentIdentifier);
+
+        audioRef.current.onloadeddata = () => {
       audioRef.current.play();
       setIsPlaying(true);
+        };
     } catch (error) {
       console.error('Error fetching audio:', error);
     } finally {
       setIsLoading(false);
     }
+    } else if (audioUrl) {
+        audioRef.current.play();
+      setIsPlaying(true);
+    }
   };
 
   const handleClick = () => {
-    if (!isPlaying && !isLoading) {
-      if (audioUrl) {
-        audioRef.current.play();
-      } else {
-        fetchAudio();
-      }
-      setIsPlaying(true);
-    } else if (isPlaying) {
+    if (isPlaying) {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
       setIsPlaying(false);
+    } else if (!isLoading) {
+      fetchAudio();
     }
   };
 
   useEffect(() => {
-    audioRef.current.onended = () => {
-      setIsPlaying(false);
-    };
+    audioRef.current.onended = () => setIsPlaying(false);
   }, []);
 
   return (

@@ -18,6 +18,7 @@ import {Transition} from '@headlessui/react';
 import EditableInstructions from './EditableInstructions';
 import SpeechSpeedSlider from './SpeechSpeedSlider';
 import {useConfirmDialog} from './ConfirmDialog';
+import TextToSpeechButton from './TextToSpeechButton';
 
 interface UserSettingsModalProps {
   isVisible: boolean;
@@ -32,6 +33,10 @@ enum Tab {
   STORAGE_TAB = "Storage",
 }
 
+const SAMPLE_AUDIO_TEXT =
+  "The quick brown fox jumps over the lazy dog.\n" +
+  "Sandy Sells Sea-Shells by the Sea-Shore.";
+
 const UserSettingsModal: React.FC<UserSettingsModalProps> = ({isVisible, onClose, onDeleteAllConversations}) => {
   const dialogRef = useRef<HTMLDivElement>(null);
   const {userSettings, setUserSettings} = useContext(UserContext);
@@ -43,6 +48,7 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({isVisible, onClose
   const [percentageUsed, setPercentageUsed] = useState<number | undefined>();
   const {t} = useTranslation();
   const editableInstructionsRef = useRef<{ getCurrentValue: () => string }>(null);
+  const [ttsText, setTtsText] = useState(SAMPLE_AUDIO_TEXT);
 
   useEffect(() => {
     if (isVisible) {
@@ -287,6 +293,19 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({isVisible, onClose
                             })}
 
                         />
+                      </div>
+                      <div className="setting-panel">
+                        <label htmlFor="tts-test-area">
+                          {t('tts-test-label')}
+                        </label>
+                        <textarea
+                          id="tts-test-area"
+                          rows={2}
+                          className="shadow-sm p-2 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md"
+                          defaultValue={ttsText}
+                          onChange={(e) => setTtsText(e.target.value)}
+                        ></textarea>
+                        <TextToSpeechButton content={ttsText}/>
                       </div>
                     </div>
                   </div>
