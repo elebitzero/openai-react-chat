@@ -356,25 +356,33 @@ const Sidebar: React.FC<SidebarProps> = ({className, isSidebarCollapsed, toggleS
                 </h2>
                 <nav className="flex h-full flex-col p-2" aria-label="Chat history">
                   <div className="mb-1 flex flex-row gap-2">
-                    <a
-                        className="flex px-3 min-h-[44px] py-1 items-center gap-3 transition-colors duration-200 dark:text-white cursor-pointer text-sm rounded-md border dark:border-white/20 hover:bg-gray-500/10 h-11 bg-white dark:bg-transparent flex-grow overflow-hidden"
-                        onClick={() => handleNewChat()}>
+                    <button className="flex px-3 min-h-[44px] py-1 items-center gap-3
+                       transition-colors duration-200 dark:text-white
+                       cursor-pointer text-sm rounded-md border
+                       dark:border-white/20 hover:bg-gray-500/10 h-11
+                       bg-white dark:bg-transparent flex-grow overflow-hidden"
+                      onClick={() => handleNewChat()}
+                      type="button"
+                    >
                       <PlusIcon {...iconProps} />
                       <span className="truncate">{t('new-chat')}</span>
-                    </a>
+                    </button>
                     <Tooltip title={t('open-settings')} side="right" sideOffset={10}>
-                      <a
-                          className="flex px-3 min-h-[44px] py-1 gap-3 transition-colors duration-200 dark:text-white cursor-pointer text-sm rounded-md border dark:border-white/20 hover:bg-gray-500/10 h-11 w-11 flex-shrink-0 items-center justify-center bg-white dark:bg-transparent"
-                          onClick={() => openSettingsDialog()}>
+                      <button
+                        type="button"
+                        className="flex px-3 min-h-[44px] py-1 gap-3 transition-colors duration-200 dark:text-white cursor-pointer text-sm rounded-md border dark:border-white/20 hover:bg-gray-500/10 h-11 w-11 flex-shrink-0 items-center justify-center bg-white dark:bg-transparent"
+                        onClick={() => openSettingsDialog()}>
                         <Cog8ToothIcon/>
-                      </a>
+                      </button>
                     </Tooltip>
                     <Tooltip title={t('close-sidebar')} side="right" sideOffset={10}>
-                      <a
-                          className="flex px-3 min-h-[44px] py-1 gap-3 transition-colors duration-200 dark:text-white cursor-pointer text-sm rounded-md border dark:border-white/20 hover:bg-gray-500/10 h-11 w-11 flex-shrink-0 items-center justify-center bg-white dark:bg-transparent"
-                          onClick={toggleSidebarCollapse}>
+                      <button
+                        className="flex px-3 min-h-[44px] py-1 gap-3 transition-colors duration-200 dark:text-white cursor-pointer text-sm rounded-md border dark:border-white/20 hover:bg-gray-500/10 h-11 w-11 flex-shrink-0 items-center justify-center bg-white dark:bg-transparent"
+                        onClick={toggleSidebarCollapse}
+                        type="button"
+                      >
                         <CloseSideBarIcon></CloseSideBarIcon>
-                      </a>
+                      </button>
                     </Tooltip>
                   </div>
                   <Link to="/explore"
@@ -446,8 +454,9 @@ const Sidebar: React.FC<SidebarProps> = ({className, isSidebarCollapsed, toggleS
                                                                 <li key={convo.id} className="relative z-[15]"
                                                                     data-projection-id="5"
                                                                     style={{opacity: 1, height: "auto"}}>
-                                                                  <a
+                                                                  <button
                                                                       className={`flex py-3 px-3 items-center gap-3 relative rounded-md hover:bg-gray-100 cursor-pointer break-all bg-gray-100 dark:bg-gray-800 pr-14 group`}
+                                                                      type="button"
                                                                   >
                                                                     <ChatBubbleLeftIcon {...iconProps} />
                                                                     {isEditingTitle ? (
@@ -516,7 +525,7 @@ const Sidebar: React.FC<SidebarProps> = ({className, isSidebarCollapsed, toggleS
                                                                           </>
                                                                       )}
                                                                     </div>
-                                                                  </a>
+                                                                  </button>
                                                                 </li>
                                                             );
                                                           } else {
@@ -524,8 +533,9 @@ const Sidebar: React.FC<SidebarProps> = ({className, isSidebarCollapsed, toggleS
                                                                 <li key={convo.id} className="relative z-[15]"
                                                                     data-projection-id="7"
                                                                     style={{opacity: 1, height: "auto"}}>
-                                                                  <a
+                                                                  <button
                                                                       onClick={() => selectConversation(convo)}
+                                                                      type="button"
                                                                       className="flex py-3 px-3 items-center gap-3 relative rounded-md cursor-pointer break-all bg-gray-50 dark:bg-gray-900"
                                                                   >
                                                                     <ChatBubbleLeftIcon {...iconProps} />
@@ -533,7 +543,7 @@ const Sidebar: React.FC<SidebarProps> = ({className, isSidebarCollapsed, toggleS
                                                                         className="flex-1 overflow-hidden whitespace-nowrap overflow-ellipsis max-h-5 break-all relative">
                                                                       {convo.title}
                                                                     </div>
-                                                                  </a>
+                                                                  </button>
                                                                 </li>
                                                             );
                                                           }
