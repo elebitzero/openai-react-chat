@@ -32,6 +32,7 @@ interface MessageBoxProps {
 export interface MessageBoxHandles {
   clearInputValue: () => void;
   getTextValue: () => string;
+  reset: () => void;
   resizeTextArea: () => void;
   focusTextarea: () => void;
 }
@@ -54,6 +55,11 @@ const MessageBox =
     },
     getTextValue: () => {
       return textValue;
+    },
+    reset: () => {
+      clearValueAndUndoHistory(textAreaRef);
+      setTextValue('');
+      setFileDataRef([]);
     },
     resizeTextArea: () => {
       if (textAreaRef.current) {
@@ -349,12 +355,15 @@ const MessageBox =
 
   return (
       <div
-          className="absolute bottom-0 left-0 w-full border-t md:border-t-0 dark:border-white/20 md:border-transparent md:dark:border-transparent bg-white dark:bg-gray-900 md:!bg-transparent dark:md:bg-vert-dark-gradient pt-2">
+          className="absolute bottom-0 left-0 w-full border-t md:border-t-0 dark:border-white/20 md:border-transparent md:dark:border-transparent bg-white dark:bg-gray-900 md:!bg-transparent pt-2">
         <form onSubmit={handleSubmit}
               className="stretch mx-2 flex flex-row gap-3 last:mb-2 md:mx-4 md:last:mb-6 lg:mx-auto md:max-w-2xl lg:max-w-3xl xl:max-w-4xl 2xl:max-w-5xl 3xl:max-w-6xl 4xl:max-w7xl">
-          <div className="relative flex h-full flex-1 md:flex-col">
-            <div style={{borderRadius: "1rem"}}
-                 className="flex flex-col w-full py-2 flex-grow md:py-3 md:pl-4 relative border border-black/10 bg-white dark:border-gray-900/50 dark:text-white dark:bg-gray-850 shadow-xs">
+          <div id="message-box-border"
+               style={{borderRadius: "1rem"}}
+               className="relative flex flex-col h-full flex-1 w-full py-2 flex-grow md:py-3 bg-white dark:bg-gray-850
+               dark:text-white dark:bg-gray-850 border border-black/10 dark:border-gray-900/50
+               focus-within:border-black/30 dark:focus-within:border-gray-500/50"
+          >
               {/* FileDataPreview Full Width at the Top */}
               {fileDataRef.length > 0 && (
                 <div className="w-full">
@@ -406,7 +415,6 @@ const MessageBox =
                 </div>
               </div>
             </div>
-          </div>
         </form>
       </div>
   );

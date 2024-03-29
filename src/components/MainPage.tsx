@@ -90,6 +90,13 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
   }, [gid, id, location.pathname]);
 
   useEffect(() => {
+    if (location.state?.reset) {
+      messageBoxRef.current?.reset();
+      messageBoxRef.current?.focusTextarea();
+    }
+  }, [location.state]);
+
+  useEffect(() => {
     if (messages.length === 0) {
       setConversation(null);
     }

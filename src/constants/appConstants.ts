@@ -3,7 +3,7 @@ export const SNIPPET_MARKERS = {
   end: '----END-SNIPPET----',
 };
 
-export const MAX_ROWS = 10;
+export const MAX_ROWS = 20;
 export const MAX_TITLE_LENGTH = 128;
 
 export const CHAT_STREAM_DEBOUNCE_TIME = 250;

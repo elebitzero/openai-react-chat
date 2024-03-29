@@ -134,7 +134,7 @@ const Sidebar: React.FC<SidebarProps> = ({className, isSidebarCollapsed, toggleS
   }
 
   const handleNewChat = () => {
-    navigate('');
+    navigate('/', { state: { reset: Date.now() } });
   }
 
   interface SearchOptionsPopdownProps {
@@ -454,9 +454,9 @@ const Sidebar: React.FC<SidebarProps> = ({className, isSidebarCollapsed, toggleS
                                                                 <li key={convo.id} className="relative z-[15]"
                                                                     data-projection-id="5"
                                                                     style={{opacity: 1, height: "auto"}}>
-                                                                  <button
+                                                                  <div
+                                                                      role="button"
                                                                       className={`flex py-3 px-3 items-center gap-3 relative rounded-md hover:bg-gray-100 cursor-pointer break-all bg-gray-100 dark:bg-gray-800 pr-14 group`}
-                                                                      type="button"
                                                                   >
                                                                     <ChatBubbleLeftIcon {...iconProps} />
                                                                     {isEditingTitle ? (
@@ -525,7 +525,7 @@ const Sidebar: React.FC<SidebarProps> = ({className, isSidebarCollapsed, toggleS
                                                                           </>
                                                                       )}
                                                                     </div>
-                                                                  </button>
+                                                                  </div>
                                                                 </li>
                                                             );
                                                           } else {
