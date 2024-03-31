@@ -23,7 +23,6 @@ import TextToSpeechButton from './TextToSpeechButton';
 interface UserSettingsModalProps {
   isVisible: boolean;
   onClose: () => void;
-  onDeleteAllConversations: () => void;
 }
 
 enum Tab {
@@ -37,7 +36,7 @@ const SAMPLE_AUDIO_TEXT =
   "The quick brown fox jumps over the lazy dog.\n" +
   "Sandy Sells Sea-Shells by the Sea-Shore.";
 
-const UserSettingsModal: React.FC<UserSettingsModalProps> = ({isVisible, onClose, onDeleteAllConversations}) => {
+const UserSettingsModal: React.FC<UserSettingsModalProps> = ({isVisible, onClose}) => {
   const dialogRef = useRef<HTMLDivElement>(null);
   const {userSettings, setUserSettings} = useContext(UserContext);
   const [activeTab, setActiveTab] = useState<Tab>(Tab.GENERAL_TAB);
@@ -72,7 +71,6 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({isVisible, onClose
       onConfirm: async () => {
         try {
           await ConversationService.deleteAllConversations();
-          onDeleteAllConversations();
           NotificationService.handleSuccess("All conversations have been successfully deleted.");
         } catch (error) {
           console.error('Failed to delete all conversations:', error);
