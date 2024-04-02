@@ -13,6 +13,7 @@ export const DEFAULT_INSTRUCTIONS = 'You are a helpful assistant.';
 
 export const CONVERSATION_NOT_FOUND = 'conversation-not-found';
 
+export const IMAGE_MAX_ZOOM = 2; // 200%
 export const MAX_IMAGE_ATTACHMENTS_PER_MESSAGE = 10;
 export const IMAGE_MIME_TYPES = [
   'image/jpeg',

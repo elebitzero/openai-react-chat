@@ -5,6 +5,7 @@ import { FileDataRef } from '../models/FileData';
 import {useTranslation} from "react-i18next";
 import Tooltip from './Tooltip';
 import './FileDataPreview.css';
+import {IMAGE_MAX_ZOOM} from "../constants/appConstants";
 
 interface Props {
   fileDataRef: FileDataRef[];
@@ -26,14 +27,22 @@ const FileDataPreview: React.FC<Props> = ({
   const determineAndSetImageStyle = (imgElement: HTMLImageElement) => {
     const naturalWidth = imgElement.naturalWidth;
     const naturalHeight = imgElement.naturalHeight;
+    const maxWidth = window.innerWidth * 0.8; // 80vw
+    const maxHeight = window.innerHeight * 0.8; // 80vh
+    const maxZoomFactor = IMAGE_MAX_ZOOM;
 
-    if (naturalWidth > naturalHeight) {
-      // If width is the larger dimension, scale width to 80vw
-      setImageStyle({width: '80vw', height: 'auto'});
-    } else {
-      // If height is the larger dimension or if they are equal, scale height to 80vh
-      setImageStyle({height: '80vh', width: 'auto'});
-    }
+    let width = naturalWidth;
+    let height = naturalHeight;
+
+    // Calculate the zoom factor needed to fit the image within 80vw or 80vh
+    const widthZoomFactor = maxWidth / naturalWidth;
+    const heightZoomFactor = maxHeight / naturalHeight;
+    const zoomFactor = Math.min(widthZoomFactor, heightZoomFactor, maxZoomFactor);
+
+    width = naturalWidth * zoomFactor;
+    height = naturalHeight * zoomFactor;
+
+    setImageStyle({width: `${width}px`, height: `${height}px`});
   };
 
   const handleRemoveFile = (event: React.MouseEvent<HTMLButtonElement>, index: number, fileRef: FileDataRef) => {
