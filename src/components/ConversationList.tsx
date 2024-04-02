@@ -1,20 +1,14 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {useLocation, useNavigate} from 'react-router-dom';
-import {
-  ChatBubbleLeftIcon,
-  CheckIcon,
-  MagnifyingGlassIcon,
-  PencilSquareIcon,
-  TrashIcon,
-  XMarkIcon
-} from "@heroicons/react/24/outline";
+import {useLocation} from 'react-router-dom';
+import {MagnifyingGlassIcon} from "@heroicons/react/24/outline";
 import ConversationService, {
   Conversation,
   ConversationChangeEvent,
   conversationsEmitter
-} from "../service/ConversationService"; // Adjust import paths as needed
+} from "../service/ConversationService";
 import {iconProps} from "../svg";
-import {useTranslation} from "react-i18next"; // Adjust import paths as needed
+import {useTranslation} from "react-i18next";
+import ConversationListItem from './ConversationListItem';
 
 function useCurrentPath() {
   return useLocation().pathname;
@@ -24,11 +18,7 @@ const ConversationList: React.FC = () => {
   const {t} = useTranslation();
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [searchInputValue, setSearchInputValue] = useState("");
-  const [isEditingTitle, setIsEditingTitle] = useState(false);
-  const [editedTitle, setEditedTitle] = useState("");
   const [selectedId, setSelectedId] = useState<number | null>(null);
-  const navigate = useNavigate();
-  const acceptButtonRef = useRef<HTMLButtonElement | null>(null);
   const currentPath = useCurrentPath();
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const [showSearchOptions, setShowSearchOptions] = useState(false);
@@ -159,27 +149,6 @@ const ConversationList: React.FC = () => {
     }
   };
 
-  const handleTitleInputKeyPress = (e: React.KeyboardEvent<HTMLInputElement>, conversation: Conversation) => {
-    if (e.key === 'Enter') {
-      // Save the edited title when Enter key is pressed
-      saveEditedTitle(conversation);
-    }
-  };
-
-  const handleInputBlur = (e: React.FocusEvent<HTMLInputElement>, conversation: Conversation) => {
-    if (acceptButtonRef.current) {
-      saveEditedTitle(conversation);
-    }
-    // Check if the blur event was not caused by pressing the Enter key
-    // If in edit mode and the input loses focus, cancel the edit
-    setEditedTitle(conversation.title);
-    setIsEditingTitle(false);
-  };
-
-  const handleContextMenu = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    setIsEditingTitle(false);
-  };
-
 
   const handleSearch = async (searchString: string) => {
     if (!searchString || searchString.trim() === '') {
@@ -217,68 +186,6 @@ const ConversationList: React.FC = () => {
     }
   };
 
-  const toggleEditMode = (convo: Conversation) => {
-    if (!isEditingTitle) {
-      // Entering edit mode, initialize editedTitle with convo.title
-      setEditedTitle(convo.title);
-    } else {
-      // Exiting edit mode, clear editedTitle
-      setEditedTitle('');
-    }
-    setIsEditingTitle(!isEditingTitle);
-  };
-
-
-  const deleteConversation = async (conversationId: number) => {
-    ConversationService.deleteConversation(conversationId)
-
-    // Update the conversations state to remove the deleted conversation
-    setConversations((prevConversations) => {
-        return prevConversations.filter((conversation) => conversation.id !== conversationId);
-      }
-    );
-    setSelectedId(null);
-    navigate('/', {state: {reset: Date.now()}});
-  };
-
-  const selectConversation = (conversation: Conversation) => {
-    if (isEditingTitle) {
-      // If in edit mode, cancel edit mode and select the new conversation
-      setIsEditingTitle(false);
-      setEditedTitle(''); // Clear editedTitle
-    } else {
-      // If not in edit mode, simply select the conversation
-    }
-    setSelectedId(conversation.id);
-    const url = conversation.gid
-      ? `/g/${conversation.gid}/c/${conversation.id}`
-      : `/c/${conversation.id}`;
-    navigate(url);
-  };
-
-  const saveEditedTitle = (conversation: Conversation) => {
-    ConversationService.updateConversationPartial(conversation, {title: editedTitle})
-      .then((updatedCount: number) => {
-        if (updatedCount > 0) {
-          // Update the conversation title in the state
-          const updatedConversations = conversations.map((c) => {
-            if (c.id === conversation.id) {
-              return {...c, title: editedTitle};
-            }
-            return c;
-          });
-          setConversations(updatedConversations);
-          setIsEditingTitle(false); // Exit edit mode
-        } else {
-          // Handle the case where the update in the database fails
-          console.error('Failed to update conversation title in the database.');
-        }
-      })
-      .catch((error: Error) => {
-        console.error('Error updating conversation title in the database:', error);
-      });
-  };
-
   /*
     interface SearchOptionsPopdownProps {
       onSelect: (value: string) => void;
@@ -300,6 +207,8 @@ const ConversationList: React.FC = () => {
         </div>
       );
     };*/
+
+  const ConversationListItemMemo = React.memo(ConversationListItem);
 
   return (
     <div className="conversation-list-container">
@@ -358,103 +267,17 @@ const ConversationList: React.FC = () => {
                       </li>
                     );
                   } else {
-                    if (convo.id === selectedId) {
-                      return (
-                        <li key={convo.id} className="relative z-[15]" style={{opacity: 1, height: "auto"}}>
-                          <div
-                            role="button"
-                            className={`relative flex py-3 px-3 items-center gap-3 rounded-md hover:bg-gray-100 cursor-pointer break-all bg-gray-100 dark:bg-gray-800 pr-14 group`}
-                          >
-                            <ChatBubbleLeftIcon {...iconProps} />
-                            {isEditingTitle ? (
-                              <div
-                                className={"flex items-center gap-3"}>
-                                <input
-                                  type="text"
-                                  className={'dark:bg-gray-800 dark:text-gray-100'}
-                                  value={editedTitle}
-                                  onChange={(e) => setEditedTitle(e.target.value)}
-                                  onKeyDown={(e) => handleTitleInputKeyPress(e, convo)}
-                                  autoFocus={true}
-                                  maxLength={30}
-                                  style={{width: "10em"}}
-                                  onBlur={(e) => {
-                                    if (isEditingTitle) {
-                                      handleInputBlur(e, convo);
-                                    }
-                                  }}
-                                />
-                              </div>
-                            ) : (
-                              <div
-                                className="relative flex-1 w-full text-left overflow-hidden whitespace-nowrap overflow-ellipsis max-h-5 break-all">
-                                {convo.title}
-                              </div>
-                            )}
-                            <div
-                              className="absolute flex right-1 z-10 dark:text-gray-300 text-gray-800">
-                              {isEditingTitle ? (
-                                <>
-                                  <button
-                                    ref={acceptButtonRef}
-                                    onClick={() => {
-                                      saveEditedTitle(convo)
-                                    }}
-                                    className={`p-1 hover:text-white`}
-                                    onContextMenu={handleContextMenu}
-                                  >
-                                    <CheckIcon {...iconProps} />
-                                  </button>
-                                  <button
-                                    onClick={() => {
-                                      setIsEditingTitle(false); // Exit edit mode without saving
-                                      setEditedTitle(""); // Clear the edited title
-                                    }}
-                                    className={`p-1 hover:text-white`}
-                                  >
-                                    <XMarkIcon {...iconProps} />
-                                  </button>
-                                </>
-                              ) : (
-                                <>
-                                  <button
-                                    onClick={() => toggleEditMode(convo)}
-                                    className={`p-1 hover:text-white`}
-                                  >
-                                    <PencilSquareIcon {...iconProps} />
-                                  </button>
-                                  <button
-                                    onClick={() => deleteConversation(convo.id)}
-                                    className="p-1 hover:text-white"
-                                  >
-                                    <TrashIcon {...iconProps} />
-                                  </button>
-                                </>
-                              )}
-                            </div>
-                          </div>
-                        </li>
-                      );
-                    } else {
-                      return (
-                        <li key={convo.id} className="relative z-[15]" style={{opacity: 1, height: "auto"}}>
-                          <button
-                            onClick={() => selectConversation(convo)}
-                            type="button"
-                            className="relative flex w-full py-3 px-3 items-center gap-3 rounded-md cursor-pointer break-all bg-gray-50 dark:bg-gray-900"
-                          >
-                            <ChatBubbleLeftIcon {...iconProps} />
-                            <div
-                              className="relative flex-1 overflow-hidden text-left whitespace-nowrap overflow-ellipsis max-h-5 break-all">
-                              {convo.title}
-                            </div>
-                          </button>
-                        </li>
-                      );
-                    }
+                    return (
+                      <ConversationListItemMemo
+                        key={convo.id}
+                        convo={convo}
+                        isSelected={selectedId === convo.id}
+                        loadConversations={loadConversations}
+                        setSelectedId={setSelectedId}
+                      />
+                    );
                   }
-                })
-              }
+                })}
             </ol>
           </div>
         </div>
