@@ -158,18 +158,16 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
         }
       }
 
+      if (selectedOption) {
+        onModelSelect?.(selectedOption.value);
+      }
+
       // else set the selectedOption to the first model in the list
       if (newOptions.length > 0) {
         setSelectedOption(newOptions[0]);
       }
     }
   }, [models, value]);
-
-  useEffect(() => {
-    if (selectedOption) {
-      onModelSelect?.(selectedOption.value);
-    }
-  }, [selectedOption]);
 
 
   const formatContextWindow = (context_window: number) => {
