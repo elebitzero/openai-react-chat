@@ -16,7 +16,7 @@ import ConversationService, {Conversation} from '../service/ConversationService'
 import {UserContext} from '../UserContext';
 import {NotificationService} from '../service/NotificationService';
 import CustomChatSplash from './CustomChatSplash';
-import { FileDataRef } from '../models/FileData';
+import {FileDataRef} from '../models/FileData';
 
 function getFirstValidString(...args: (string | undefined | null)[]): string {
   for (const arg of args) {
@@ -25,10 +25,6 @@ function getFirstValidString(...args: (string | undefined | null)[]): string {
     }
   }
   return '';
-}
-
-function useCurrentPath() {
-  return useLocation().pathname;
 }
 
 interface MainPageProps {
@@ -45,7 +41,7 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
   const [model, setModel] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const {id, gid} = useParams<{ id?: string, gid?: string }>();
-  const currentPath = useCurrentPath();
+  const location = useLocation();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [showScrollButton, setShowScrollButton] = useState(false);
@@ -63,8 +59,6 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
       chatSettingsEmitter.off('chatSettingsChanged', chatSettingsListener);
     };
   }, []);
-
-  const location = useLocation();
 
   useEffect(() => {
     if (location.pathname === '/') {
@@ -103,7 +97,7 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
     if (conversation && conversation.id) {
       // Only update if there are messages
       if (messages.length > 0) {
-        ConversationService.updateConversation(conversation,messages);
+        ConversationService.updateConversation(conversation, messages);
       }
     }
   }, [messages]);
@@ -229,9 +223,9 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
     setModel(value);
   };
 
-  const callApp = (message: string,fileDataRef: FileDataRef[]) => {
+  const callApp = (message: string, fileDataRef: FileDataRef[]) => {
     if (!conversation) {
-      startConversation(message,fileDataRef);
+      startConversation(message, fileDataRef);
     }
     setAllowAutoScroll(true);
     addMessage(Role.User, MessageType.Normal, message, fileDataRef, sendMessage);
@@ -290,24 +284,24 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
     let effectiveSettings = getEffectiveChatSettings();
 
     ChatService.sendMessageStreamed(effectiveSettings, messages, handleStreamedResponse)
-        .then((response: ChatCompletion) => {
-          // nop
-        })
-        .catch(err => {
-              if (err instanceof CustomError) {
-                const message: string = err.message;
-                setLoading(false);
-                addMessage(Role.Assistant, MessageType.Error, message,[]);
-              } else {
-                NotificationService.handleUnexpectedError(err, 'Failed to send message to openai.');
-              }
-            }
-        ).finally(() => {
+      .then((response: ChatCompletion) => {
+        // nop
+      })
+      .catch(err => {
+          if (err instanceof CustomError) {
+            const message: string = err.message;
+            setLoading(false);
+            addMessage(Role.Assistant, MessageType.Error, message, []);
+          } else {
+            NotificationService.handleUnexpectedError(err, 'Failed to send message to openai.');
+          }
+        }
+      ).finally(() => {
       setLoading(false); // Stop loading here, whether successful or not
     });
   }
 
-  function handleStreamedResponse(content: string,fileDataRef: FileDataRef[]) {
+  function handleStreamedResponse(content: string, fileDataRef: FileDataRef[]) {
     setMessages(prevMessages => {
       let isNew: boolean = false;
       try {
@@ -371,40 +365,41 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
   };
 
   return (
-      <div className={`${className} overflow-hidden w-full h-full relative flex z-0 dark:bg-gray-900`}>
-        <div className="flex flex-col items-stretch w-full h-full">
-          <main
-              className="relative h-full transition-width flex flex-col overflow-hidden items-stretch flex-1">
-            {gid ? (
-                <div className={`inline-block absolute top-0 left-0 z-50 ${isSidebarCollapsed ? 'sidebar-collapsed-margin' : ''}`}>
-                  <ChatSettingDropdownMenu chatSetting={chatSettings}/>
-                </div>
-            ) : null
-            }
-            {!conversation && chatSettings ? (
-                <CustomChatSplash className=" -translate-y-[10%] " chatSettings={chatSettings}/>
-            ) : null}
-            <Chat chatBlocks={messages} onChatScroll={handleUserScroll} conversation={conversation}
-                  model={model}
-                  onModelChange={handleModelChange} allowAutoScroll={allowAutoScroll} loading={loading}/>
-            {/*</div>*/}
-            {/* Absolute container for the ScrollToBottomButton */}
-            {showScrollButton && (
-                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 mb-10 z-10">
-                  <ScrollToBottomButton onClick={scrollToBottom}/>
-                </div>
-            )}
-            {/* MessageBox remains at the bottom */}
-            <MessageBox
-              ref={messageBoxRef}
-              callApp={callApp}
-              loading={loading}
-              setLoading={setLoading}
-              allowImageAttachment= {model?.includes('vision') ? 'yes' : (!conversation ? 'warn' : 'no')}
-            />
-          </main>
-        </div>
+    <div className={`${className} overflow-hidden w-full h-full relative flex z-0 dark:bg-gray-900`}>
+      <div className="flex flex-col items-stretch w-full h-full">
+        <main
+          className="relative h-full transition-width flex flex-col overflow-hidden items-stretch flex-1">
+          {gid ? (
+            <div
+              className={`inline-block absolute top-0 left-0 z-50 ${isSidebarCollapsed ? 'sidebar-collapsed-margin' : ''}`}>
+              <ChatSettingDropdownMenu chatSetting={chatSettings}/>
+            </div>
+          ) : null
+          }
+          {!conversation && chatSettings ? (
+            <CustomChatSplash className=" -translate-y-[10%] " chatSettings={chatSettings}/>
+          ) : null}
+          <Chat chatBlocks={messages} onChatScroll={handleUserScroll} conversation={conversation}
+                model={model}
+                onModelChange={handleModelChange} allowAutoScroll={allowAutoScroll} loading={loading}/>
+          {/*</div>*/}
+          {/* Absolute container for the ScrollToBottomButton */}
+          {showScrollButton && (
+            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 mb-10 z-10">
+              <ScrollToBottomButton onClick={scrollToBottom}/>
+            </div>
+          )}
+          {/* MessageBox remains at the bottom */}
+          <MessageBox
+            ref={messageBoxRef}
+            callApp={callApp}
+            loading={loading}
+            setLoading={setLoading}
+            allowImageAttachment={model?.includes('vision') ? 'yes' : (!conversation ? 'warn' : 'no')}
+          />
+        </main>
       </div>
+    </div>
   );
 }
 

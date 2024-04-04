@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, {useState} from 'react';
 import {Link, useNavigate} from 'react-router-dom';
 import {Cog8ToothIcon, PlusIcon, Squares2X2Icon} from "@heroicons/react/24/outline";
 import {CloseSideBarIcon, iconProps, OpenSideBarIcon} from "../svg";
@@ -27,6 +27,10 @@ const Sidebar: React.FC<SidebarProps> = ({className, isSidebarCollapsed, toggleS
     navigate('/', {state: {reset: Date.now()}});
   }
 
+  const handleOnClose = () => {
+    setSettingsModalVisible(false);
+  }
+
   return (
     <div className={`${className} ${isSidebarCollapsed ? 'w-0' : 'w-auto'}`}>
       {isSidebarCollapsed && (
@@ -44,7 +48,7 @@ const Sidebar: React.FC<SidebarProps> = ({className, isSidebarCollapsed, toggleS
       )}
       <UserSettingsModal
         isVisible={isSettingsModalVisible}
-        onClose={() => setSettingsModalVisible(false)}
+        onClose={handleOnClose}
       />
       {/* sidebar is always dark mode*/}
       <div
