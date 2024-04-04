@@ -52,7 +52,7 @@ const ChatSettingDropdownMenu: React.FC<ChatSettingDropdownMenuProps> = ({
     event.preventDefault();
     event.stopPropagation();
     if (chatSetting) {
-      const newChatSetting = {...chatSetting, id: 0, name: `${chatSetting.name} (Copy)`};
+      const newChatSetting = {...chatSetting, id: 0, name: `${chatSetting.name} (Copy)`, author: 'user'};
       navigate('/custom/editor/', {state: {initialChatSetting: newChatSetting}});
     }
   }
