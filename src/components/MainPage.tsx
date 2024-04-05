@@ -8,7 +8,7 @@ import {CustomError} from "../service/CustomError";
 import {useLocation, useNavigate, useParams} from "react-router-dom";
 import {useTranslation} from 'react-i18next';
 import MessageBox, {MessageBoxHandles} from "./MessageBox";
-import {CONVERSATION_NOT_FOUND, DEFAULT_INSTRUCTIONS, MAX_TITLE_LENGTH} from "../constants/appConstants";
+import {CONVERSATION_NOT_FOUND, DEFAULT_INSTRUCTIONS, DEFAULT_MODEL, MAX_TITLE_LENGTH} from "../constants/appConstants";
 import {ChatSettings} from '../models/ChatSettings';
 import chatSettingsDB, {chatSettingsEmitter, updateShowInSidebar} from '../service/ChatSettingsDB';
 import ChatSettingDropdownMenu from "./ChatSettingDropdownMenu";
@@ -141,6 +141,9 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
     try {
       const settings = await chatSettingsDB.chatSettings.get(gid);
       setChatSettings(settings);
+      if (settings) {
+        setModel(settings.model);
+      }
     } catch (error) {
       console.error('Failed to fetch chat settings:', error);
     }
@@ -205,7 +208,7 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
       gid: getEffectiveChatSettings().id,
       timestamp: timestamp,
       title: shortenedText,
-      model: model,
+      model: model || DEFAULT_MODEL,
       systemPrompt: instructions,
       messages: "[]",
     };
@@ -266,7 +269,7 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
         id: 0,
         author: 'system',
         name: 'default',
-        model: model
+        model: model || DEFAULT_MODEL
       }
     }
     return effectiveSettings;
