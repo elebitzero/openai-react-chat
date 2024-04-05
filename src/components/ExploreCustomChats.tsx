@@ -58,7 +58,7 @@ const ExploreCustomChats: React.FC = () => {
 
   return (
       <div
-          className="flex justify-center items-center h-screen gap-4 md:gap-6 md:max-w-2xl lg:max-w-3xl xl:max-w-4xl 2xl:max-w-5xl 3xl:max-w-6xl 4xl:max-w7xl p-4 lg:px-0 m-auto transform translate-y-[-30%]">
+          className="flex justify-center items-center h-screen gap-4 md:gap-6 md:max-w-2xl lg:max-w-3xl xl:max-w-4xl 2xl:max-w-5xl 3xl:max-w-6xl 4xl:max-w7xl p-4 lg:px-0 m-auto">
         <div className="w-full">
           <h2 className="text-xl font-bold mb-2">{t('example-chats')}</h2>
           <ChatSettingsList chatSettings={exampleChats}/>
