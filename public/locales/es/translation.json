@@ -67,5 +67,7 @@
   "close-button": "Cerrar",
   "read-aloud-button": "Leer en voz alta",
   "stop-read-aloud-button": "Cancelar",
-  "loading-tts-button": "Cargando..."
+  "loading-tts-button": "Cargando...",
+  "model-does-not-support-images": "El modelo no admite imágenes.",
+  "tts-test-label": "Probar"
 }

@@ -67,5 +67,7 @@
   "close-button": "关闭",
   "read-aloud-button": "朗读",
   "stop-read-aloud-button": "取消",
-  "loading-tts-button": "正在加载..."
+  "loading-tts-button": "正在加载...",
+  "model-does-not-support-images": "模型不支持图像。",
+  "tts-test-label": "测试"
 }

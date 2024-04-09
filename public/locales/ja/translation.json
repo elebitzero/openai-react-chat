@@ -67,5 +67,7 @@
   "close-button": "閉じる",
   "read-aloud-button": "読み上げる",
   "stop-read-aloud-button": "キャンセル",
-  "loading-tts-button": "読み込み中..."
+  "loading-tts-button": "読み込み中...",
+  "model-does-not-support-images": "モデルは画像をサポートしていません。",
+  "tts-test-label": "テスト"
 }

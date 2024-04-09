@@ -67,5 +67,7 @@
   "close-button": "닫기",
   "read-aloud-button": "읽어주기",
   "stop-read-aloud-button": "취소",
-  "loading-tts-button": "로딩 중..."
+  "loading-tts-button": "로딩 중...",
+  "model-does-not-support-images": "모델이 이미지를 지원하지 않습니다.",
+  "tts-test-label": "테스트"
 }

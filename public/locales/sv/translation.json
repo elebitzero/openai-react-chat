@@ -67,5 +67,7 @@
   "close-button": "Stäng",
   "read-aloud-button": "Läs högt",
   "stop-read-aloud-button": "Avbryt",
-  "loading-tts-button": "Laddar..."
+  "loading-tts-button": "Laddar...",
+  "model-does-not-support-images": "Modellen stöder inte bilder.",
+  "tts-test-label": "Testa"
 }

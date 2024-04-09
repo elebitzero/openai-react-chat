@@ -67,5 +67,7 @@
   "close-button": "Закрыть",
   "read-aloud-button": "Прочитать вслух",
   "stop-read-aloud-button": "Отмена",
-  "loading-tts-button": "Загрузка..."
+  "loading-tts-button": "Загрузка...",
+  "model-does-not-support-images": "Модель не поддерживает изображения.",
+  "tts-test-label": "Тест"
 }

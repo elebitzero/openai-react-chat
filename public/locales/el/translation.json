@@ -67,5 +67,7 @@
   "close-button": "Κλείσιμο",
   "read-aloud-button": "Διάβασε δυνατά",
   "stop-read-aloud-button": "Ακύρωση",
-  "loading-tts-button": "Φόρτωση..."
+  "loading-tts-button": "Φόρτωση...",
+  "model-does-not-support-images": "Το μοντέλο δεν υποστηρίζει εικόνες.",
+  "tts-test-label": "Δοκιμή"
 }

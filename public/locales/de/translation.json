@@ -67,5 +67,7 @@
   "close-button": "Schließen",
   "read-aloud-button": "Vorlesen",
   "stop-read-aloud-button": "Abbrechen",
-  "loading-tts-button": "Laden..."
+  "loading-tts-button": "Laden...",
+  "model-does-not-support-images": "Das Modell unterstützt keine Bilder.",
+  "tts-test-label": "Testen"
 }

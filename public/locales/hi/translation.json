@@ -67,5 +67,7 @@
   "close-button": "बंद करें",
   "read-aloud-button": "जोर से पढ़ें",
   "stop-read-aloud-button": "रद्द करें",
-  "loading-tts-button": "लोड हो रहा है..."
+  "loading-tts-button": "लोड हो रहा है...",
+  "model-does-not-support-images": "मॉडल छवियों का समर्थन नहीं करता है।",
+  "tts-test-label": "परीक्षण"
 }

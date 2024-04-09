@@ -67,5 +67,7 @@
   "close-button": "Đóng",
   "read-aloud-button": "Đọc to",
   "stop-read-aloud-button": "Hủy bỏ",
-  "loading-tts-button": "Đang tải..."
+  "loading-tts-button": "Đang tải...",
+  "model-does-not-support-images": "Mô hình không hỗ trợ hình ảnh.",
+  "tts-test-label": "Kiểm tra"
 }

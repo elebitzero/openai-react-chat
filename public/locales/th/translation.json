@@ -67,5 +67,7 @@
   "close-button": "ปิด",
   "read-aloud-button": "อ่านออกเสียง",
   "stop-read-aloud-button": "ยกเลิก",
-  "loading-tts-button": "กำลังโหลด..."
+  "loading-tts-button": "กำลังโหลด...",
+  "model-does-not-support-images": "รุ่นไม่รองรับรูปภาพ",
+  "tts-test-label": "ทดสอบ"
 }

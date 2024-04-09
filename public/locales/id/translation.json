@@ -67,5 +67,7 @@
   "close-button": "Tutup",
   "read-aloud-button": "Bacakan",
   "stop-read-aloud-button": "Batal",
-  "loading-tts-button": "Memuat..."
+  "loading-tts-button": "Memuat...",
+  "model-does-not-support-images": "Model tidak mendukung gambar.",
+  "tts-test-label": "Tes"
 }
