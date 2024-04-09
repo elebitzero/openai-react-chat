@@ -13,10 +13,6 @@ interface TooltipProps {
 const Tooltip: React.FC<TooltipProps> = ({title, children, side, sideOffset}) => {
   const {userSettings, setUserSettings} = useContext(UserContext);
 
-  const arrowClassName =
-      userSettings.theme === 'dark'
-          ? "dark:text-gray-100 dark:tooltip-arrow"
-          : "text-gray-900";
 
   return (
       <RadixTooltip.Provider delayDuration={400}>
@@ -34,7 +30,6 @@ const Tooltip: React.FC<TooltipProps> = ({title, children, side, sideOffset}) =>
                 className="flex items-center whitespace-pre-wrap px-2 py-1 text-left font-medium normal-case text-sm">
               {title}
             </span>
-              <RadixTooltip.Arrow className={arrowClassName}/>
             </RadixTooltip.Content>
           </RadixTooltip.Portal>
         </RadixTooltip.Root>
