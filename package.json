@@ -72,7 +72,7 @@
     "@types/hast": "^3.0.4",
     "@types/node": "^20.12.7",
     "@types/react": "^18.2.76",
-    "@types/react-dom": "^18.2.24",
+    "@types/react-dom": "^18.2.25",
     "@types/react-syntax-highlighter": "^15.5.11",
     "@vitejs/plugin-react": "^4.2.1",
     "cypress": "^13.7.2",
