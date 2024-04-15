@@ -299,7 +299,7 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({isVisible, onClose
                         <textarea
                           id="tts-test-area"
                           rows={2}
-                          className="shadow-sm p-2 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md"
+                          className="shadow-sm p-2 mt-1 block w-full dark:text-gray-300 dark:bg-gray-700 sm:text-sm border border-gray-300 rounded-md"
                           defaultValue={ttsText}
                           onChange={(e) => setTtsText(e.target.value)}
                         ></textarea>
