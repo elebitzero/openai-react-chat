@@ -17,6 +17,7 @@ import {UserContext} from '../UserContext';
 import {NotificationService} from '../service/NotificationService';
 import CustomChatSplash from './CustomChatSplash';
 import {FileDataRef} from '../models/FileData';
+import { OpenAIModel } from '../models/model';
 
 function getFirstValidString(...args: (string | undefined | null)[]): string {
   for (const arg of args) {
@@ -38,7 +39,7 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
   const {t} = useTranslation();
   const [chatSettings, setChatSettings] = useState<ChatSettings | undefined>(undefined);
   const [conversation, setConversation] = useState<Conversation | null>(null);
-  const [model, setModel] = useState<string | null>(null);
+  const [model, setModel] = useState<OpenAIModel | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const {id, gid} = useParams<{ id?: string, gid?: string }>();
   const location = useLocation();
@@ -112,7 +113,7 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
     window.addEventListener('keydown', handleKeyDown);
 
     if (userSettings.model) {
-      setModel(userSettings.model);
+      fetchModelById(userSettings.model).then(setModel);
     }
 
     return () => window.removeEventListener('keydown', handleKeyDown);
@@ -120,9 +121,23 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
 
   useEffect(() => {
     if (userSettings.model) {
-      setModel(userSettings.model);
+      fetchModelById(userSettings.model).then(setModel);
     }
   }, [userSettings]);
+
+  const fetchModelById = async (modelId: string): Promise<OpenAIModel | null> => {
+    try {
+      const fetchedModel = await ChatService.getModelById(modelId);
+      return fetchedModel;
+    } catch (error) {
+      console.error('Failed to fetch model:', error);
+      if (error instanceof Error) {
+        NotificationService.handleUnexpectedError(error, 'Failed to fetch model.');
+      }
+      return null;
+    }
+  };
+
 
   const chatSettingsListener = (data: { gid?: number }) => {
     const currentChatSettings = chatSettingsRef.current;
@@ -142,7 +157,11 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
       const settings = await chatSettingsDB.chatSettings.get(gid);
       setChatSettings(settings);
       if (settings) {
-        setModel(settings.model);
+        if (settings.model === null) {
+          setModel(null);
+        } else {
+          fetchModelById(settings.model).then(setModel);
+        }
       }
     } catch (error) {
       console.error('Failed to fetch chat settings:', error);
@@ -208,7 +227,7 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
       gid: getEffectiveChatSettings().id,
       timestamp: timestamp,
       title: shortenedText,
-      model: model || DEFAULT_MODEL,
+      model: model?.id || DEFAULT_MODEL,
       systemPrompt: instructions,
       messages: "[]",
     };
@@ -223,7 +242,11 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
   }
 
   const handleModelChange = (value: string | null) => {
-    setModel(value);
+    if (value === null) {
+      setModel(null);
+    } else {
+      fetchModelById(value).then(setModel);
+    }
   };
 
   const callApp = (message: string, fileDataRef: FileDataRef[]) => {
@@ -269,7 +292,7 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
         id: 0,
         author: 'system',
         name: 'default',
-        model: model || DEFAULT_MODEL
+        model: model?.id || DEFAULT_MODEL
       }
     }
     return effectiveSettings;
@@ -383,7 +406,7 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
             <CustomChatSplash className=" -translate-y-[10%] " chatSettings={chatSettings}/>
           ) : null}
           <Chat chatBlocks={messages} onChatScroll={handleUserScroll} conversation={conversation}
-                model={model}
+                model={model?.id || DEFAULT_MODEL}
                 onModelChange={handleModelChange} allowAutoScroll={allowAutoScroll} loading={loading}/>
           {/*</div>*/}
           {/* Absolute container for the ScrollToBottomButton */}
@@ -398,7 +421,7 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
             callApp={callApp}
             loading={loading}
             setLoading={setLoading}
-            allowImageAttachment={model?.includes('vision') ? 'yes' : (!conversation ? 'warn' : 'no')}
+            allowImageAttachment={model === null || model?.image_support || false ? 'yes' : (!conversation ? 'warn' : 'no')}
           />
         </main>
       </div>

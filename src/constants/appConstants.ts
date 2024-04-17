@@ -7,7 +7,7 @@ export const MAX_ROWS = 20;
 export const MAX_TITLE_LENGTH = 128;
 
 export const CHAT_STREAM_DEBOUNCE_TIME = 250;
-export const DEFAULT_MODEL = 'gpt-4-turbo-preview';
+export const DEFAULT_MODEL = 'gpt-4-turbo';
 export const DEFAULT_INSTRUCTIONS = 'You are a helpful assistant.';
 
 

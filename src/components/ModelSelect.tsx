@@ -54,6 +54,8 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
   const SHOW_FEWER_MODELS = t('show-fewer-models');
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const [hintVisible, setHintVisible] = useState(false);
+  const MORE_MODELS = 'more';
+  const LESS_MODELS = 'less';
 
   const showHint = () => {
     setHintVisible(true);
@@ -65,7 +67,7 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
   const isDarkMode = () => userSettings.userTheme === 'dark';
 
   const getColor = (state: OptionProps<SelectOption, false>) => {
-    if (state.data.value === 'more' || state.data.value === 'less') {
+    if (state.data.value === MORE_MODELS || state.data.value === LESS_MODELS) {
       return 'var(--primary)';
     } else {
       return isDarkMode() ? 'white' : 'black';
@@ -126,16 +128,22 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
   }, [externalModels]);
 
   function getModelOption(model: OpenAIModel) {
-    return {value: model.id, label: model.id, info: formatContextWindow(model.context_window), image_support:model.image_support};
+    return {
+      value: model.id,
+      label: model.id,
+      info: formatContextWindow(model.context_window),
+      image_support: model.image_support,
+      preferred: model.preferred,
+      deprecated: model.deprecated
+    };
   }
 
   useEffect(() => {
     if (models && models.length > 0) {
-      const defaultOptions = models.filter(model => !/-\d{4}$/.test(model.id)).filter(model => !/-\d{4}-preview$/.test(model.id));
-
+      const defaultOptions = models.filter(model => model.preferred);
       const newOptions = [
         ...defaultOptions.map((model) => getModelOption(model)),
-        {value: "more", label: SHOW_MORE_MODELS, info: '', image_support: false}
+        {value: MORE_MODELS, label: SHOW_MORE_MODELS, info: '', image_support: false}
       ];
       setOptions(newOptions);
       let defaultModelId = DEFAULT_MODEL;
@@ -183,19 +191,8 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
     option = option as SingleValue<SelectOption>;
 
     if (option) {
-      if (option.value === "more") {
-        setOptions([
-          ...models.map((model) => ({
-            value: model.id,
-            label: model.id,
-            info: formatContextWindow(model.context_window),
-            image_support: model.image_support
-          })),
-          {value: "less", label: SHOW_FEWER_MODELS, info: '',  image_support: false}
-        ]);
-        setMenuIsOpen(true);
-      } else if (option.value === "less") {
-        const defaultOptions = models.filter(model => !/-\d{4}$/.test(model.id));
+      if (option.value === MORE_MODELS) {
+        const defaultOptions = models.filter(model => !model.deprecated);
         setOptions([
           ...defaultOptions.map((model) => ({
             value: model.id,
@@ -203,7 +200,19 @@ const ModelSelect: React.FC<ModelSelectProps> = ({
             info: formatContextWindow(model.context_window),
             image_support: model.image_support
           })),
-          {value: "more", label: SHOW_MORE_MODELS, info: '',  image_support: false}
+          {value: LESS_MODELS, label: SHOW_FEWER_MODELS, info: '',  image_support: false}
+        ]);
+        setMenuIsOpen(true);
+      } else if (option.value === LESS_MODELS) {
+        const defaultOptions = models.filter(model => model.preferred);
+        setOptions([
+          ...defaultOptions.map((model) => ({
+            value: model.id,
+            label: model.id,
+            info: formatContextWindow(model.context_window),
+            image_support: model.image_support
+          })),
+          {value: MORE_MODELS, label: SHOW_MORE_MODELS, info: '',  image_support: false}
         ]);
         setMenuIsOpen(true);
       } else {

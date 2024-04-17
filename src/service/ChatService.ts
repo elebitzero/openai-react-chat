@@ -29,19 +29,25 @@ export class ChatService {
   static abortController: AbortController | null = null;
 
 
-   static mapChatMessagesToCompletionMessages = (modelId: string, messages: ChatMessage[]): ChatCompletionMessage[] => {
+  static async mapChatMessagesToCompletionMessages(modelId: string, messages: ChatMessage[]): Promise<ChatCompletionMessage[]> {
+    const model = await this.getModelById(modelId); // Retrieve the model details
+    if (!model) {
+      throw new Error(`Model with ID '${modelId}' not found`);
+    }
+
     return messages.map((message) => {
       const contentParts: ChatMessagePart[] = [{
         type: 'text',
         text: message.content
       }];
 
-      if (modelId.includes('vision') && message.fileDataRef) {
+      if (model.image_support && message.fileDataRef) {
         message.fileDataRef.forEach((fileRef) => {
           const fileUrl = fileRef.fileData!.data;
           if (fileUrl) {
+            const fileType = (fileRef.fileData!.type.startsWith('image')) ? 'image_url' : fileRef.fileData!.type;
             contentParts.push({
-              type: fileRef.fileData!.type,
+              type: fileType,
               image_url: {
                 url: fileUrl
               }
@@ -64,7 +70,7 @@ export class ChatService {
       "Authorization": `Bearer ${OPENAI_API_KEY}`
     };
 
-    const mappedMessages = ChatService.mapChatMessagesToCompletionMessages(modelId,messages);
+    const mappedMessages = await ChatService.mapChatMessagesToCompletionMessages(modelId,messages);
 
     const requestBody: ChatCompletionRequest = {
       model: modelId,
@@ -131,9 +137,8 @@ export class ChatService {
       requestBody.seed = seed ?? requestBody.seed;
     }
 
-    const mappedMessages = ChatService.mapChatMessagesToCompletionMessages(requestBody.model,messages);
+    const mappedMessages = await ChatService.mapChatMessagesToCompletionMessages(requestBody.model,messages);
     requestBody.messages = mappedMessages;
-
 
     let response: Response;
     try {
@@ -256,6 +261,37 @@ export class ChatService {
     return ChatService.fetchModels();
   }
 
+  static async getModelById(modelId: string): Promise<OpenAIModel | null> {
+    try {
+      const models = await ChatService.getModels();
+
+      const foundModel = models.find(model => model.id === modelId);
+      if (!foundModel) {
+        throw new CustomError(`Model with ID '${modelId}' not found.`, {
+          code: 'MODEL_NOT_FOUND',
+          status: 404
+        });
+      }
+
+      return foundModel;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error('Failed to get models:', error.message);
+        throw new CustomError('Error retrieving models.', {
+          code: 'FETCH_MODELS_FAILED',
+          status: (error as any).status || 500
+        });
+      } else {
+        console.error('Unexpected error type:', error);
+        throw new CustomError('Unknown error occurred.', {
+          code: 'UNKNOWN_ERROR',
+          status: 500
+        });
+      }
+    }
+
+  }
+
 
   static fetchModels = (): Promise<OpenAIModel[]> => {
     if (this.models !== null) {
@@ -283,12 +319,20 @@ export class ChatService {
           return models
               .filter(model => model.id.startsWith("gpt-"))
               .map(model => {
-                const details = modelDetails[model.id] || {contextWindowSize: 0, knowledgeCutoffDate: '', imageSupport: false};
+                const details = modelDetails[model.id] || {
+                  contextWindowSize: 0,
+                  knowledgeCutoffDate: '',
+                  imageSupport: false,
+                  preferred: false,
+                  deprecated: false,
+                };
                 return {
                   ...model,
                   context_window: details.contextWindowSize,
                   knowledge_cutoff: details.knowledgeCutoffDate,
-                  image_support: details.imageSupport
+                  image_support: details.imageSupport,
+                  preferred: details.preferred,
+                  deprecated: details.deprecated,
                 };
               })
               .sort((a, b) => b.id.localeCompare(a.id));

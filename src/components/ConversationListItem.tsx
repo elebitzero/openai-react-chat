@@ -98,7 +98,7 @@ const ConversationListItem: React.FC<ConversationListItemProps> = ({
       <li key={convo.id} className="relative z-[15]" style={{opacity: 1, height: "auto"}}>
         <div
           role="button"
-          className={`relative flex py-3 px-3 items-center gap-3 rounded-md hover:bg-gray-100 cursor-pointer break-all bg-gray-100 dark:bg-gray-800 pr-14 group`}
+          className={`relative flex py-3 px-3 items-center gap-3 rounded-md bg-gray-100 dark:bg-gray-800 cursor-pointer break-all pr-14 group`}
         >
           <ChatBubbleLeftIcon {...iconProps} />
           {isEditingTitle ? (
@@ -176,7 +176,7 @@ const ConversationListItem: React.FC<ConversationListItemProps> = ({
         <button
           onClick={() => selectConversation()}
           type="button"
-          className="relative flex w-full py-3 px-3 items-center gap-3 rounded-md cursor-pointer break-all bg-gray-50 dark:bg-gray-900"
+          className="relative flex w-full py-3 px-3 items-center gap-3 bg-gray-50 dark:bg-gray-900 hover:bg-gray-200 dark:hover:bg-gray-850 rounded-md cursor-pointer break-all"
         >
           <ChatBubbleLeftIcon {...iconProps} />
           <div

@@ -9,6 +9,7 @@ import {EditableField} from './EditableField';
 import {useTranslation} from 'react-i18next';
 import {NotificationService} from "../service/NotificationService";
 import FormLabel from "./FormLabel";
+import {DEFAULT_MODEL} from "../constants/appConstants";
 
 interface ChatSettingsFormProps {
   chatSettings?: ChatSettings;
@@ -119,7 +120,7 @@ const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({chatSettings, readOn
                 label={t('model-header')}
                 value={formData.model}
                 defaultValue={null}
-                defaultValueLabel={'gpt-4-turbo-preview'}
+                defaultValueLabel={DEFAULT_MODEL}
                 editorComponent={(props) =>
                     <ModelSelect value={formData.model}
                                  onModelSelect={props.onValueChange}

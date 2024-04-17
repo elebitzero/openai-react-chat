@@ -19,6 +19,7 @@ import EditableInstructions from './EditableInstructions';
 import SpeechSpeedSlider from './SpeechSpeedSlider';
 import {useConfirmDialog} from './ConfirmDialog';
 import TextToSpeechButton from './TextToSpeechButton';
+import {DEFAULT_MODEL} from "../constants/appConstants";
 
 interface UserSettingsModalProps {
   isVisible: boolean;
@@ -211,7 +212,7 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({isVisible, onClose
                             label=""
                             value={userSettings.model}
                             defaultValue={null}
-                            defaultValueLabel={'gpt-4-turbo-preview'}
+                            defaultValueLabel={DEFAULT_MODEL}
                             editorComponent={(props) =>
                                 <ModelSelect value={userSettings.model}
                                              onModelSelect={props.onValueChange}
