@@ -250,7 +250,7 @@ const MessageBox =
               if (textAreaRef.current) {
                 setTextValue(textAreaRef.current.value);
               }
-              callApp(textValue.current, (allowImageAttachment === 'yes') ? fileDataRef : []);
+              callApp(textAreaRef.current?.value || '', (allowImageAttachment === 'yes') ? fileDataRef : []);
             }
           }
         }
@@ -264,7 +264,11 @@ const MessageBox =
 
       const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        callApp(textValue, (allowImageAttachment === 'yes') ? fileDataRef : []);
+        e.stopPropagation();
+        if (textAreaRef.current) {
+          setTextValue(textAreaRef.current.value);
+        }
+        callApp(textAreaRef.current?.value || '', (allowImageAttachment === 'yes') ? fileDataRef : []);
         if (textAreaRef.current) {
           textAreaRef.current.style.height = 'auto';
         }
