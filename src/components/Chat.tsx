@@ -91,8 +91,8 @@ const Chat: React.FC<Props> = ({
   };
 
   return (
-      <div className="flex-1 overflow-auto" ref={chatDivRef} id={'chat-container'} onScroll={handleScroll}>
-        <div className="flex flex-col items-center text-sm dark:bg-gray-900">
+      <div id={'chat-container'} ref={chatDivRef} className="relative chat-container flex-1 overflow-auto" onScroll={handleScroll}>
+        <div  id={'chat-container1'}  className="relative chat-container1 flex flex-col items-center text-sm dark:bg-gray-900">
           <div
               className={`flex w-full items-center justify-center gap-1 p-3 text-gray-500 dark:border-gray-900/50 dark:bg-gray-900 dark:text-gray-300 ${!(conversation === null) ? 'border-b border-black/10' : ''}`}>
             <div className="flex items-center flex-row gap-1">

@@ -39,6 +39,7 @@ export interface MessageBoxHandles {
   reset: () => void;
   resizeTextArea: () => void;
   focusTextarea: () => void;
+  pasteText: (text: string) => void;
 }
 
 const MessageBox =
@@ -86,6 +87,9 @@ const MessageBox =
           if (textAreaRef.current) {
             textAreaRef.current.focus();
           }
+        },
+        pasteText: (text: string) => {
+          insertTextAtCursorPosition(text);
         },
       }));
 
@@ -207,6 +211,8 @@ const MessageBox =
                 };
                 reader.readAsDataURL(file);
               }
+            } else {
+
             }
           }
         }

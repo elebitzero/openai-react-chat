@@ -7,8 +7,15 @@ import {OPENAI_DEFAULT_SYSTEM_PROMPT} from "../config";
 import {CustomError} from "../service/CustomError";
 import {useLocation, useNavigate, useParams} from "react-router-dom";
 import {useTranslation} from 'react-i18next';
+import ReactDOM from 'react-dom/client';
 import MessageBox, {MessageBoxHandles} from "./MessageBox";
-import {CONVERSATION_NOT_FOUND, DEFAULT_INSTRUCTIONS, DEFAULT_MODEL, MAX_TITLE_LENGTH} from "../constants/appConstants";
+import {
+  CONVERSATION_NOT_FOUND,
+  DEFAULT_INSTRUCTIONS,
+  DEFAULT_MODEL,
+  MAX_TITLE_LENGTH,
+  SNIPPET_MARKERS
+} from "../constants/appConstants";
 import {ChatSettings} from '../models/ChatSettings';
 import chatSettingsDB, {chatSettingsEmitter, updateShowInSidebar} from '../service/ChatSettingsDB';
 import ChatSettingDropdownMenu from "./ChatSettingDropdownMenu";
@@ -17,7 +24,8 @@ import {UserContext} from '../UserContext';
 import {NotificationService} from '../service/NotificationService';
 import CustomChatSplash from './CustomChatSplash';
 import {FileDataRef} from '../models/FileData';
-import { OpenAIModel } from '../models/model';
+import {OpenAIModel} from '../models/model';
+import {ArrowUturnDownIcon} from '@heroicons/react/24/outline';
 
 function getFirstValidString(...args: (string | undefined | null)[]): string {
   for (const arg of args) {
@@ -49,17 +57,25 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
   const [allowAutoScroll, setAllowAutoScroll] = useState(true);
   const messageBoxRef = useRef<MessageBoxHandles>(null);
   const chatSettingsRef = useRef(chatSettings);
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
+
+  useEffect(() => {
+    chatSettingsEmitter.on('chatSettingsChanged', chatSettingsListener);
+
+    const button = createButton();
+    buttonRef.current = button;
+
+    document.addEventListener('selectionchange', handleSelectionChange);
+
+    return () => {
+      document.removeEventListener('selectionchange', handleSelectionChange);
+      chatSettingsEmitter.off('chatSettingsChanged', chatSettingsListener);
+    };
+  }, []);
 
   useEffect(() => {
     chatSettingsRef.current = chatSettings;
   }, [chatSettings]);
-
-  useEffect(() => {
-    chatSettingsEmitter.on('chatSettingsChanged', chatSettingsListener);
-    return () => {
-      chatSettingsEmitter.off('chatSettingsChanged', chatSettingsListener);
-    };
-  }, []);
 
   useEffect(() => {
     if (location.pathname === '/') {
@@ -368,7 +384,7 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
   }
 
   const scrollToBottom = () => {
-    const chatContainer = document.getElementById('chat-container'); // Replace with your chat container's actual ID
+    const chatContainer = document.getElementById('chat-container');
     if (chatContainer) {
       chatContainer.scroll({
         top: chatContainer.scrollHeight,
@@ -390,11 +406,83 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
     setShowScrollButton(!isAtBottom);
   };
 
+  const createButton = () => {
+    const button = document.createElement('button');
+    button.className = 'px-2 py-1 bg-gray-100 text-black dark:text-black dark:bg-gray-200 border border-gray-200 dark:border-gray-800 rounded-md shadow-md hover:bg-gray-200 dark:hover:bg-gray-100 focus:outline-none';
+
+    const iconContainer = document.createElement('div');
+    iconContainer.className = 'h-5 w-5';
+
+    const root = ReactDOM.createRoot(iconContainer);
+    root.render(<ArrowUturnDownIcon/>);
+
+    button.appendChild(iconContainer);
+    // Stop propagation for mousedown and mouseup to avoid affecting other event listeners
+    button.addEventListener('mousedown', event => event.stopPropagation());
+    button.addEventListener('mouseup', event => event.stopPropagation());
+    button.addEventListener('click', handleQuoteSelectedText);
+    return button;
+  };
+
+  const handleSelectionChange = () => {
+    const selection = window.getSelection();
+    if (selection && selection.toString().trim() === '') {
+      if (buttonRef.current && buttonRef.current.parentNode) {
+        buttonRef.current.parentNode.removeChild(buttonRef.current);
+        buttonRef.current = null;
+      }
+    }
+  };
+
+  const handleMouseUp = (event: React.MouseEvent<HTMLDivElement>) => {
+    const selection = window.getSelection();
+    if (selection && selection.toString().trim() !== '') {
+      const range = selection.getRangeAt(0);
+      const rect = range.getBoundingClientRect();
+
+      // Remove the existing button if it exists
+      if (buttonRef.current && buttonRef.current.parentNode) {
+        buttonRef.current.parentNode.removeChild(buttonRef.current);
+      }
+
+      const newButton = createButton();
+      const buttonHeight = 30; // Approximate height of the button
+      const buttonWidth = newButton.offsetWidth;
+
+      const chatContainer = document.getElementById('chat-container1');
+      if (chatContainer) {
+        const containerRect = chatContainer.getBoundingClientRect();
+
+        newButton.style.position = 'absolute';
+        newButton.style.left = `${rect.left - containerRect.left + (rect.width / 2) - (buttonWidth / 2)}px`; // Center horizontally relative to container
+        newButton.style.top = `${rect.top - containerRect.top - buttonHeight}px`; // Position above the selection relative to container
+        newButton.style.display = 'inline-block';
+        newButton.style.verticalAlign = 'middle';
+        newButton.style.zIndex = '1000';
+
+        chatContainer.appendChild(newButton);
+
+        buttonRef.current = newButton;
+      }
+    }
+  };
+
+  const handleQuoteSelectedText = () => {
+    const selection = window.getSelection();
+    if (selection) {
+      const selectedText = selection.toString();
+      const modifiedText = `Assistant wrote:\n${SNIPPET_MARKERS.begin}\n${selectedText}\n${SNIPPET_MARKERS.end}\n`;
+      messageBoxRef.current?.pasteText(modifiedText);
+      messageBoxRef.current?.focusTextarea();
+    }
+  };
+
   return (
     <div className={`${className} overflow-hidden w-full h-full relative flex z-0 dark:bg-gray-900`}>
       <div className="flex flex-col items-stretch w-full h-full">
         <main
-          className="relative h-full transition-width flex flex-col overflow-hidden items-stretch flex-1">
+          className="relative h-full transition-width flex flex-col overflow-hidden items-stretch flex-1"
+          onMouseUp={handleMouseUp}>
           {gid ? (
             <div
               className={`inline-block absolute top-0 left-0 z-50 ${isSidebarCollapsed ? 'sidebar-collapsed-margin' : ''}`}>
