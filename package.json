@@ -76,7 +76,7 @@
     "@types/react-syntax-highlighter": "^15.5.11",
     "@vitejs/plugin-react": "^4.2.1",
     "cypress": "^13.7.2",
-    "vite": "^5.2.9",
+    "vite": "^5.2.10",
     "vite-plugin-svgr": "^4.2.0",
     "vite-tsconfig-paths": "^4.3.2"
   }
