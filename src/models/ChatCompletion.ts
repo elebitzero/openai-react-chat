@@ -17,7 +17,7 @@ export interface ChatMessagePart {
 
 export interface ChatCompletionMessage {
   role: Role,
-  content: ChatMessagePart[];
+  content: ChatMessagePart[] | string;
 }
 
 export interface ChatCompletionRequest {

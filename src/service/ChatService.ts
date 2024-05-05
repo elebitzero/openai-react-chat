@@ -54,11 +54,18 @@ export class ChatService {
             });
           }
         });
+        return {
+          role: message.role,
+          content: contentParts,
+        };
       }
-      return {
-        role: message.role,
-        content: contentParts,
-      };
+      else {
+        return {
+          role: message.role,
+          content: message.content,
+        };
+      }
+      
     });
   }
 
@@ -317,7 +324,7 @@ export class ChatService {
           const models: OpenAIModel[] = data.data;
           // Filter, enrich with contextWindow from the imported constant, and sort
           return models
-              .filter(model => model.id.startsWith("gpt-"))
+              .filter(model => model.id)
               .map(model => {
                 const details = modelDetails[model.id] || {
                   contextWindowSize: 0,

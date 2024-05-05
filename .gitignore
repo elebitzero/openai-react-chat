@@ -13,6 +13,7 @@
 
 # tools
 .idea
+.vscode
 
 # local env
 local.env.json
