@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import {useLocation} from 'react-router-dom';
 import {MagnifyingGlassIcon} from "@heroicons/react/24/outline";
 import ConversationService, {
@@ -8,6 +8,7 @@ import ConversationService, {
 } from "../service/ConversationService";
 import {iconProps} from "../svg";
 import {useTranslation} from "react-i18next";
+import {UserContext} from "../UserContext";
 import ConversationListItem from './ConversationListItem';
 
 function useCurrentPath() {
@@ -23,6 +24,7 @@ const ConversationList: React.FC = () => {
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const [showSearchOptions, setShowSearchOptions] = useState(false);
   const [conversationsWithMarkers, setConversationsWithMarkers] = useState<Conversation[]>([]);
+  const { userSettings } = useContext(UserContext);
 
 
   useEffect(() => {
@@ -237,7 +239,9 @@ const ConversationList: React.FC = () => {
             setShowSearchOptions(false);
           }}
         >
-          <MagnifyingGlassIcon style={{color: "#FFFFFF"}} {...iconProps} />
+          <MagnifyingGlassIcon
+              style={{ color: userSettings.theme === 'dark' ? '#FFFFFF' : '#000000' }}
+              {...iconProps} />
         </button>
         {/* {
                     showSearchOptions && (

@@ -135,7 +135,7 @@ const ConversationListItem: React.FC<ConversationListItemProps> = ({
                   onClick={() => {
                     saveEditedTitle()
                   }}
-                  className={`p-1 hover:text-white`}
+                  className={`p-1 hover:text-gray-400 dark:hover:text-white`}
                   onContextMenu={handleContextMenu}
                 >
                   <CheckIcon {...iconProps} />
@@ -145,7 +145,7 @@ const ConversationListItem: React.FC<ConversationListItemProps> = ({
                     setIsEditingTitle(false); // Exit edit mode without saving
                     setEditedTitle(""); // Clear the edited title
                   }}
-                  className={`p-1 hover:text-white`}
+                  className={`p-1 hover:text-gray-400 dark:hover:text-white`}
                 >
                   <XMarkIcon {...iconProps} />
                 </button>
@@ -154,13 +154,13 @@ const ConversationListItem: React.FC<ConversationListItemProps> = ({
               <>
                 <button
                   onClick={() => toggleEditMode(convo)}
-                  className={`p-1 hover:text-white`}
+                  className={`p-1 hover:text-gray-400 dark:hover:text-white`}
                 >
                   <PencilSquareIcon {...iconProps} />
                 </button>
                 <button
                   onClick={() => deleteConversation()}
-                  className="p-1 hover:text-white"
+                  className="p-1 hover:text-gray-400 dark:hover:text-white"
                 >
                   <TrashIcon {...iconProps} />
                 </button>
