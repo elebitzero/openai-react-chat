@@ -386,14 +386,19 @@ const MessageBox =
                 </div>
               )}
               {/* Container for Textarea and Buttons */}
-              <div className="flex items-center w-full relative">
+              <div className="flex items-center w-full relative space-x-2">
                 {/* Attachment Button */}
                 <div className="flex items-center justify-start">
                   <button
                     onClick={(e) => handleAttachment(e)}
-                    className="p-1">
+                    className="p-1 relative z-10">
                     <PaperClipIcon className="h-6 w-6"/>
                   </button>
+                </div>
+
+                {/* Grammarly extension container */}
+                <div className="flex items-center " style={{ flexShrink: 0, minWidth: 'fit-content' }}>
+                  {/* Grammarly extension buttons will render here without overlapping */}
                 </div>
 
                 {/* Textarea */}
@@ -408,6 +413,7 @@ const MessageBox =
                   onKeyDown={checkForSpecialKey}
                   onChange={handleTextChange}
                   onPaste={handlePaste}
+                  style={{ minWidth: 0 }}
                 ></textarea>
 
                 {/* Cancel/Submit Button */}

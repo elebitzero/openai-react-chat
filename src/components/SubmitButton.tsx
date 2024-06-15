@@ -20,7 +20,7 @@ export const SubmitButton: React.FC<SubmitButtonProps> = ({loading, disabled, na
             name={name}
             type="submit"
             disabled={loading || disabled}
-            className="absolute p-1 mr-2 rounded-md text-black dark:text-white enabled:text-white enabled:dark:text-black enabled:bg-black enabled:dark:bg-white disabled:opacity-40"
+            className="p-1 mr-2 rounded-md text-black dark:text-white enabled:text-white enabled:dark:text-black enabled:bg-black enabled:dark:bg-white disabled:opacity-40 relative z-10"
         >
           {loading ? (
               <EllipsisHorizontalIcon className="animate-ellipsis-pulse" width={24} height={24}
