@@ -30,6 +30,10 @@
   width: 0;
 }
 
+.conversation-list-container {
+  margin-top: 0.35em;
+}
+
 /* Styles for the MainPage container */
 
 .main-content {
