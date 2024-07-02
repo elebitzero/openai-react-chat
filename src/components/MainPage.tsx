@@ -485,7 +485,7 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
           onMouseUp={handleMouseUp}>
           {gid ? (
             <div
-              className={`inline-block absolute top-0 left-0 z-50 ${isSidebarCollapsed ? 'sidebar-collapsed-margin' : ''}`}>
+              className={`inline-block absolute top-0 left-0 z-50 ${isSidebarCollapsed ? 'sidebar-collapsed-margin' : 'sidebar-expanded-margin'}`}>
               <ChatSettingDropdownMenu chatSetting={chatSettings}/>
             </div>
           ) : null

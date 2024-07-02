@@ -18,7 +18,6 @@
   height: 100vh;
   overflow-y: auto;
   overflow-x: hidden;
-  margin-right: .35em;
 }
 
 .sidebar-button {
@@ -98,6 +97,10 @@ textarea:focus-visible {
 
 .sidebar-collapsed-margin {
   margin-left: 3em;
+}
+
+.sidebar-expanded-margin {
+  margin-left: 0.2em;
 }
 
 .streaming-dot {
