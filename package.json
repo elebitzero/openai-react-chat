@@ -10,7 +10,7 @@
   "dependencies": {
     "@headlessui/react": "^2.1.1",
     "@heroicons/react": "^2.1.4",
-    "@radix-ui/react-tooltip": "^1.1.1",
+    "@radix-ui/react-tooltip": "^1.1.2",
     "autoprefixer": "^10.4.19",
     "dexie": "^4.0.7",
     "github-markdown-css": "^5.6.1",
@@ -19,7 +19,7 @@
     "i18next": "^23.11.5",
     "i18next-browser-languagedetector": "^8.0.0",
     "i18next-http-backend": "^2.5.2",
-    "postcss": "^8.4.38",
+    "postcss": "^8.4.39",
     "postcss-cli": "^11.0.0",
     "rc-slider": "^10.6.2",
     "react": "^18.2.0",
