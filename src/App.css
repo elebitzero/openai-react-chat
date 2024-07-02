@@ -18,6 +18,7 @@
   height: 100vh;
   overflow-y: auto;
   overflow-x: hidden;
+  margin-right: .35em;
 }
 
 .sidebar-button {
