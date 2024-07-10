@@ -25,6 +25,7 @@ interface ChatSettingDropdownMenuProps {
   showTitle?: boolean;
   showDelete?: boolean;
   className?: string;
+  alignRight?: boolean;
 }
 
 const ChatSettingDropdownMenu: React.FC<ChatSettingDropdownMenuProps> = ({
@@ -32,11 +33,13 @@ const ChatSettingDropdownMenu: React.FC<ChatSettingDropdownMenuProps> = ({
                                                                            showTitle = true,
                                                                            showDelete = false,
                                                                            className,
+                                                                           alignRight = false,
                                                                          }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const {showConfirmDialog, ConfirmDialog} = useConfirmDialog();
   const navigate = useNavigate();
   const {t} = useTranslation();
+
 
 
   const onAbout = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -122,6 +125,8 @@ const ChatSettingDropdownMenu: React.FC<ChatSettingDropdownMenuProps> = ({
     }
   }
 
+  const menuItemsClass = `absolute ${alignRight ? 'right-0' : 'left-0'} w-56 mt-2 origin-top-left bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 divide-y divide-gray-100 dark:divide-gray-600 rounded-md shadow-lg outline-none z-20`;
+
   return (
       <Fragment>
         <div className={`inline-block relative text-left ${className}`}
@@ -147,7 +152,7 @@ const ChatSettingDropdownMenu: React.FC<ChatSettingDropdownMenuProps> = ({
                       leaveTo="transform scale-95 opacity-0"
                   >
                     <Menu.Items
-                        className="absolute left-0 w-56 mt-2 origin-top-left bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 divide-y divide-gray-100 dark:divide-gray-600 rounded-md shadow-lg outline-none z-20">
+                        className={menuItemsClass}>
                       <div className="py-1">
                         <Menu.Item>
                           {({active}) => (
