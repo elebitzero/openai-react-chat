@@ -33,6 +33,8 @@ export interface OpenAIModelListResponse {
 export const modelDetails: { [modelId: string]: { contextWindowSize: number, knowledgeCutoffDate: string, imageSupport: boolean, preferred: boolean, deprecated: boolean } } = {
   "gpt-4o": {contextWindowSize: 128000, knowledgeCutoffDate: "10/2023", imageSupport: true, preferred: true, deprecated: false},
   "gpt-4o-2024-05-13": {contextWindowSize: 128000, knowledgeCutoffDate: "10/2023", imageSupport: true, preferred: false, deprecated: false},
+  "gpt-4o-mini": {contextWindowSize: 128000, knowledgeCutoffDate: "10/2023", imageSupport: true, preferred: false, deprecated: false},
+  "gpt-4o-mini-2024-07-18": {contextWindowSize: 128000, knowledgeCutoffDate: "10/2023", imageSupport: true, preferred: false, deprecated: false},
   "gpt-4-turbo": {contextWindowSize: 128000, knowledgeCutoffDate: "12/2023", imageSupport: true, preferred: false, deprecated: true},
   "gpt-4-turbo-2024-04-09": {contextWindowSize: 128000, knowledgeCutoffDate: "12/2023",  imageSupport: true, preferred: false, deprecated: false},
   "gpt-4-turbo-preview": {contextWindowSize: 128000, knowledgeCutoffDate: "12/2023", imageSupport: false,  preferred: false, deprecated: false},
