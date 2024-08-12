@@ -9,7 +9,8 @@ This project provides a web frontend for the OpenAI chat API. This project is fo
 See [FEATURES.md](FEATURES.md) for details.
 
 ## Preview
-![chat-demo-02042024](https://github.com/elebitzero/openai-react-chat/assets/42903164/ce3157c0-59c6-4890-a18e-adc030a36128)
+
+![openai-react-chat-0812-demo](https://github.com/user-attachments/assets/4140d46c-cff2-481b-b606-d2ce869209f3)
 
 
 
@@ -20,7 +21,7 @@ See [FEATURES.md](FEATURES.md) for details.
 * [Node.JS](https://nodejs.dev/en/)
 * [npm](https://www.npmjs.com/)
 * [OpenAI API Account](https://openai.com/blog/openai-api)
-  * Note: GPT-4 API access is currently accessible to those who have made at least [one successful payment](https://help.openai.com/en/articles/7102672-how-can-i-access-gpt-4) through the openai developer platform.
+  * Note: GPT-4 API access is currently accessible to those who have made at least [one successful payment](https://help.openai.com/en/articles/7102672-how-can-i-access-gpt-4) through the OpenAI developer platform.
 
 
 ## Setup
