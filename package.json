@@ -8,7 +8,7 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
-    "@headlessui/react": "^2.1.8",
+    "@headlessui/react": "^2.1.9",
     "@heroicons/react": "^2.1.5",
     "@radix-ui/react-tooltip": "^1.1.2",
     "autoprefixer": "^10.4.20",
