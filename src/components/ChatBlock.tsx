@@ -1,9 +1,10 @@
-import React, {ChangeEvent, KeyboardEvent, useEffect, useRef, useState} from 'react';
+import React, {ChangeEvent, KeyboardEvent, useContext, useEffect, useRef, useState} from 'react';
 import {SparklesIcon, UserCircleIcon} from "@heroicons/react/24/outline";
 import MarkdownBlock from './MarkdownBlock';
 import CopyButton, {CopyButtonMode} from "./CopyButton";
 import {ChatMessage, MessageType} from "../models/ChatCompletion";
 import UserContentBlock from "./UserContentBlock";
+import { UserContext } from "../UserContext";
 import TextToSpeechButton from "./TextToSpeechButton";
 
 interface Props {
@@ -18,9 +19,10 @@ const ChatBlock: React.FC<Props> = ({block, loading, isLastBlock}) => {
   const contentRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [savedHeight, setSavedHeight] = useState<string | null>(null);
+  const { userSettings } = useContext(UserContext);
 
   const errorStyles = block.messageType === MessageType.Error ? {
-    backgroundColor: '#F5E6E6',
+    backgroundColor: userSettings.theme === 'dark' ? 'rgb(50, 36, 36)' : '#F5E6E6',
     borderColor: 'red',
     borderWidth: '1px',
     borderRadius: '8px',
