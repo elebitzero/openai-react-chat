@@ -66,14 +66,14 @@ const CopyButton = ({text, mode = CopyButtonMode.Normal, className = ''}: CopyBu
   return shouldWrapInTooltip ? (
       <Tooltip title={t('copy-button')} side="top" sideOffset={0}>
         <button
-            className={`chat-action-button text-gray-400 inline-flex items-center justify-center p-2 ml-auto gap-2 ${className}`}
+            className={`chat-action-button text-gray-400 inline-flex items-center justify-center p-1 ml-auto gap-2 ${className}`}
             onClick={handleCopyClick}>
           {buttonContent}
         </button>
       </Tooltip>
   ) : (
       <button
-          className={`chat-action-button text-gray-400 inline-flex items-center justify-center p-2 ml-auto gap-2 ${className}`}
+          className={`chat-action-button text-gray-400 inline-flex items-center justify-center p-1 ml-auto gap-2 ${className}`}
           onClick={handleCopyClick}>
         {buttonContent}
       </button>
