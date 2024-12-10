@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@headlessui/react": "^2.1.10",
-    "@heroicons/react": "^2.1.5",
+    "@heroicons/react": "^2.2.0",
     "@radix-ui/react-tooltip": "^1.1.4",
     "autoprefixer": "^10.4.20",
     "dexie": "^4.0.10",
