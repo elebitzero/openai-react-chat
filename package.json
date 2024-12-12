@@ -28,7 +28,7 @@
     "react-loader-spinner": "^6.1.6",
     "react-markdown": "^9.0.1",
     "react-router-dom": "^6.28.0",
-    "react-select": "^5.8.3",
+    "react-select": "^5.9.0",
     "react-syntax-highlighter": "^15.6.1",
     "react-toastify": "^10.0.6",
     "rehype-katex": "^7.0.1",
