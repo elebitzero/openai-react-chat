@@ -89,7 +89,7 @@ const EditableInstructions = forwardRef(({
           placeholder={placeholder}
           onChange={handleChange}
           className="resize-none overflow-y-auto w-full shadow appearance-none py-2 px-3 text-gray-700
-                    dark:text-gray-300 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline
+                    dark:text-gray-300 dark:bg-gray-700 leading-tight focus:outline-hidden focus:shadow-outline
                     border border-gray-300 dark:border-gray-600 flex-1"
           spellCheck={false}
       ></textarea>
@@ -102,7 +102,7 @@ const EditableInstructions = forwardRef(({
         </button>
 
         {isModalOpen && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+            <div className="fixed inset-0 bg-black/50 flex justify-center items-center">
               <div className="bg-white dark:bg-gray-800 w-4/5 h-4/5 p-4 rounded-lg shadow-lg flex flex-col">
             <textarea
                 ref={textarea2Ref}

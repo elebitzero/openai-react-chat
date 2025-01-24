@@ -37,11 +37,11 @@ const App = () => {
             <ToastContainer/>
             <div className="flex overflow-hidden w-full h-full relative z-0">
               <Sidebar
-                  className="sidebar-container flex-shrink-0"
+                  className="sidebar-container shrink-0"
                   isSidebarCollapsed={isSidebarCollapsed}
                   toggleSidebarCollapse={toggleSidebarCollapse}
               />
-              <div className="flex-grow h-full overflow-hidden">
+              <div className="grow h-full overflow-hidden">
                 <Routes>
                   <Route path="/" element={<MainPageWithProps/>}/>
                   <Route path="/c/:id" element={<MainPageWithProps/>}/>

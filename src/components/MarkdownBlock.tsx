@@ -69,7 +69,7 @@ const MarkdownBlock: React.FC<ChatBlockProps> = ({markdown, role, loading}) => {
         </div>
         <div className="sticky top-9 md:top-[5.75rem]">
           <div className="absolute bottom-0 right-2 flex h-8 items-center">
-            <CopyButton className="rounded bg-gray-200 dark:bg-gray-850" text={children}/>
+            <CopyButton className="rounded-sm bg-gray-200 dark:bg-gray-850" text={children}/>
           </div>
         </div>
         <div className="overflow-y-auto">

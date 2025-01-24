@@ -28,7 +28,7 @@ const ChatSettingsList: React.FC<ChatSettingsListProps> = ({chatSettings}) => {
                 <ChatSettingDropdownMenu chatSetting={setting} showTitle={false} showDelete={true} alignRight={true}
                                          className="bg-transparent"/>
               </div>
-              <div className="h-12 w-12 flex-shrink-0">
+              <div className="h-12 w-12 shrink-0">
                 <div className="bg-white overflow-hidden rounded-full">
                   {(setting.icon && setting.icon.data) ? (
                       <img src={setting.icon.data} alt="" className="h-full w-full"/>

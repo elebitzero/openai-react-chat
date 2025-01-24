@@ -40,7 +40,7 @@ const ChatShortcuts: React.FC = () => {
                 )}
               </div>
               <span
-                  className="flex-1 overflow-hidden whitespace-nowrap overflow-ellipsis max-h-5 break-all relative dark:text-gray-100 text-gray-800">
+                  className="flex-1 overflow-hidden whitespace-nowrap text-ellipsis max-h-5 break-all relative dark:text-gray-100 text-gray-800">
       {setting.name}
     </span>
             </Link>

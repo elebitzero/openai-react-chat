@@ -16,7 +16,7 @@ const Button: FC<ButtonProps> = ({
                                    className,
                                    disabled = false,
                                  }) => {
-  const baseStyle = "py-2 px-4 rounded font-medium cursor-pointer";
+  const baseStyle = "py-2 px-4 rounded-sm font-medium cursor-pointer";
   let variantStyle = "";
 
   if (variant === 'primary') {

@@ -126,7 +126,7 @@ const Chat: React.FC<Props> = ({
                 }
                         </span>
               {!conversation && (
-                  <span className="flex-grow" style={{width: '50ch'}}>
+                  <span className="grow" style={{width: '50ch'}}>
                           <ModelSelect value={model} onModelSelect={onModelChange} models={models}/>
                         </span>
               )}
@@ -138,7 +138,7 @@ const Chat: React.FC<Props> = ({
                          loading={index === chatBlocks.length - 1 && loading}
                          isLastBlock={index === chatBlocks.length - 1}/>
           ))}
-          <div className="w-full h-24 flex-shrink-0"></div>
+          <div className="w-full h-24 shrink-0"></div>
         </div>
       </div>
   );

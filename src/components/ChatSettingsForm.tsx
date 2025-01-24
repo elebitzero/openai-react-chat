@@ -84,7 +84,7 @@ const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({chatSettings, readOn
                     onChange={handleInputChange}
                     placeholder={t('enter-name-placeholder')}
                     autoComplete="name"
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    className="shadow-sm appearance-none border rounded-sm w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 leading-tight focus:outline-hidden focus:shadow-outline"
                 />}
           </div>
           <div className="mb-4">
@@ -97,7 +97,7 @@ const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({chatSettings, readOn
                     name="description"
                     value={formData.description}
                     onChange={handleInputChange}
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    className="shadow-sm appearance-none border rounded-sm w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 leading-tight focus:outline-hidden focus:shadow-outline"
                 ></textarea>}
           </div>
           <div className="mb-4">
@@ -110,7 +110,7 @@ const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({chatSettings, readOn
                     value={formData.instructions}
                     name="instructions"
                     onChange={handleInputChange}
-                    className="resize-y border rounded overflow-y-auto h-56 w-full max-h-[60vh] md:max-h-[calc(100vh-300px)] shadow appearance-none py-2 px-3 text-gray-700 dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    className="resize-y border rounded-sm overflow-y-auto h-56 w-full max-h-[60vh] md:max-h-[calc(100vh-300px)] shadow-sm appearance-none py-2 px-3 text-gray-700 dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 leading-tight focus:outline-hidden focus:shadow-outline"
                 ></textarea>}
           </div>
           <div className="mb-4">
@@ -141,7 +141,7 @@ const ChatSettingsForm: React.FC<ChatSettingsFormProps> = ({chatSettings, readOn
                     id="seed"
                     name="seed"
                     onChange={handleInputChange}
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    className="shadow-sm appearance-none border rounded-sm w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 leading-tight focus:outline-hidden focus:shadow-outline"
                 />}
           </div>
           <EditableField<number | null>

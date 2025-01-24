@@ -98,7 +98,7 @@ const FileDataPreview: React.FC<Props> = ({
             type="button"
             aria-haspopup="dialog"
             aria-expanded="false"
-            className="h-full w-full focus:outline-none"
+            className="h-full w-full focus:outline-hidden"
             onClick={() =>  fileRef.fileData && toggleViewFile(index)}
           >
             <span
@@ -144,7 +144,7 @@ const FileDataPreview: React.FC<Props> = ({
       <div className="relative">
         {viewedFileIndex > 0 && (
           <button
-            className="absolute top-1/2 left-4 -translate-y-1/2 flex items-center justify-center bg-white bg-opacity-50 rounded-full shadow-lg border border-black"
+            className="absolute top-1/2 left-4 -translate-y-1/2 flex items-center justify-center bg-white/50 rounded-full shadow-lg border border-black"
             style={{width: '48px', height: '48px'}} // Adjust size as needed
             onClick={(e) => {
               e.stopPropagation();
@@ -165,7 +165,7 @@ const FileDataPreview: React.FC<Props> = ({
         />
         {viewedFileIndex < fileDataRef.length - 1 && (
           <button
-            className="absolute top-1/2 right-4 -translate-y-1/2 flex items-center justify-center bg-white bg-opacity-50 rounded-full shadow-lg border border-black"
+            className="absolute top-1/2 right-4 -translate-y-1/2 flex items-center justify-center bg-white/50 rounded-full shadow-lg border border-black"
             style={{width: '48px', height: '48px'}} // Adjust size as needed
             onClick={(e) => {
               e.stopPropagation();

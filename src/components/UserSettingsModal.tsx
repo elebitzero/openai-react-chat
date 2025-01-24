@@ -134,7 +134,7 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({isVisible, onClose
 
   return (
       <Transition show={isVisible} as={React.Fragment}>
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 px-4">
+        <div className="fixed inset-0 bg-gray-600/50 flex items-center justify-center z-50 px-4">
           <Transition.Child
               as={React.Fragment}
               enter="ease-out duration-300"
@@ -245,7 +245,7 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({isVisible, onClose
                       <div className="setting-panel flex justify-between">
                         <label htmlFor="speech-model">{t('model-header')}</label>
                         <select id="speech-model"
-                                className="custom-select dark:custom-select border-gray-300 border rounded p-2 dark:bg-gray-800 dark:text-white dark:border-gray-600"
+                                className="custom-select dark:custom-select border-gray-300 border rounded-sm p-2 dark:bg-gray-800 dark:text-white dark:border-gray-600"
                                 value={userSettings.speechModel || undefined}
                                 onChange={(e) => setUserSettings({
                                   ...userSettings,
@@ -258,7 +258,7 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({isVisible, onClose
                       <div className="setting-panel flex justify-between">
                         <label htmlFor="voice">{t('voice-header')}</label>
                         <select id="voice"
-                                className="custom-select dark:custom-select border-gray-300 border rounded p-2 dark:bg-gray-800 dark:text-white dark:border-gray-600"
+                                className="custom-select dark:custom-select border-gray-300 border rounded-sm p-2 dark:bg-gray-800 dark:text-white dark:border-gray-600"
                                 value={userSettings.speechVoice || undefined}
                                 onChange={(e) => setUserSettings({
                                   ...userSettings,
@@ -300,7 +300,7 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({isVisible, onClose
                         <textarea
                           id="tts-test-area"
                           rows={2}
-                          className="shadow-sm p-2 mt-1 block w-full dark:text-gray-300 dark:bg-gray-700 sm:text-sm border border-gray-300 rounded-md"
+                          className="shadow-xs p-2 mt-1 block w-full dark:text-gray-300 dark:bg-gray-700 sm:text-sm border border-gray-300 rounded-md"
                           defaultValue={ttsText}
                           onChange={(e) => setTtsText(e.target.value)}
                         ></textarea>
@@ -322,7 +322,7 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({isVisible, onClose
                       <span>{''}</span>
                       <div>
                         <button onClick={handleDeleteAllConversations}
-                                className="mt-4 py-2 px-4 bg-red-500 text-white rounded hover:bg-red-700">{t('delete-all-chats-button')}
+                                className="mt-4 py-2 px-4 bg-red-500 text-white rounded-sm hover:bg-red-700">{t('delete-all-chats-button')}
                         </button>
                         {ConfirmDialog}
                       </div>

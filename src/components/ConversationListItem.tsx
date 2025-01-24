@@ -95,7 +95,7 @@ const ConversationListItem: React.FC<ConversationListItemProps> = ({
 
   if (isSelected) {
     return (
-      <li key={convo.id} className="relative z-[15]" style={{opacity: 1, height: "auto"}}>
+      <li key={convo.id} className="relative z-15" style={{opacity: 1, height: "auto"}}>
         <div
           role="button"
           className={`relative flex py-3 px-3 items-center gap-3 rounded-md bg-gray-100 dark:bg-gray-800 cursor-pointer break-all pr-14 group`}
@@ -122,7 +122,7 @@ const ConversationListItem: React.FC<ConversationListItemProps> = ({
             </div>
           ) : (
             <div
-              className="relative flex-1 w-full text-left overflow-hidden whitespace-nowrap overflow-ellipsis max-h-5 break-all">
+              className="relative flex-1 w-full text-left overflow-hidden whitespace-nowrap text-ellipsis max-h-5 break-all">
               {convo.title}
             </div>
           )}
@@ -172,7 +172,7 @@ const ConversationListItem: React.FC<ConversationListItemProps> = ({
     );
   } else {
     return (
-      <li key={convo.id} className="relative z-[15]" style={{opacity: 1, height: "auto"}}>
+      <li key={convo.id} className="relative z-15" style={{opacity: 1, height: "auto"}}>
         <button
           onClick={() => selectConversation()}
           type="button"
@@ -180,7 +180,7 @@ const ConversationListItem: React.FC<ConversationListItemProps> = ({
         >
           <ChatBubbleLeftIcon {...iconProps} />
           <div
-            className="relative flex-1 overflow-hidden text-left whitespace-nowrap overflow-ellipsis max-h-5 break-all">
+            className="relative flex-1 overflow-hidden text-left whitespace-nowrap text-ellipsis max-h-5 break-all">
             {convo.title}
           </div>
         </button>

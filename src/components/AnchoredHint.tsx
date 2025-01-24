@@ -28,7 +28,7 @@ const AnchoredHint: React.FC<AnchoredHintProps> = ({ content, children, side = "
         </RadixTooltip.Trigger>
         <RadixTooltip.Portal>
           <RadixTooltip.Content
-            className="relative rounded-lg border bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 border-gray-800 dark:border-gray-300 p-1 shadow-sm transition-opacity max-w-xs"
+            className="relative rounded-lg border bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 border-gray-800 dark:border-gray-300 p-1 shadow-xs transition-opacity max-w-xs"
             side={side}
             sideOffset={sideOffset}
             onPointerDown={close} // Dismiss the tooltip on click

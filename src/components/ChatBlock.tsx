@@ -82,7 +82,7 @@ const ChatBlock: React.FC<Props> = ({block, loading, isLastBlock}) => {
             className="text-base md:max-w-2xl lg:max-w-3xl xl:max-w-4xl 2xl:max-w-5xl 3xl:max-w-6xl 4xl:max-w7xl p-2 flex lg:px-0 m-auto flex-col">
           <div className="w-full flex">
             <div className="w-[30px] flex flex-col relative items-end mr-4">
-              <div className="relative flex h-[30px] w-[30px] p-0 rounded-sm items-center justify-center">
+              <div className="relative flex h-[30px] w-[30px] p-0 rounded-xs items-center justify-center">
                 {block.role === 'user' ? (
                     <UserCircleIcon width={24} height={24}/>
                 ) : block.role === 'assistant' ? (
@@ -91,7 +91,7 @@ const ChatBlock: React.FC<Props> = ({block, loading, isLastBlock}) => {
               </div>
             </div>
             <div className="relative flex w-[calc(100%-50px)] flex-col gap-1 md:gap-3 lg:w-full">
-              <div id={`message-block-${block.id}`} className="flex flex-grow flex-col gap-3"
+              <div id={`message-block-${block.id}`} className="flex grow flex-col gap-3"
                    style={errorStyles}>
                 <div
                     className="min-h-[20px] flex flex-col items-start gap-4">
@@ -101,7 +101,7 @@ const ChatBlock: React.FC<Props> = ({block, loading, isLastBlock}) => {
                               tabIndex={0}
                               ref={textareaRef}
                               style={{height: savedHeight ?? undefined, lineHeight: '1.33', fontSize: '1rem'}}
-                              className="border border-black/10 bg-white dark:border-gray-900/50 dark:bg-gray-700 w-full m-0 p-0 pr-7 pl-2 md:pl-0 resize-none bg-transparent dark:bg-transparent  focus:ring-0 focus-visible:ring-0 outline-none shadow-none"
+                              className="border border-black/10 bg-white dark:border-gray-900/50 dark:bg-gray-700 w-full m-0 p-0 pr-7 pl-2 md:pl-0 resize-none bg-transparent dark:bg-transparent  focus:ring-0 focus-visible:ring-0 outline-hidden shadow-none"
                               onChange={handleTextChange}
                               onKeyDown={checkForSpecialKey}
                               value={editedBlockContent}

@@ -39,7 +39,7 @@ const Sidebar: React.FC<SidebarProps> = ({className, isSidebarCollapsed, toggleS
             <button
               className="flex px-3 min-h-[44px] py-1 gap-3 transition-colors duration-200 dark:text-white
               cursor-pointer text-sm rounded-md border dark:border-white/20 hover:bg-gray-300 dark:hover:bg-gray-600
-              h-11 w-11 flex-shrink-0 items-center justify-center bg-white dark:bg-transparent"
+              h-11 w-11 shrink-0 items-center justify-center bg-white dark:bg-transparent"
               onClick={toggleSidebarCollapse}>
               <OpenSideBarIcon/>
             </button>
@@ -52,7 +52,7 @@ const Sidebar: React.FC<SidebarProps> = ({className, isSidebarCollapsed, toggleS
       />
       {/* sidebar is always dark mode*/}
       <div
-        className="sidebar duration-500 transition-all h-full flex-shrink-0 overflow-x-hidden dark:bg-gray-900">
+        className="sidebar duration-500 transition-all h-full shrink-0 overflow-x-hidden dark:bg-gray-900">
         <div className="h-full w-[260px]">
           <div className="flex h-full min-h-0 flex-col ">
             <div className="scrollbar-trigger relative h-full flex-1 items-start border-white/20">
@@ -62,7 +62,7 @@ const Sidebar: React.FC<SidebarProps> = ({className, isSidebarCollapsed, toggleS
                   <button className="flex px-3 min-h-[44px] py-1 items-center gap-3
                        transition-colors duration-200 dark:text-white
                        cursor-pointer text-sm rounded-md border dark:border-white/20 hover:bg-gray-500/10 h-11
-                       bg-white dark:bg-transparent flex-grow overflow-hidden"
+                       bg-white dark:bg-transparent grow overflow-hidden"
                           onClick={handleNewChat}
                           type="button"
                   >
@@ -74,7 +74,7 @@ const Sidebar: React.FC<SidebarProps> = ({className, isSidebarCollapsed, toggleS
                       type="button"
                       className="flex px-3 min-h-[44px] py-1 gap-3 transition-colors duration-200 dark:text-white
                       cursor-pointer text-sm rounded-md border dark:border-white/20 hover:bg-gray-500/10 h-11 w-11
-                      flex-shrink-0 items-center justify-center bg-white dark:bg-transparent"
+                      shrink-0 items-center justify-center bg-white dark:bg-transparent"
                       onClick={openSettingsDialog}>
                       <Cog8ToothIcon/>
                     </button>
@@ -83,7 +83,7 @@ const Sidebar: React.FC<SidebarProps> = ({className, isSidebarCollapsed, toggleS
                     <button
                       className="flex px-3 min-h-[44px] py-1 gap-3 transition-colors duration-200 dark:text-white
                       cursor-pointer text-sm rounded-md border dark:border-white/20 hover:bg-gray-500/10
-                      h-11 w-11 flex-shrink-0 items-center justify-center bg-white dark:bg-transparent"
+                      h-11 w-11 shrink-0 items-center justify-center bg-white dark:bg-transparent"
                       onClick={toggleSidebarCollapse}
                       type="button"
                     >

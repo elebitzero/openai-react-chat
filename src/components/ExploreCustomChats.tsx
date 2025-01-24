@@ -68,7 +68,7 @@ const ExploreCustomChats: React.FC = () => {
               onClick={() => navigate('/custom/editor')}
           >
             <div
-                className="flex h-[42px] w-[42px] flex-shrink-0 items-center justify-center rounded-full border border-dashed border-token-border-light bg-gray-100 dark:bg-gray-900 ">
+                className="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-full border border-dashed border-token-border-light bg-gray-100 dark:bg-gray-900 ">
               <PlusIcon className="w-5 h-5 text-black dark:text-white"/>
             </div>
             <div>

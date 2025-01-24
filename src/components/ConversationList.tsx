@@ -200,7 +200,7 @@ const ConversationList: React.FC = () => {
           <div className="text-sm font-medium">SEARCH OPTIONS</div>
           <ul>
             <li
-              className="cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600 p-1 rounded flex justify-between items-center"
+              className="cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600 p-1 rounded-sm flex justify-between items-center"
               onClick={() => onSelect('in:message ')}
             >
               <span>in:message</span> <span className="ml-auto">+</span>
@@ -217,7 +217,7 @@ const ConversationList: React.FC = () => {
       <div id="conversation-search" className="flex flex-row items-center mb-2 relative">
         <input
           id="searchInput"
-          className="flex-grow rounded-md border dark:text-gray-100 dark:bg-gray-850 dark:border-white/20 px-2 py-1"
+          className="grow rounded-md border dark:text-gray-100 dark:bg-gray-850 dark:border-white/20 px-2 py-1"
           type="text"
           autoComplete="off"
           placeholder={t('search')}
@@ -263,7 +263,7 @@ const ConversationList: React.FC = () => {
                   if ("marker" in convo) {
                     return (
                       <li key={`marker-${index}`}
-                          className="sticky top-0 z-[16]">
+                          className="sticky top-0 z-16">
                         <h3
                           className="h-9 pb-2 pt-3 px-3 text-xs text-gray-500 font-medium text-ellipsis overflow-hidden bg-gray-50 dark:bg-gray-900">
                           {convo.title}
