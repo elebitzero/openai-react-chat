@@ -593,7 +593,7 @@ const MainPage: React.FC<MainPageProps> = ({className, isSidebarCollapsed, toggl
             {conversation && (
               <button
                 onClick={handleExportConversation}
-                className="px-4 py-2 mr-1 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                className="px-4 py-2 mr-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
               >
                 {t('Export Chat')}
               </button>
