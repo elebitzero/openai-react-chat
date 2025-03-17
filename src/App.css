@@ -747,7 +747,7 @@ pre[class*=language-] {
 
 .dark .dark\:hover\:bg-gray-700:hover {
   --tw-bg-opacity: 1;
-  background-color: rgba(62, 59, 73, var(--tw-bg-opacity));
+  background-color: rgba(62, 59, 73, var(--tw-bg-opacity))
 }
 
 .dark .dark\:hover\:bg-gray-800:hover {
