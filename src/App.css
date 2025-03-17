@@ -305,7 +305,7 @@ pre[class*=language-] {
 
 .hover\:bg-gray-50:hover {
   --tw-bg-opacity: 1;
-  background-color: rgba(247, 247, 248, var(--tw-bg-opacity))
+  background-color: rgba(240, 240, 250, var(--tw-bg-opacity))
 }
 
 .hover\:bg-gray-300:hover {
@@ -742,7 +742,7 @@ pre[class*=language-] {
 
 .dark .dark\:hover\:bg-gray-700:hover {
   --tw-bg-opacity: 1;
-  background-color: rgba(78, 79, 93, var(--tw-bg-opacity));
+  background-color: rgba(78, 79, 93, var(--tw-bg-opacity))
 }
 
 .dark .dark\:hover\:bg-gray-800:hover {
