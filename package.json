@@ -10,7 +10,7 @@
   "dependencies": {
     "@headlessui/react": "^2.2.0",
     "@heroicons/react": "^2.2.0",
-    "@radix-ui/react-tooltip": "^1.1.8",
+    "@radix-ui/react-tooltip": "^1.2.0",
     "@tailwindcss/postcss": "^4.0.17",
     "dexie": "^4.0.11",
     "github-markdown-css": "^5.8.1",
