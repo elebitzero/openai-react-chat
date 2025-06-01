@@ -30,7 +30,7 @@ export function EditableField<T>({
                                    onValueChange,
                                    readOnly,
                                    isModalLabel,
-                                 }: EditableFieldProps<T>): ReactElement {
+                                 }: EditableFieldProps<T>): ReactElement<any> {
   const [isEditing, setIsEditing] = useState(false);
   const effectiveValue = value !== undefined && value !== null ? value : defaultValue;
   const [tempValue, setTempValue] = useState<T>(effectiveValue);

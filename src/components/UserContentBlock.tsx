@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { type JSX } from 'react';
 import {SNIPPET_MARKERS} from "../constants/appConstants";
 import FoldableTextSection from './FoldableTextSection';
 import { FileData, FileDataRef } from '../models/FileData';

@@ -132,7 +132,7 @@ const MessageBox =
         }
       };
 
-      function clearValueAndUndoHistory(textAreaRef: React.RefObject<HTMLTextAreaElement>) {
+      function clearValueAndUndoHistory(textAreaRef: React.RefObject<HTMLTextAreaElement | null>) {
         setFileDataRef([]);
         setTextValue('');
         setTextAreaValue('');
