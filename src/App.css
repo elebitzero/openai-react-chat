@@ -895,7 +895,7 @@ pre[class*=language-] {
   overflow: auto
 }
 
-@media screen and (-ms-high-contrast: active) {
+@media (forced-colors: active) {
   code[class*=language-],
   pre[class*=language-] {
     background: window;
