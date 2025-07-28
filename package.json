@@ -23,7 +23,7 @@
     "postcss-cli": "^11.0.1",
     "rc-slider": "^11.1.8",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0",
+    "react-dom": "^19.1.1",
     "react-i18next": "^15.6.0",
     "react-loader-spinner": "^6.1.6",
     "react-markdown": "^10.1.0",
